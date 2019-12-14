@@ -1,0 +1,7 @@
+apply from: "../config/android-library.gradle"
+
+dependencies {
+
+    api libraries.recyclerView
+
+}

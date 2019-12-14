@@ -1,0 +1,55 @@
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-kapt"
+
+// Uncomment these lines to find out latest library updates
+//apply plugin: "com.github.ben-manes.versions"
+//dependencyUpdates.resolutionStrategy {
+//    componentSelection { rules ->
+//        rules.all { ComponentSelection selection ->
+//            boolean rejected = ["alpha", "beta", "rc", "cr", "m", "preview", "b", "ea"].any { qualifier ->
+//                selection.candidate.version ==~ /(?i).*[.-]$qualifier[.\d-+]*/
+//            }
+//            if (rejected) {
+//                selection.reject("Release candidate")
+//            }
+//        }
+//    }
+//}
+// Uncomment these lines to find out latest library updates
+
+android {
+
+    buildToolsVersion versions.android.buildTools
+    compileSdkVersion versions.android.compileSdk
+
+    compileOptions {
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        targetSdkVersion versions.android.targetSdk
+        minSdkVersion versions.android.minSdk
+        vectorDrawables.useSupportLibrary = true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    testOptions {
+        animationsDisabled = true
+        execution "ANDROIDX_TEST_ORCHESTRATOR"
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+        test.java.srcDirs += "src/test/kotlin"
+        androidTest.java.srcDirs += "src/androidTest/kotlin"
+    }
+}
+
+dependencies {
+    implementation libraries.kotlin
+}

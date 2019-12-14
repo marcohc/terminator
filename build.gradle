@@ -1,0 +1,32 @@
+apply from: 'config/detekt.gradle'
+
+allprojects {
+
+    repositories {
+        jcenter()
+        google()
+        maven { url "https://jitpack.io" }
+        mavenCentral()
+    }
+
+}
+
+buildscript {
+
+    apply from: 'config/dependencies.gradle'
+
+    repositories {
+        jcenter()
+        google()
+        maven { url "https://jitpack.io" }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath gradlePlugins.detekt
+        classpath gradlePlugins.gradle
+        classpath gradlePlugins.gradleVersions
+        classpath gradlePlugins.googlePlayServices
+        classpath gradlePlugins.kotlin
+    }
+}
