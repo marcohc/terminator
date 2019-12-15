@@ -59,6 +59,8 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
 
     abstract fun getDelegatesList(): List<Delegate<ItemModel>>
 
+    fun getData() = items
+
     fun setData(data: List<ItemModel>) {
         val result = DiffUtil.calculateDiff(CommonDiffUtilCallback(items, data))
         this.items = data
