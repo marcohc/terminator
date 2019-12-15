@@ -2,12 +2,12 @@ apply from: "../config/android-library.gradle"
 
 dependencies {
 
-    implementation libraries.appCompat
-    implementation libraries.koinAndroid
-    implementation libraries.rxJavaAndroid
-    implementation libraries.rxJava
-    implementation libraries.timber
-    implementation libraries.viewModelExtensions
+    api libraries.appCompat
+    api libraries.koinAndroid
+    api libraries.rxJavaAndroid
+    api libraries.rxJava
+    api libraries.timber
+    api libraries.viewModelExtensions
 
     testImplementation project(":core-mvi-test")
 }

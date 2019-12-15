@@ -8,11 +8,5 @@ dependencies {
         exclude group: "org.mockito"
     }
 
-    implementation libraries.appCompat
-    implementation libraries.koinAndroid
-    implementation libraries.rxJava
-    implementation libraries.rxJavaAndroid
-    implementation libraries.viewModelExtensions
-
     implementation project(":core-mvi")
 }
