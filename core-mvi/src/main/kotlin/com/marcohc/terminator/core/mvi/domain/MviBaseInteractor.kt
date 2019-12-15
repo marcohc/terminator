@@ -12,6 +12,7 @@ import io.reactivex.subjects.PublishSubject
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.qualifier.named
+import timber.log.Timber
 
 /**
  * Base class which orchestrates the subscriptions and logic to manage a [MviInteractor]
@@ -26,18 +27,17 @@ abstract class MviBaseInteractor<Intention, Action, State>(
     private val intentionsSubject = PublishSubject.create<Intention>().toSerialized()
     private val stateSubject = BehaviorSubject.createDefault<State>(defaultState).toSerialized()
     private val disposable: CompositeDisposable = CompositeDisposable()
-    private val logger: KotlinLogger = get(named(MVI_LOGGER))
     private val uiScheduler: Scheduler = get(named(MVI_RX_UI_SCHEDULER))
     private val onDestroyFunctionList = mutableListOf<(() -> Unit)>()
 
     init {
         disposable.add(
             intentionsSubject
-                .doOnNext { intention -> logger.v(LOG_TAG, printClassName(intention as Any, debugMode)) }
+                .doOnNext { intention -> Timber.v(LOG_TAG, printClassName(intention as Any, debugMode)) }
                 .flatMap(this.intentionToAction())
-                .doOnNext { action -> logger.v(LOG_TAG, printClassName(action as Any, debugMode)) }
+                .doOnNext { action -> Timber.v(LOG_TAG, printClassName(action as Any, debugMode)) }
                 .scan(defaultState, this.actionToState())
-                .doOnError { logger.e(it) }
+                .doOnError { Timber.e(it) }
                 .observeOn(uiScheduler)
                 .subscribeWith(stateSubject.toDisposableObserver())
         )
@@ -54,7 +54,7 @@ abstract class MviBaseInteractor<Intention, Action, State>(
     override fun states(): Observable<State> {
         return stateSubject.hide()
             .distinctUntilChanged()
-            .doOnNext { state -> logger.v(LOG_TAG, printClassName(state as Any, debugMode)) }
+            .doOnNext { state -> Timber.v(LOG_TAG, printClassName(state as Any, debugMode)) }
     }
 
     override fun doOnDestroy(onDestroyFunction: () -> Unit) {
@@ -83,7 +83,6 @@ abstract class MviBaseInteractor<Intention, Action, State>(
 
     companion object {
         const val MVI_RX_UI_SCHEDULER = "MVI_RX_UI_SCHEDULER"
-        const val MVI_LOGGER = "MVI_LOGGER"
 
         private const val LOG_TAG = "--> %s"
     }

@@ -1,11 +1,8 @@
 package com.marcohc.terminator.core.mvi.test
 
-import com.marcohc.terminator.core.mvi.domain.KotlinLogger
-import com.marcohc.terminator.core.mvi.domain.MviBaseInteractor.Companion.MVI_LOGGER
 import com.marcohc.terminator.core.mvi.domain.MviBaseInteractor.Companion.MVI_RX_UI_SCHEDULER
 import com.marcohc.terminator.core.mvi.domain.MviInteractor
 import com.marcohc.terminator.core.mvi.ui.MviView
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.Schedulers
@@ -34,7 +31,6 @@ object ViewInteractorTestUtils : KoinComponent {
         } catch (ignored: IllegalStateException) {
             startKoin {
                 modules(listOf(module {
-                    single(named(MVI_LOGGER)) { mock<KotlinLogger>() }
                     single(named(MVI_RX_UI_SCHEDULER)) { Schedulers.trampoline() }
                 }))
             }
