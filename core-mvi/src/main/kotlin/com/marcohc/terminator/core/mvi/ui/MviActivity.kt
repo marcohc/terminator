@@ -53,7 +53,7 @@ abstract class MviActivity<Intention, State>
             setContentView(mviConfig.layoutId)
         }
 
-        afterComponentCreated()
+        afterComponentCreated(savedInstanceState)
     }
 
     /**

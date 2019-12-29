@@ -60,7 +60,7 @@ abstract class MviDialogFragment<Intention, State>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isFirstTime.getAndSet(false)) {
-            afterComponentCreated()
+            afterComponentCreated(savedInstanceState)
         }
     }
 

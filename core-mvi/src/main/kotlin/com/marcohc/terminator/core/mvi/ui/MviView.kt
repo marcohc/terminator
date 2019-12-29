@@ -1,5 +1,6 @@
 package com.marcohc.terminator.core.mvi.ui
 
+import android.os.Bundle
 import android.view.View
 import io.reactivex.Observable
 
@@ -18,7 +19,7 @@ interface MviView<Intention, State> {
      *
      * Use it for one time actions and layout building.
      */
-    fun afterComponentCreated()
+    fun afterComponentCreated(savedInstanceState: Bundle?)
 
     /**
      * Input pipeline for intentions.
