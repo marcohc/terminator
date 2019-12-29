@@ -51,14 +51,14 @@ android {
 }
 
 // This allows the project to build on Jitpack
-afterEvaluate { project ->
-    project.tasks.installDebugAndroidTest {
-        onlyIf  {
-            println 'Skipping...'
-            return false
-        }
-    }
-}
+//afterEvaluate { project ->
+//    project.tasks.installDebugAndroidTest {
+//        onlyIf  {
+//            println 'Skipping...'
+//            return false
+//        }
+//    }
+//}
 
 dependencies {
     implementation libraries.kotlin
