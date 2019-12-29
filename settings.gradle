@@ -1,13 +1,13 @@
 /**
  * Sample modules are sorted by visibility and then name.
  */
-include ':sample:app'
-
-include ':sample:features:venue-search'
-include ':sample:features:venue-detail'
-
-include ':sample:shared:data'
-include ':sample:shared:resources'
+//include ':sample:app'
+//
+//include ':sample:features:venue-search'
+//include ':sample:features:venue-detail'
+//
+//include ':sample:shared:data'
+//include ':sample:shared:resources'
 
 /**
  * Library modules are sorted by name.
