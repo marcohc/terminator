@@ -13,18 +13,29 @@ class TypedAdapterDelegate<ItemModel : RecyclerItem>(
 ) : AdapterDelegate<ItemModel> {
 
     override fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<ItemModel> {
+
         val itemView = LayoutInflater.from(parent.context).inflate(delegate.delegateConfig.layoutId, parent, false)
         return object : BaseViewHolder<ItemModel>(itemView) {
 
             override val delegateConfig = delegate.delegateConfig
             lateinit var childClickListener: View.OnClickListener
+            lateinit var childLongClickListener: View.OnLongClickListener
 
             override fun setChildOnClickListener(onClickListener: View.OnClickListener) {
                 childClickListener = onClickListener
             }
 
+            override fun setChildOnLongClickListener(onLongClickListener: View.OnLongClickListener) {
+                childLongClickListener = onLongClickListener
+            }
+
             override fun bind(item: ItemModel) {
-                delegate.bind(itemView, item, childClickListener)
+                delegate.bind(
+                    itemView,
+                    item,
+                    childClickListener,
+                    childLongClickListener
+                )
             }
 
         }
@@ -37,3 +48,4 @@ class TypedAdapterDelegate<ItemModel : RecyclerItem>(
     }
 
 }
+

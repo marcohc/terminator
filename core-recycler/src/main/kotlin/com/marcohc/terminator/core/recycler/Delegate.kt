@@ -13,7 +13,8 @@ interface Delegate<ItemModel : RecyclerItem> {
     fun bind(
             view: View,
             item: ItemModel,
-            childOnClickListener: View.OnClickListener
+            childOnClickListener: View.OnClickListener,
+            childOnLongClickListener: View.OnLongClickListener? = null
     )
 
 }

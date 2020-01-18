@@ -20,6 +20,7 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
     private val delegates: SparseArray<AdapterDelegate<ItemModel>>
     private val itemModelAndViewHoldersMap: Map<KClass<*>, Int>
     private var itemClickListenerFun: ((view: View, position: Int, item: ItemModel) -> Unit)? = null
+    private var itemLongClickListenerFun: ((view: View, position: Int, item: ItemModel) -> Unit)? = null
 
     init {
         val supportedViewHolderInfoList = this.getDelegatesList()
@@ -47,8 +48,21 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
                 itemClickListenerFun?.invoke(view, index, items[index])
             }
         }
+
+        val onLongClickListener = View.OnLongClickListener { view ->
+            val index = holder.adapterPosition
+            if (RecyclerView.NO_POSITION != index) {
+                itemLongClickListenerFun?.invoke(view, index, items[index])
+                return@OnLongClickListener true
+            }
+            false
+        }
+
         holder.itemView.setOnClickListener(onClickListener)
         holder.setChildOnClickListener(onClickListener)
+
+        holder.itemView.setOnLongClickListener(onLongClickListener)
+        holder.setChildOnLongClickListener(onLongClickListener)
 
         adapterDelegate.onBindViewHolder(holder, position, items)
     }
@@ -69,6 +83,10 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
 
     fun setOnItemClickListener(itemClickListenerFun: (view: View, position: Int, item: ItemModel) -> Unit) {
         this.itemClickListenerFun = itemClickListenerFun
+    }
+
+    fun setOnItemLongClickListener(itemLongClickListenerFun: (view: View, position: Int, item: ItemModel) -> Unit) {
+        this.itemLongClickListenerFun = itemLongClickListenerFun
     }
 
 }
