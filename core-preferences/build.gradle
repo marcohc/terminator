@@ -1,0 +1,13 @@
+apply from: '../config/android-library.gradle'
+
+dependencies {
+
+    implementation libraries.rxJava
+    implementation(libraries.koptional) {
+        exclude group: 'org.jetbrains'
+        exclude group: 'org.jetbrains.kotlin'
+    }
+
+    testImplementation libraries.junit
+
+}

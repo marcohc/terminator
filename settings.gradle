@@ -15,5 +15,6 @@
 include ':core-koin'
 include ':core-mvi'
 include ':core-mvi-test'
+include ':core-preferences'
 include ':core-recycler'
 include ':core-utils'
