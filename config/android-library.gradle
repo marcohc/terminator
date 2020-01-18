@@ -3,21 +3,7 @@ apply plugin: "kotlin-android"
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
 
-// Uncomment these lines to find out latest library updates
-//apply plugin: "com.github.ben-manes.versions"
-//dependencyUpdates.resolutionStrategy {
-//    componentSelection { rules ->
-//        rules.all { ComponentSelection selection ->
-//            boolean rejected = ["alpha", "beta", "rc", "cr", "m", "preview", "b", "ea"].any { qualifier ->
-//                selection.candidate.version ==~ /(?i).*[.-]$qualifier[.\d-+]*/
-//            }
-//            if (rejected) {
-//                selection.reject("Release candidate")
-//            }
-//        }
-//    }
-//}
-// Uncomment these lines to find out latest library updates
+//apply from: "../config/version-update.gradle"
 
 android {
 
@@ -49,16 +35,6 @@ android {
         androidTest.java.srcDirs += "src/androidTest/kotlin"
     }
 }
-
-// This allows the project to build on Jitpack
-//afterEvaluate { project ->
-//    project.tasks.installDebugAndroidTest {
-//        onlyIf  {
-//            println 'Skipping...'
-//            return false
-//        }
-//    }
-//}
 
 dependencies {
     implementation libraries.kotlin

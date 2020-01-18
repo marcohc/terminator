@@ -1,6 +1,6 @@
 ext.versions = [
         android : [
-                minSdk    : 23,
+                minSdk    : 17,
                 compileSdk: 29,
                 targetSdk : 29,
                 buildTools: "29.0.2"
@@ -29,6 +29,7 @@ ext.libraries = [
         jetbrainsAnnotations    : "org.jetbrains:annotations-java5:16.0.2",
         junit                   : "junit:junit:4.12",
         koinAndroid             : "org.koin:koin-android:$versions.koin",
+        koptional               : "com.gojuno.koptional:koptional:1.6.0",
         kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin",
         material                : "com.google.android.material:material:1.0.0",
         mockitoInline           : "org.mockito:mockito-inline:3.1.0",
