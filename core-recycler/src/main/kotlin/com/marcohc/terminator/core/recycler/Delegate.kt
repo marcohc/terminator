@@ -14,7 +14,7 @@ interface Delegate<ItemModel : RecyclerItem> {
             view: View,
             item: ItemModel,
             childOnClickListener: View.OnClickListener,
-            childOnLongClickListener: View.OnLongClickListener? = null
+            childOnLongClickListener: View.OnLongClickListener
     )
 
 }
