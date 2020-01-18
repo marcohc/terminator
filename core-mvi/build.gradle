@@ -4,6 +4,7 @@ dependencies {
 
     api libraries.appCompat
     api libraries.koinAndroid
+    api libraries.material
     api libraries.rxJavaAndroid
     api libraries.rxJava
     api libraries.timber
