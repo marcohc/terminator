@@ -1,6 +1,5 @@
 package com.marcohc.terminator.core.mvi.ext
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -33,17 +32,24 @@ fun Module.declareScopedActivityNavigator(scopeId: String) = scope(named(scopeId
 
 inline fun <reified T : MviBaseInteractor<*, *, *>> Module.declareActivityInteractor(
         scopeId: String,
-        attachToLifecycleModule: Module? = null,
-        crossinline interactorFactoryFunction: Scope.() -> T
+        moduleToAttachToLifecycle: Module? = null,
+        crossinline interactorFactoryFunction: Scope.(AppCompatActivity) -> T
 ) {
     factory(named(scopeId)) { (appCompatActivity: AppCompatActivity) ->
         ViewModelProviders
             .of(appCompatActivity, ViewModelFactory {
-                createInteractorInstance(
-                    appCompatActivity,
-                    attachToLifecycleModule,
-                    interactorFactoryFunction
-                )
+                moduleToAttachToLifecycle?.let { loadKoinModules(it) }
+                interactorFactoryFunction.invoke(this, appCompatActivity)
+                    .apply {
+                        moduleToAttachToLifecycle?.let {
+                            doOnDestroy {
+                                // Only release attached module when the activity is really finishing not when OS kill it
+                                if (appCompatActivity.isFinishing) {
+                                    unloadKoinModules(moduleToAttachToLifecycle)
+                                }
+                            }
+                        }
+                    }
             })
             .get(T::class.java)
     }
@@ -62,38 +68,26 @@ fun Module.declareScopedFragmentNavigator(scopeId: String) = scope(named(scopeId
 
 inline fun <reified T : MviBaseInteractor<*, *, *>> Module.declareFragmentInteractor(
         scopeId: String,
-        attachToLifecycleModule: Module? = null,
-        crossinline interactorFactoryFunction: Scope.() -> T
+        moduleToAttachToLifecycle: Module? = null,
+        crossinline interactorFactoryFunction: Scope.(Fragment) -> T
 ) {
     factory(named(scopeId)) { (fragment: Fragment) ->
         ViewModelProviders
             .of(fragment, ViewModelFactory {
-                createInteractorInstance(
-                    fragment.activity,
-                    attachToLifecycleModule,
-                    interactorFactoryFunction
-                )
+                moduleToAttachToLifecycle?.let { loadKoinModules(it) }
+                interactorFactoryFunction.invoke(this, fragment)
+                    .apply {
+                        moduleToAttachToLifecycle?.let {
+                            doOnDestroy {
+                                // Only release attached module when the activity is really finishing not when OS kill it
+                                if (fragment.activity == null || requireNotNull(fragment.activity).isFinishing) {
+                                    unloadKoinModules(moduleToAttachToLifecycle)
+                                }
+                            }
+                        }
+                    }
             })
             .get(T::class.java)
     }
 }
 //endregion
-
-inline fun <reified T : MviBaseInteractor<*, *, *>> Scope.createInteractorInstance(
-        activity: Activity?,
-        moduleToAttachToLifecycle: Module?,
-        interactorFactoryFunction: Scope.() -> T
-): T {
-    moduleToAttachToLifecycle?.let { loadKoinModules(it) }
-    return interactorFactoryFunction.invoke(this)
-        .apply {
-            moduleToAttachToLifecycle?.let {
-                doOnDestroy {
-                    // Only release attached module when the activity is really finishing not when OS kill it
-                    if (activity == null || activity.isFinishing) {
-                        unloadKoinModules(moduleToAttachToLifecycle)
-                    }
-                }
-            }
-        }
-}
