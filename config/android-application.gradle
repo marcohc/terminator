@@ -16,7 +16,7 @@ android {
         targetSdkVersion versions.android.targetSdk
         minSdkVersion versions.android.minSdk
         versionCode getVersionCodeTimestamp()
-        versionName "1.5.4"
+        versionName "1.5.5"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

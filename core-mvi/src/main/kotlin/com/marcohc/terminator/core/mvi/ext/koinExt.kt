@@ -15,7 +15,6 @@ import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
-//region Activity Koin ext
 inline fun <reified T> Module.declareScopedActivityRouter(scopeId: String, crossinline block: Scope.(ActivityNavigationExecutor) -> T) {
     declareScopedActivityNavigator(scopeId)
     scope(named(scopeId)) { scoped { block.invoke(this, getScope(scopeId).get(named(scopeId))) } }
@@ -54,9 +53,7 @@ inline fun <reified T : MviBaseInteractor<*, *, *>> Module.declareActivityIntera
             .get(T::class.java)
     }
 }
-//endregion
 
-//region Fragment Koin ext
 inline fun <reified T> Module.declareFactoryFragmentRouter(scopeId: String, crossinline block: Scope.(FragmentNavigationExecutor) -> T) {
     declareScopedFragmentNavigator(scopeId)
     factory { block.invoke(this, getScope(scopeId).get(named(scopeId))) }
@@ -90,4 +87,3 @@ inline fun <reified T : MviBaseInteractor<*, *, *>> Module.declareFragmentIntera
             .get(T::class.java)
     }
 }
-//endregion

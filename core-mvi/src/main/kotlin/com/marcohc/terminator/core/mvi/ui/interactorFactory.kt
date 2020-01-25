@@ -5,7 +5,6 @@ import android.content.ComponentCallbacks
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.marcohc.terminator.core.mvi.BuildConfig
 import com.marcohc.terminator.core.mvi.domain.MviInteractor
 import com.marcohc.terminator.core.mvi.ui.navigation.ActivityNavigationExecutor
 import com.marcohc.terminator.core.mvi.ui.navigation.FragmentNavigationExecutor
@@ -60,7 +59,7 @@ fun <Intention, State> ComponentCallbacks.interactorFactory(scopeId: String): Mv
         )
     } catch (e: InstanceCreationException) {
         closeScope(scopeId)
-        if (BuildConfig.DEBUG) {
+        if (get(named(MVI_DEBUG))) {
             throw IllegalStateException("Ey developer, your Koin module is not properly setup", e)
         } else {
             Timber.w("Process killed: Create dummy interactor")
@@ -101,6 +100,8 @@ private fun <Intention, State> createDummyInteractor(): MviInteractor<Intention,
         }
     }
 }
+
+const val MVI_DEBUG = "MVI_DEBUG"
 
 private fun ComponentCallbacks.closeScope(scopeId: String) {
     try {
