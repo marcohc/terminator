@@ -12,6 +12,7 @@
 /**
  * Library modules are sorted by name.
  */
+include ':core-analytics'
 include ':core-koin'
 include ':core-mvi'
 include ':core-mvi-test'
