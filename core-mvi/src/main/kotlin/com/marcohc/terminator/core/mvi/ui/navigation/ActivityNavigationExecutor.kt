@@ -1,6 +1,5 @@
 package com.marcohc.terminator.core.mvi.ui.navigation
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -30,7 +29,7 @@ interface ActivityNavigationExecutor {
     /**
      * Executes the block and wraps it with Completable
      */
-    fun executeCompletable(block: (Activity) -> Unit) = Completable.fromAction { execute(block::invoke) }
+    fun executeCompletable(block: (AppCompatActivity) -> Unit) = Completable.fromAction { execute(block::invoke) }
 }
 
 class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
