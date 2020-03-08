@@ -1,0 +1,41 @@
+apply from: '../config/android-library.gradle'
+
+android {
+
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+                includeCompileClasspath true
+            }
+            kapt {
+                arguments {
+                    arg("room.schemaLocation", "$projectDir/schemas".toString())
+                }
+            }
+        }
+    }
+
+    kapt {
+        useBuildCache = false
+    }
+}
+
+dependencies {
+
+    kapt libraries.roomCompile
+
+    implementation project(':core-koin')
+
+    implementation libraries.gson
+    implementation libraries.jetbrainsAnnotations
+    implementation libraries.koinAndroid
+//    implementation libraries.koinJava
+    implementation libraries.okhttp3LogginInterceptor
+    implementation libraries.retrofitRxAdapter
+    implementation(libraries.retrofitGsonAdapter) { exclude group: 'com.google.code.gson' }
+    implementation libraries.roomRuntime
+    implementation libraries.rxJava
+
+    testImplementation libraries.junit
+}

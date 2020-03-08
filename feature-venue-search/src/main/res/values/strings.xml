@@ -1,0 +1,10 @@
+<resources>
+    <string name="search">Search</string>
+    <string name="search_connected">Internet! Using network data…</string>
+    <string name="search_not_connected">No Internet! Using local data…</string>
+    <string name="search_introduce_city">Introduce the name of a city, like Amsterdam</string>
+    <string name="search_location_unknown_error">Looks like the city \"%1$s\" does not exist</string>
+    <string name="search_no_items">No items found for the city \"%1$s\"</string>
+    <string name="search_detail_location_unknown">Location is unknown</string>
+    <string name="widget_general_error">Houston, we have a problem!</string>
+</resources>

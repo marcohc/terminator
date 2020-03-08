@@ -1,0 +1,9 @@
+apply plugin: 'com.android.library'
+
+apply from: '../config/android-library.gradle'
+
+dependencies {
+
+    implementation libraries.appCompat
+
+}

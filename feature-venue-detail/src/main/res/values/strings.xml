@@ -1,0 +1,9 @@
+<resources>
+    <string name="detail_rating">The rating of this place is %1$d/10</string>
+    <string name="detail_rating_unknown">Rating is unknown</string>
+    <string name="detail_location_unknown">Location is unknown</string>
+    <string name="detail_description_unknown">This place has no description</string>
+    <string name="detail_phone_unknown">Phone is unknown</string>
+    <string name="detail_error">Upps! Something went wrong, pull to refresh to try again</string>
+    <string name="details">Details</string>
+</resources>

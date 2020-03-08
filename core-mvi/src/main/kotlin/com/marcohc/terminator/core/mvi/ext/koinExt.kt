@@ -1,9 +1,12 @@
+@file:Suppress("unused")
+
 package com.marcohc.terminator.core.mvi.ext
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.marcohc.terminator.core.mvi.domain.MviBaseInteractor
+import com.marcohc.terminator.core.mvi.domain.MviInteractor
 import com.marcohc.terminator.core.mvi.domain.ViewModelFactory
 import com.marcohc.terminator.core.mvi.ui.navigation.ActivityNavigationExecutor
 import com.marcohc.terminator.core.mvi.ui.navigation.ActivityNavigationExecutorImpl
@@ -35,22 +38,20 @@ inline fun <reified T : MviBaseInteractor<*, *, *>> Module.declareActivityIntera
         crossinline interactorFactoryFunction: Scope.(AppCompatActivity) -> T
 ) {
     factory(named(scopeId)) { (appCompatActivity: AppCompatActivity) ->
-        ViewModelProviders
-            .of(appCompatActivity, ViewModelFactory {
-                moduleToAttachToLifecycle?.let { loadKoinModules(it) }
-                interactorFactoryFunction.invoke(this, appCompatActivity)
-                    .apply {
-                        moduleToAttachToLifecycle?.let {
-                            doOnDestroy {
-                                // Only release attached module when the activity is really finishing not when OS kill it
-                                if (appCompatActivity.isFinishing) {
-                                    unloadKoinModules(moduleToAttachToLifecycle)
-                                }
+        return@factory ViewModelProvider(appCompatActivity, ViewModelFactory {
+            moduleToAttachToLifecycle?.let { loadKoinModules(it) }
+            interactorFactoryFunction.invoke(this, appCompatActivity)
+                .apply {
+                    moduleToAttachToLifecycle?.let {
+                        doOnDestroy {
+                            // Only release attached module when the activity is really finishing not when OS kill it
+                            if (appCompatActivity.isFinishing) {
+                                unloadKoinModules(moduleToAttachToLifecycle)
                             }
                         }
                     }
-            })
-            .get(T::class.java)
+                }
+        }).get(T::class.java) as MviInteractor<*, *> // This "useless" cast is necessary for Koin
     }
 }
 
@@ -69,21 +70,19 @@ inline fun <reified T : MviBaseInteractor<*, *, *>> Module.declareFragmentIntera
         crossinline interactorFactoryFunction: Scope.(Fragment) -> T
 ) {
     factory(named(scopeId)) { (fragment: Fragment) ->
-        ViewModelProviders
-            .of(fragment, ViewModelFactory {
-                moduleToAttachToLifecycle?.let { loadKoinModules(it) }
-                interactorFactoryFunction.invoke(this, fragment)
-                    .apply {
-                        moduleToAttachToLifecycle?.let {
-                            doOnDestroy {
-                                // Only release attached module when the activity is really finishing not when OS kill it
-                                if (fragment.activity == null || requireNotNull(fragment.activity).isFinishing) {
-                                    unloadKoinModules(moduleToAttachToLifecycle)
-                                }
+        ViewModelProvider(fragment, ViewModelFactory {
+            moduleToAttachToLifecycle?.let { loadKoinModules(it) }
+            interactorFactoryFunction.invoke(this, fragment)
+                .apply {
+                    moduleToAttachToLifecycle?.let {
+                        doOnDestroy {
+                            // Only release attached module when the activity is really finishing not when OS kill it
+                            if (fragment.activity == null || requireNotNull(fragment.activity).isFinishing) {
+                                unloadKoinModules(moduleToAttachToLifecycle)
                             }
                         }
                     }
-            })
-            .get(T::class.java)
+                }
+        }).get(T::class.java) as MviInteractor<*, *> // This "useless" cast is necessary for Koin
     }
 }

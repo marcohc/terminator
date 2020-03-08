@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+apply from: '../config/android-application.gradle'
+
+android {
+
+    buildTypes {
+
+        debug {
+            debuggable true
+            testCoverageEnabled false
+        }
+
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+            proguardFiles 'proguard-android.pro'
+        }
+    }
+}
+
+dependencies {
+
+    implementation project(':core-koin')
+    implementation project(':core-mvi')
+
+    implementation project(':feature-venue-search')
+    implementation project(':feature-venue-detail')
+    implementation project(':shared-data')
+
+    implementation libraries.koinAndroid
+    implementation libraries.rxJava
+    implementation libraries.rxJavaAndroid
+    implementation libraries.timber
+
+}

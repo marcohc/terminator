@@ -1,10 +1,10 @@
 package com.marcohc.terminator.core.mvi.ui
 
-import android.app.Activity
 import android.content.ComponentCallbacks
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.marcohc.terminator.core.mvi.BuildConfig
 import com.marcohc.terminator.core.mvi.domain.MviInteractor
 import com.marcohc.terminator.core.mvi.ui.navigation.ActivityNavigationExecutor
 import com.marcohc.terminator.core.mvi.ui.navigation.FragmentNavigationExecutor
@@ -54,16 +54,24 @@ fun ComponentCallbacks.declareScope(mviConfig: MviConfig) {
 fun <Intention, State> ComponentCallbacks.interactorFactory(scopeId: String): MviInteractor<Intention, State> {
     return try {
         get(
-            named(scopeId),
+            qualifier = named(scopeId),
             parameters = { parametersOf(this) }
         )
-    } catch (e: InstanceCreationException) {
-        closeScope(scopeId)
-        if (get(named(MVI_DEBUG))) {
-            throw IllegalStateException("Ey developer, your Koin module is not properly setup", e)
-        } else {
-            Timber.w("Process killed: Create dummy interactor")
-            createDummyInteractor()
+    } catch (throwable: Throwable) {
+        when (throwable) {
+            is InstanceCreationException, is ScopeNotCreatedException -> {
+                closeScope(scopeId)
+                if (BuildConfig.DEBUG) {
+                    throw IllegalStateException("Ey developer, your Koin module is not properly setup", throwable)
+                } else {
+                    Timber.w("Couldn't create Interactor, creating a dummy one")
+                    createDummyInteractor()
+                }
+            }
+            else -> {
+                Timber.w("Non catched exception")
+                throw throwable
+            }
         }
     }
 }
@@ -74,11 +82,9 @@ fun <Intention, State> ComponentCallbacks.closeScopeProcess(interactor: MviInter
             // No-op
         }
         MviConfigType.SCOPE_ONLY, MviConfigType.SCOPE_AND_NAVIGATION -> {
-            // Only release the scope when the activity is really finishing not when OS kill it
+            // Only release the scope when the activity/fragment is really finishing not when OS kill it
             interactor.doOnDestroy {
-                getActivity()?.run {
-                    if (isFinishing) closeScope(mviConfig.scopeId)
-                }
+                if (isFinishing()) closeScope(mviConfig.scopeId)
             }
         }
     }
@@ -101,20 +107,10 @@ private fun <Intention, State> createDummyInteractor(): MviInteractor<Intention,
     }
 }
 
-const val MVI_DEBUG = "MVI_DEBUG"
-
 private fun ComponentCallbacks.closeScope(scopeId: String) {
     try {
         getKoin().getScope(scopeId).close()
     } catch (ignored: ScopeNotCreatedException) {
         // No-op
-    }
-}
-
-private fun ComponentCallbacks.getActivity(): Activity? {
-    return when (this) {
-        is Activity -> this
-        is Fragment -> this.activity
-        else -> null
     }
 }
