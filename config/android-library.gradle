@@ -3,7 +3,7 @@ apply plugin: "kotlin-android"
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
 
-//apply from: "../config/version-update.gradle"
+apply from: "../config/version-update.gradle"
 
 android {
 
