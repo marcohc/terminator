@@ -2,7 +2,7 @@ apply from: '../config/android-library.gradle'
 
 dependencies {
 
-    implementation libraries.firebaseCore
+    implementation libraries.firebaseAnalytics
     implementation libraries.timber
 
 }

@@ -1,6 +1,7 @@
 package com.marcohc.terminator.core.analytics
 
 import android.app.Activity
+import android.os.Bundle
 
 interface Analytics {
 
@@ -8,29 +9,18 @@ interface Analytics {
 
     fun logClick(
             screenId: String,
-            itemId: String,
-            itemName: String? = null
-    )
-
-    fun logView(
-            itemId: String,
-            itemName: String,
-            itemCategory: String
+            itemId: String
     )
 
     fun logCustomEvent(
-            eventId: String
+            eventId: String,
+            bundle: Bundle
     )
 
     fun logCheckoutStart(
             option: String,
             value: Double,
             currency: String
-    )
-
-    fun logCheckoutProgress(
-            option: String,
-            step: Long
     )
 
     fun logCheckoutEnd(

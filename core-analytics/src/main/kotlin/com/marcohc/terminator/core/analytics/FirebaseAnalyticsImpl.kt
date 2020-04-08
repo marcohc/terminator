@@ -15,38 +15,22 @@ class FirebaseAnalyticsImpl(
 
     override fun logClick(
             screenId: String,
-            itemId: String,
-            itemName: String?
+            itemId: String
     ) {
         logEvent(
             FirebaseAnalytics.Event.SELECT_CONTENT,
             createContentTypeBundle(
                 screenId,
-                itemId,
-                itemName
-            )
-        )
-    }
-
-    override fun logView(
-            itemId: String,
-            itemName: String,
-            itemCategory: String
-    ) {
-        logEvent(
-            FirebaseAnalytics.Event.VIEW_ITEM,
-            createViewBundle(
-                itemId = itemId,
-                itemName = itemName,
-                itemCategory = itemCategory
+                itemId
             )
         )
     }
 
     override fun logCustomEvent(
-            eventId: String
+            eventId: String,
+            bundle: Bundle
     ) {
-        logEvent(eventId)
+        logEvent(eventId, bundle)
     }
 
     override fun logCheckoutStart(
@@ -63,16 +47,6 @@ class FirebaseAnalyticsImpl(
         )
     }
 
-    override fun logCheckoutProgress(
-            option: String,
-            step: Long
-    ) {
-        val bundle = Bundle()
-        bundle.putLong(FirebaseAnalytics.Param.CHECKOUT_STEP, step)
-        bundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, option)
-        logEvent(FirebaseAnalytics.Event.CHECKOUT_PROGRESS, bundle)
-    }
-
     override fun logCheckoutEnd(
             screen: String,
             option: String,
@@ -83,7 +57,7 @@ class FirebaseAnalyticsImpl(
         bundle.putDouble(FirebaseAnalytics.Param.VALUE, value)
         bundle.putString(FirebaseAnalytics.Param.CURRENCY, currency)
         logEvent(
-            FirebaseAnalytics.Event.ECOMMERCE_PURCHASE,
+            FirebaseAnalytics.Event.PURCHASE,
             bundle
         )
     }
@@ -107,27 +81,12 @@ class FirebaseAnalyticsImpl(
 
     private fun createContentTypeBundle(
             screenId: String,
-            itemId: String? = null,
-            itemName: String? = null
+            itemId: String? = null
     ): Bundle {
         return Bundle()
             .apply {
                 putString(FirebaseAnalytics.Param.CONTENT_TYPE, screenId)
                 if (itemId != null) putString(FirebaseAnalytics.Param.ITEM_ID, itemId)
-                if (itemName != null) putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
-            }
-    }
-
-    private fun createViewBundle(
-            itemId: String,
-            itemName: String,
-            itemCategory: String
-    ): Bundle {
-        return Bundle()
-            .apply {
-                putString(FirebaseAnalytics.Param.ITEM_ID, itemId)
-                putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
-                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, itemCategory)
             }
     }
 
