@@ -34,31 +34,28 @@ class FirebaseAnalyticsImpl(
     }
 
     override fun logCheckoutStart(
-            option: String,
             value: Double,
             currency: String
     ) {
-        val bundle = Bundle()
-        bundle.putDouble(FirebaseAnalytics.Param.VALUE, value)
-        bundle.putString(FirebaseAnalytics.Param.CURRENCY, currency)
         logEvent(
             FirebaseAnalytics.Event.BEGIN_CHECKOUT,
-            bundle
+            Bundle().apply {
+                putDouble(FirebaseAnalytics.Param.VALUE, value)
+                putString(FirebaseAnalytics.Param.CURRENCY, currency)
+            }
         )
     }
 
     override fun logCheckoutEnd(
-            screen: String,
-            option: String,
             value: Double,
             currency: String
     ) {
-        val bundle = Bundle()
-        bundle.putDouble(FirebaseAnalytics.Param.VALUE, value)
-        bundle.putString(FirebaseAnalytics.Param.CURRENCY, currency)
         logEvent(
             FirebaseAnalytics.Event.PURCHASE,
-            bundle
+            Bundle().apply {
+                putDouble(FirebaseAnalytics.Param.VALUE, value)
+                putString(FirebaseAnalytics.Param.CURRENCY, currency)
+            }
         )
     }
 

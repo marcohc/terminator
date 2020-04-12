@@ -18,14 +18,11 @@ interface Analytics {
     )
 
     fun logCheckoutStart(
-            option: String,
             value: Double,
             currency: String
     )
 
     fun logCheckoutEnd(
-            screen: String,
-            option: String,
             value: Double,
             currency: String
     )
