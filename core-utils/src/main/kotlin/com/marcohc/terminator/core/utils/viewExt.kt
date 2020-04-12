@@ -30,6 +30,6 @@ fun View.setVisibleEitherGone(visible: Boolean) {
     visibility = if (visible) View.VISIBLE else View.GONE
 }
 
-fun View.setVisibleEitherInvisble(visible: Boolean) {
+fun View.setVisibleEitherInvisible(visible: Boolean) {
     visibility = if (visible) View.VISIBLE else View.INVISIBLE
 }
