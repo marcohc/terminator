@@ -1,8 +1,6 @@
 apply from: '../config/android-library.gradle'
 
 dependencies {
-
-    implementation libraries.firebaseAnalytics
+    api libraries.firebaseAnalytics
     implementation libraries.timber
-
 }
