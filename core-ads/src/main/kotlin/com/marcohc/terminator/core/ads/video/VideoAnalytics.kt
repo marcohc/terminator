@@ -5,7 +5,6 @@ interface VideoAnalytics {
     fun logAvailable()
     fun logNotAvailable()
     fun logOpened()
-    fun logCompleted()
     fun logRewarded()
     fun logRewardedFailedToLoad()
     fun logClosed()
