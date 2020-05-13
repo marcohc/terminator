@@ -18,3 +18,7 @@ fun Context.getColorFromAttribute(attributeId: Int): Int {
     theme.resolveAttribute(attributeId, typedValue, true)
     return typedValue.resourceId
 }
+
+fun Context.getStringByKey(stringKey: String): String? {
+    return getString(resources.getIdentifier(stringKey, "string", packageName))
+}
