@@ -12,6 +12,7 @@
 /**
  * Library modules are sorted by name.
  */
+include ':core-ads'
 include ':core-analytics'
 include ':core-koin'
 include ':core-mvi'

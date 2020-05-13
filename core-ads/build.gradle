@@ -1,0 +1,10 @@
+apply from: '../config/android-library.gradle'
+
+dependencies {
+    api libraries.firebaseAds
+    implementation libraries.appCompat
+    implementation libraries.pollfish
+    implementation libraries.rxJava
+    implementation libraries.timber
+    implementation project(":core-koin")
+}

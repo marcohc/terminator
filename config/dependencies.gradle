@@ -24,6 +24,7 @@ ext.gradlePlugins = [
 ext.libraries = [
         appCompat               : "androidx.appcompat:appcompat:1.1.0",
         constraintLayout        : "androidx.constraintlayout:constraintlayout:2.0.0-beta4",
+        firebaseAds             : "com.google.firebase:firebase-ads:19.0.1",
         firebaseAnalytics       : "com.google.firebase:firebase-analytics:17.3.0",
         glide                   : "com.github.bumptech.glide:glide:4.6.1",
         gson                    : "com.google.code.gson:gson:2.8.5",
@@ -36,6 +37,7 @@ ext.libraries = [
         mockitoInline           : "org.mockito:mockito-inline:3.3.1",
         mockitoKotlin           : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0",
         okhttp3LogginInterceptor: "com.squareup.okhttp3:logging-interceptor:4.2.1",
+        pollfish                : "com.pollfish:pollfish:5.1.0:googleplayRelease@aar",
         recyclerView            : "androidx.recyclerview:recyclerview:1.1.0",
         retrofit                : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitGsonAdapter     : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
