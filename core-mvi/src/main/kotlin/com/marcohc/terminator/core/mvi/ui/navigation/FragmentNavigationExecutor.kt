@@ -1,6 +1,6 @@
 package com.marcohc.terminator.core.mvi.ui.navigation
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -35,7 +35,13 @@ interface FragmentNavigationExecutor {
     /**
      * Executes the function and wraps it with Completable
      */
-    fun executeCompletableWithActivity(function: (Activity) -> Unit) = Completable.fromAction { execute { fragment -> fragment.activity?.run { function.invoke(this) } } }
+    fun executeCompletableWithActivity(function: (AppCompatActivity) -> Unit) = Completable.fromAction {
+        execute { fragment ->
+            fragment.activity?.run {
+                function.invoke(this as AppCompatActivity)
+            }
+        }
+    }
 
 }
 
