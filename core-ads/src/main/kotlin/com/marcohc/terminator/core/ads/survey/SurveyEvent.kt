@@ -7,6 +7,6 @@ sealed class SurveyEvent {
     object Opened : SurveyEvent()
     object UserRejected : SurveyEvent()
     object NotEligible : SurveyEvent()
-    data class Completed(val surveyPrice: Double) : SurveyEvent()
+    data class Rewarded(val surveyPrice: Double) : SurveyEvent()
     object Closed : SurveyEvent()
 }

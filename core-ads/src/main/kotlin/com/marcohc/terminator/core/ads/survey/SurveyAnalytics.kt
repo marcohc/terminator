@@ -7,6 +7,6 @@ interface SurveyAnalytics {
     fun logOpened()
     fun logUserRejected()
     fun logNotEligible()
-    fun logCompleted(price: Double)
+    fun logRewarded(price: Double)
     fun logClosed()
 }

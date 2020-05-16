@@ -59,7 +59,7 @@ internal class SurveyRepositoryImpl(
             .pollfishCompletedSurveyListener { surveyInfo: SurveyInfo ->
                 val price = surveyInfo.surveyCPA / 100.0
                 Timber.v("SurveyEvent.Received: $surveyInfo")
-                subject.onNext(SurveyEvent.Completed(price))
+                subject.onNext(SurveyEvent.Rewarded(price))
             }
             .build()
 
