@@ -2,7 +2,7 @@ apply from: "../config/android-library.gradle"
 
 dependencies {
     api libraries.firebase.auth
-    implementation libraries.googlePlayServicesAuth
+    api libraries.googlePlayServicesAuth
     implementation libraries.koptional
     implementation libraries.rxJava
     implementation libraries.timber
