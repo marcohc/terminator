@@ -1,9 +1,8 @@
 package com.marcohc.terminator.core.remoteconfig
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import org.koin.core.KoinComponent
 
-class RemoteConfigRepository(private val firebaseRemoteConfig: FirebaseRemoteConfig) : KoinComponent {
+class RemoteConfigRepository(private val firebaseRemoteConfig: FirebaseRemoteConfig) {
 
     fun fetchAndActivateNextAppStart() {
         firebaseRemoteConfig.fetch()
