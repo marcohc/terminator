@@ -1,4 +1,4 @@
-package com.disegnator.readerator.core.firebase.firestore
+package com.marcohc.terminator.core.firebase.firestore
 
 interface FirestoreEntity {
     var id: String

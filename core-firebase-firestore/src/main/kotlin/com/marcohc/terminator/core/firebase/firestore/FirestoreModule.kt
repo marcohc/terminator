@@ -1,4 +1,4 @@
-package com.disegnator.readerator.core.firebase.firestore
+package com.marcohc.terminator.core.firebase.firestore
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.marcohc.terminator.core.koin.CoreModule
