@@ -8,6 +8,10 @@ import io.reactivex.functions.Function3
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.subjects.Subject
 
+fun <T> T.singleJust() = Single.just(this)
+
+fun <T> T.observableJust() = Observable.just(this)
+
 fun <A, B> singleZip(streamA: Single<A>, streamB: Single<B>): Single<Pair<A, B>> = Single
     .zip(
         streamA,

@@ -1,0 +1,8 @@
+apply from: "../config/android-library.gradle"
+
+dependencies {
+    implementation libraries.firebase.functions
+    implementation libraries.rxJava
+    implementation libraries.timber
+    implementation project(":core-firebase")
+}
