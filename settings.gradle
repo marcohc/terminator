@@ -1,23 +1,27 @@
 /**
  * Sample modules are sorted by visibility and then name.
  */
-//include ':app'
+//include ":app"
 //
-//include ':feature-venue-search'
-//include ':feature-venue-detail'
+//include ":feature-venue-search"
+//include ":feature-venue-detail"
 //
-//include ':shared-data'
-//include ':shared-resources'
+//include ":shared-data"
+//include ":shared-resources"
 
 /**
  * Library modules are sorted by name.
  */
-include ':core-ads'
-include ':core-analytics'
-include ':core-koin'
-include ':core-mvi'
-include ':core-mvi-test'
-include ':core-preferences'
-include ':core-recycler'
-include ':core-remote-config'
-include ':core-utils'
+include ":core-ads"
+include ":core-analytics"
+include ":core-firebase"
+include ":core-firebase-auth"
+include ":core-firebase-firestore"
+include ":core-koin"
+include ":core-mvi"
+include ":core-mvi-test"
+include ":core-preferences"
+include ":core-recycler"
+include ":core-remote-config"
+include ":core-system"
+include ":core-utils"

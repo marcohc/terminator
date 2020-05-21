@@ -1,0 +1,11 @@
+apply from: "../config/android-library.gradle"
+
+dependencies {
+    api libraries.firebase.auth
+    implementation libraries.googlePlayServicesAuth
+    implementation libraries.koptional
+    implementation libraries.rxJava
+    implementation libraries.timber
+    implementation project(":core-firebase")
+    implementation project(":core-koin")
+}
