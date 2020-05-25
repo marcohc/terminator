@@ -32,7 +32,7 @@ internal class VideoAnalyticsImpl(
     }
 
     private fun logEvent(parameter: String) {
-        val parameterKey = parameter + "_" + scopeId
+        val parameterKey = "${scopeId}_${parameter}"
         analytics.logCustomEvent("video", Bundle().apply { putString("video_action", parameterKey) })
     }
 }

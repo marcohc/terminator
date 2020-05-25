@@ -17,14 +17,14 @@ internal class SurveyAnalyticsImpl(
     override fun logEvent(event: SurveyEvent) = Completable.fromAction {
         when (event) {
             is SurveyEvent.NotAvailable -> logEvent("not_available")
-            is SurveyEvent.Received -> {
+            is SurveyEvent.Received -> logEvent("available")
+            is SurveyEvent.Opened -> {
                 analytics.logCheckoutStart(
                     value = event.surveyPrice,
                     currency = "USD"
                 )
-                logEvent("available")
+                logEvent("opened")
             }
-            is SurveyEvent.Opened -> logEvent("opened")
             is SurveyEvent.UserRejected -> logEvent("user_rejected")
             is SurveyEvent.NotEligible -> logEvent("not_eligible")
             is SurveyEvent.Rewarded -> {
@@ -39,7 +39,7 @@ internal class SurveyAnalyticsImpl(
     }
 
     private fun logEvent(parameter: String) {
-        val parameterKey = parameter + "_" + scopeId
+        val parameterKey = "${scopeId}_${parameter}"
         analytics.logCustomEvent("survey", Bundle().apply { putString("survey_action", parameterKey) })
     }
 }

@@ -23,6 +23,7 @@ internal class SurveyRepositoryImpl(
     LifecycleObserver {
 
     private val subject = BehaviorSubject.createDefault<SurveyEvent>(SurveyEvent.NotLoadedYet)
+    private var lastPrice = 0.0
 
     init {
         activity.lifecycle.addObserver(this)
@@ -58,13 +59,13 @@ internal class SurveyRepositoryImpl(
                         subject.onNext(SurveyEvent.NotAvailable)
                     }
                     .pollfishReceivedSurveyListener { surveyInfo: SurveyInfo ->
-                        val price = surveyInfo.surveyCPA / 100.0
+                        lastPrice = surveyInfo.surveyCPA / 100.0
                         Timber.v("SurveyEvent.Received: $surveyInfo")
-                        subject.onNext(SurveyEvent.Received(price))
+                        subject.onNext(SurveyEvent.Received(lastPrice))
                     }
                     .pollfishOpenedListener {
                         Timber.v("SurveyEvent.Opened")
-                        subject.onNext(SurveyEvent.Opened)
+                        subject.onNext(SurveyEvent.Opened(lastPrice))
                     }
                     .pollfishUserRejectedSurveyListener {
                         Timber.v("SurveyEvent.UserRejected")
