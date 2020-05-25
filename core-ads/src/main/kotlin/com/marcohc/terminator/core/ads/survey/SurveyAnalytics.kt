@@ -1,12 +1,9 @@
 package com.marcohc.terminator.core.ads.survey
 
+import io.reactivex.Completable
+
 interface SurveyAnalytics {
-    fun logClick()
-    fun logNotAvailable()
-    fun logAvailable(price: Double)
-    fun logOpened()
-    fun logUserRejected()
-    fun logNotEligible()
-    fun logRewarded(price: Double)
-    fun logClosed()
+    fun logEvent(event: SurveyEvent): Completable
+
+    fun logClick(): Completable
 }

@@ -48,7 +48,7 @@ ext.libraries = [
         mockitoInline           : "org.mockito:mockito-inline:3.3.1",
         mockitoKotlin           : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0",
         okhttp3LogginInterceptor: "com.squareup.okhttp3:logging-interceptor:4.2.1",
-        pollfish                : "com.pollfish:pollfish:5.1.0:googleplayRelease@aar",
+        pollfish                : "com.pollfish:pollfish:5.5.1:googleplayRelease@aar",
         recyclerView            : "androidx.recyclerview:recyclerview:1.1.0",
         retrofit                : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitGsonAdapter     : "com.squareup.retrofit2:converter-gson:$versions.retrofit",

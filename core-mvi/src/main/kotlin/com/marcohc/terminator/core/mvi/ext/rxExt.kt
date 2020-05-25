@@ -38,7 +38,9 @@ fun <A, B> observableCombineLatest(streamA: Observable<A>, streamB: Observable<B
         BiFunction { a, b -> a to b }
     )
 
-fun <T> Subject<T>.onNextCompletable(event: T) = Completable.fromAction { this.onNext(event) }
+fun <T> Subject<T>.onNextCompletable(value: T) = Completable.fromAction { this.onNext(value) }
+
+fun <T> Completable.toObservableDefault(value: T): Observable<T> = toSingleDefault(value).toObservable()
 
 fun <T> Subject<T>.toDisposableObserver(): DisposableObserver<T> = DisposableSubject(this)
 

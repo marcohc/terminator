@@ -6,6 +6,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import java.lang.ref.WeakReference
 
 /**
@@ -28,6 +30,15 @@ interface FragmentNavigationExecutor {
     fun execute(command: (Fragment) -> Unit)
 
     /**
+     * Executes a block of navigation code if the activity is not null, otherwise it won't be executed
+     */
+    fun executeWithActivity(command: (AppCompatActivity) -> Unit) = execute { fragment ->
+        fragment.activity?.run {
+            command.invoke(this as AppCompatActivity)
+        }
+    }
+
+    /**
      * Executes the function and wraps it with Completable
      */
     fun executeCompletable(function: (Fragment) -> Unit) = Completable.fromAction { execute(function::invoke) }
@@ -42,6 +53,20 @@ interface FragmentNavigationExecutor {
             }
         }
     }
+
+    fun FragmentNavigationExecutor.getFragmentReady() = Single
+        .create<Fragment> { emitter -> execute { fragment -> emitter.onSuccess(fragment) } }
+        .observeOn(AndroidSchedulers.mainThread())
+
+    fun FragmentNavigationExecutor.getActivityReady() = Single
+        .create<AppCompatActivity> { emitter ->
+            execute { fragment ->
+                fragment.activity?.run {
+                    emitter.onSuccess(this as AppCompatActivity)
+                }
+            }
+        }
+        .observeOn(AndroidSchedulers.mainThread())
 
 }
 

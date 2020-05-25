@@ -1,11 +1,9 @@
 package com.marcohc.terminator.core.ads.video
 
+import io.reactivex.Completable
+
 interface VideoAnalytics {
-    fun logClick()
-    fun logAvailable()
-    fun logNotAvailable()
-    fun logOpened()
-    fun logRewarded()
-    fun logRewardedFailedToLoad()
-    fun logClosed()
+    fun logEvent(event: VideoEvent): Completable
+
+    fun logClick(): Completable
 }

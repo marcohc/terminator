@@ -8,4 +8,5 @@ dependencies {
     implementation libraries.timber
     implementation project(":core-firebase")
     implementation project(":core-koin")
+    implementation project(":core-mvi")
 }

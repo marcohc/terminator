@@ -14,7 +14,7 @@ interface Analytics {
 
     fun logCustomEvent(
             eventId: String,
-            bundle: Bundle
+            bundle: Bundle = Bundle()
     )
 
     fun logCheckoutStart(

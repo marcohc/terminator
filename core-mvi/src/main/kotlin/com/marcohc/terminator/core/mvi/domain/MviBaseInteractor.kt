@@ -2,6 +2,7 @@ package com.marcohc.terminator.core.mvi.domain
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
+import com.marcohc.terminator.core.mvi.MviConstants.TERMINATOR_LOG_TAG
 import com.marcohc.terminator.core.mvi.ext.toDisposableObserver
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -33,9 +34,9 @@ abstract class MviBaseInteractor<Intention, Action, State>(
     init {
         disposable.add(
             intentionsSubject
-                .doOnNext { intention -> Timber.v(LOG_TAG, printClassName(intention as Any, debugMode)) }
+                .doOnNext { intention -> Timber.v(TERMINATOR_LOG_TAG, printClassName(intention as Any, debugMode)) }
                 .flatMap(this.intentionToAction())
-                .doOnNext { action -> Timber.v(LOG_TAG, printClassName(action as Any, debugMode)) }
+                .doOnNext { action -> Timber.v(TERMINATOR_LOG_TAG, printClassName(action as Any, debugMode)) }
                 .scan(defaultState, this.actionToState())
                 .doOnError { Timber.e(it) }
                 .observeOn(uiScheduler)
@@ -54,7 +55,7 @@ abstract class MviBaseInteractor<Intention, Action, State>(
     override fun states(): Observable<State> {
         return stateSubject.hide()
             .distinctUntilChanged()
-            .doOnNext { state -> Timber.v(LOG_TAG, printClassName(state as Any, debugMode)) }
+            .doOnNext { state -> Timber.v(TERMINATOR_LOG_TAG, printClassName(state as Any, debugMode)) }
     }
 
     override fun doOnDestroy(onDestroyFunction: () -> Unit) {
@@ -83,8 +84,6 @@ abstract class MviBaseInteractor<Intention, Action, State>(
 
     companion object {
         const val MVI_RX_UI_SCHEDULER = "MVI_RX_UI_SCHEDULER"
-
-        private const val LOG_TAG = "--> %s"
     }
 }
 

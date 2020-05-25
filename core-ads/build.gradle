@@ -6,5 +6,6 @@ dependencies {
     implementation libraries.pollfish
     implementation libraries.rxJava
     implementation libraries.timber
+    implementation project(":core-analytics")
     implementation project(":core-koin")
 }

@@ -1,7 +1,6 @@
 apply from: "../config/android-library.gradle"
 
 dependencies {
-
     api libraries.appCompat
     api libraries.koinAndroid
     api libraries.material
@@ -9,6 +8,7 @@ dependencies {
     api libraries.rxJava
     api libraries.timber
     api libraries.viewModelExtensions
+    implementation project(":core-koin")
 
     testImplementation project(":core-mvi-test")
 }

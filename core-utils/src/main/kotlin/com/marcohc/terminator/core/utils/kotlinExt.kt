@@ -10,3 +10,5 @@ package com.marcohc.terminator.core.utils
  */
 val <T> T.exhaustive: T
     get() = this
+
+fun <T> unsafeLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)

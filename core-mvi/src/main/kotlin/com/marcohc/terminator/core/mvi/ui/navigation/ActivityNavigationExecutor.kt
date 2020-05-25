@@ -5,6 +5,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import java.lang.ref.WeakReference
 
 /**
@@ -30,6 +32,12 @@ interface ActivityNavigationExecutor {
      * Executes the block and wraps it with Completable
      */
     fun executeCompletable(block: (AppCompatActivity) -> Unit) = Completable.fromAction { execute(block::invoke) }
+
+    fun ActivityNavigationExecutor.getActivityReady() = Single
+        .create<AppCompatActivity> { emitter ->
+            execute { activity -> emitter.onSuccess(activity) }
+        }
+        .observeOn(AndroidSchedulers.mainThread())
 }
 
 class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,

@@ -1,10 +1,8 @@
 package com.marcohc.terminator.core.ads.video
 
+import android.app.Activity
+import android.content.Context
 import androidx.annotation.MainThread
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -16,30 +14,16 @@ import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 
 internal class VideoRepositoryImpl(
-        private val activity: AppCompatActivity,
+        private val context: Context,
         private val adUnitId: String
-) : VideoRepository,
-    LifecycleObserver {
+) : VideoRepository {
 
     private val subject = BehaviorSubject.createDefault<VideoEvent>(VideoEvent.NotLoadedYet)
     private lateinit var rewardedAd: RewardedAd
 
     init {
-        activity.lifecycle.addObserver(this)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
-
-        rewardedAd = RewardedAd(activity, adUnitId)
-        Timber.v("rewardedVideoAd: $activity / $rewardedAd")
-
         loadAd()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        activity.lifecycle.removeObserver(this)
+        Timber.v("rewardedVideoAd: $context / $rewardedAd")
     }
 
     override fun observe(): Observable<VideoEvent> = subject.hide()
@@ -47,7 +31,7 @@ internal class VideoRepositoryImpl(
     override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
 
     @MainThread
-    override fun openVideo() = Completable
+    override fun openVideo(activity: Activity) = Completable
         .fromAction {
             Timber.v("VideoEvent: open video")
             if (rewardedAd.isLoaded) {
@@ -61,6 +45,8 @@ internal class VideoRepositoryImpl(
                     override fun onRewardedAdClosed() {
                         Timber.v("VideoEvent.Closed")
                         subject.onNext(VideoEvent.Closed)
+                        subject.onNext(VideoEvent.NotLoadedYet)
+                        loadAd()
                     }
 
                     override fun onUserEarnedReward(rewardItem: RewardItem) {
@@ -86,6 +72,7 @@ internal class VideoRepositoryImpl(
 
     private fun loadAd() {
         val builder = AdRequest.Builder()
+        rewardedAd = RewardedAd(context, adUnitId)
         rewardedAd.loadAd(
             builder.build(),
             object : RewardedAdLoadCallback() {
