@@ -4,16 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import com.marcohc.terminator.core.firebase.auth.GoogleSignInIntention.ActivityResult
+import com.marcohc.terminator.core.firebase.auth.GoogleSignInIntention.Initial
 import com.marcohc.terminator.core.mvi.ui.MviConfig
 import com.marcohc.terminator.core.mvi.ui.MviConfigType
 import com.marcohc.terminator.core.mvi.ui.MviDialogFragment
-import com.marcohc.terminator.core.firebase.auth.GoogleSignInIntention.ActivityResult
-import com.marcohc.terminator.core.firebase.auth.GoogleSignInIntention.Initial
 
 class GoogleSignInDialogFragment : MviDialogFragment<GoogleSignInIntention, GoogleSignInState>() {
 
     override val mviConfig = MviConfig(
-        scopeId = GoogleSignInModule.scopeId,
+        scopeId = AuthModule.scopeId,
         layoutId = R.layout.google_sign_in_dialog_fragment,
         mviConfigType = MviConfigType.SCOPE_AND_NAVIGATION
     )
@@ -38,7 +39,7 @@ class GoogleSignInDialogFragment : MviDialogFragment<GoogleSignInIntention, Goog
 
     private fun adjustFullScreenDialog() {
         dialog?.window?.run {
-            setLayout(MATCH_PARENT, MATCH_PARENT)
+            setLayout(MATCH_PARENT, WRAP_CONTENT)
             addFlags(View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         }
     }

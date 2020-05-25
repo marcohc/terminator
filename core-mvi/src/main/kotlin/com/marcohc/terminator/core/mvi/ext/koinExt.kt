@@ -155,6 +155,28 @@ inline fun <reified T : MviBaseInteractor<*, *, *>> T.unlinkChildScopes(
 }
 
 /**
+ * Using the counter associated with this [libraryScopeId], fetches or creates the value [T] from the parent scope
+ * on top of the counter
+ */
+inline fun <reified T> Scope.fetchOrCreateFromParentScope(libraryScopeId: String, function: () -> T): T {
+
+    val libraryScope = getScope(libraryScopeId)
+    val scopeCounter = libraryScope.get<ScopeCounter>()
+    val parentScopeId = scopeCounter.getOnTop()
+    var value = getScope(parentScopeId).getOrNull<T>()
+
+    return if (value == null) {
+        value = function.invoke()
+        Timber.v(TERMINATOR_LOG_TAG, "fetch and create from: libraryScopeId: $libraryScopeId / parentScopeId: $parentScopeId / new value: $value")
+        declareInScope(parentScopeId) { value }
+        value
+    } else {
+        Timber.v(TERMINATOR_LOG_TAG, "fetch from: libraryScopeId: $libraryScopeId / parentScopeId: $parentScopeId / existing value: $value")
+        value
+    }
+}
+
+/**
  * Use it from within the child module to fetch its parent scope
  */
 fun FeatureModule.getParentScope(): Scope {

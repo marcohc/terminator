@@ -28,14 +28,14 @@ internal class GoogleSignInInteractor(
     override fun intentionToAction(): (GoogleSignInIntention) -> Observable<out GoogleSignInAction> = { intention ->
         when (intention) {
             is Initial -> initial().toObservable()
-            is ActivityResult -> signInResult(intention.requestCode, intention.intent).toObservable()
+            is ActivityResult -> activityResult(intention.requestCode, intention.intent).toObservable()
         }
     }
 
     private fun initial() = analytics.logScreen()
         .andThen(router.showSignInDialog())
 
-    private fun signInResult(requestCode: Int, intent: Intent?): Completable {
+    private fun activityResult(requestCode: Int, intent: Intent?): Completable {
         val exception = when (requestCode) {
             REQUEST_CODE_SIGN_IN -> {
                 try {
@@ -51,13 +51,13 @@ internal class GoogleSignInInteractor(
         return if (exception == null) {
             Completable
                 .fromAction { analytics.logSignInSuccess() }
-                .andThen(publisher.triggerEvent(LogInEvent.Success))
+                .andThen(publisher.dispatchResult(GoogleSignInResult.Success))
                 .andThen(router.dismiss())
         }
         // Sign in error
         else {
             analytics.logSignInError()
-                .andThen(publisher.triggerEvent(LogInEvent.Failure(exception)))
+                .andThen(publisher.dispatchResult(GoogleSignInResult.Failure(exception)))
                 .andThen(router.dismiss())
         }
     }

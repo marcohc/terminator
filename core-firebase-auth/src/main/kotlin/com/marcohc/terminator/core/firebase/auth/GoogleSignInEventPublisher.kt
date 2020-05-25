@@ -4,17 +4,17 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
-class GoogleSignInEventPublisher {
+class GoogleSignInEventPublisher internal constructor() {
 
-    private val publisher = PublishSubject.create<LogInEvent>()
+    private val publisher = PublishSubject.create<GoogleSignInResult>()
 
-    fun triggerEvent(event: LogInEvent) = Completable.fromAction { publisher.onNext(event) }
+    fun observe(): Observable<GoogleSignInResult> = publisher.hide()
 
-    fun observe(): Observable<LogInEvent> = publisher.hide()
+    internal fun dispatchResult(event: GoogleSignInResult) = Completable.fromAction { publisher.onNext(event) }
 
 }
 
-sealed class LogInEvent {
-    object Success : LogInEvent()
-    data class Failure(val throwable: Throwable) : LogInEvent()
+sealed class GoogleSignInResult {
+    object Success : GoogleSignInResult()
+    data class Failure(val throwable: Throwable) : GoogleSignInResult()
 }
