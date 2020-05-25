@@ -23,11 +23,17 @@ class SurveyUseCase private constructor(
     fun getLastEvent() = repository.getLastEvent()
 
     companion object {
-        fun Scope.factorySurveyUseCase(scopeId: String, activity: AppCompatActivity) = SurveyUseCase(
-            repository = fetchOrCreateFromParentScope(scopeId) { factorySurveyRepository(activity) },
+        fun Scope.factorySurveyUseCase(
+                libraryScopeId: String,
+                analyticsScopeId: String,
+                activity: AppCompatActivity
+        ) = SurveyUseCase(
+            repository = fetchOrCreateFromParentScope(libraryScopeId) {
+                factorySurveyRepository(activity)
+            },
             analytics = SurveyAnalyticsImpl(
                 analytics = get(),
-                scopeId = scopeId
+                scopeId = analyticsScopeId
             )
         )
 

@@ -23,11 +23,17 @@ class VideoUseCase private constructor(
     fun getLastEvent() = repository.getLastEvent()
 
     companion object {
-        fun Scope.factoryVideoUseCase(scopeId: String, activity: Activity) = VideoUseCase(
-            repository = fetchOrCreateFromParentScope(scopeId) { factoryVideoRepository(activity) },
+        fun Scope.factoryVideoUseCase(
+                libraryScopeId: String,
+                analyticsScopeId: String,
+                activity: Activity
+        ) = VideoUseCase(
+            repository = fetchOrCreateFromParentScope(libraryScopeId) {
+                factoryVideoRepository(activity)
+            },
             analytics = VideoAnalyticsImpl(
                 analytics = get(),
-                scopeId = scopeId
+                scopeId = analyticsScopeId
             )
         )
 

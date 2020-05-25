@@ -21,31 +21,36 @@ import org.koin.core.qualifier.named
 import timber.log.Timber
 
 fun ComponentCallbacks.declareScope(mviConfig: MviConfig) {
-    when (mviConfig.mviConfigType) {
-        MviConfigType.NO_SCOPE -> {
-            // No-op
-        }
-        MviConfigType.SCOPE_ONLY, MviConfigType.SCOPE_AND_NAVIGATION -> {
-            val scope = getKoin().getOrCreateScope(mviConfig.scopeId, named(mviConfig.scopeId))
-            if (mviConfig.mviConfigType == MviConfigType.SCOPE_AND_NAVIGATION) {
-                when (this) {
-                    is AppCompatActivity -> {
-                        try {
-                            scope.get<ActivityNavigationExecutor>(named(mviConfig.scopeId))
-                                .setActivity(this)
-                        } catch (ignored: NoBeanDefFoundException) {
-                            throw IllegalStateException("Ey developer, if you use navigation, use declareXActivityRouter in your Module")
+    with(mviConfig) {
+        when (mviConfigType) {
+            MviConfigType.NO_SCOPE -> {
+                // No-op
+            }
+            MviConfigType.SCOPE_ONLY, MviConfigType.SCOPE_AND_NAVIGATION -> {
+                Timber.v(SCOPE_LOG_TAG, "Opening scope $scopeId")
+                val scope = getKoin().getOrCreateScope(scopeId, named(scopeId))
+                if (mviConfigType == MviConfigType.SCOPE_AND_NAVIGATION) {
+                    when (this@declareScope) {
+                        is AppCompatActivity -> {
+                            Timber.v(SCOPE_LOG_TAG, "Biding Activity with Executor in $scopeId")
+                            try {
+                                scope.get<ActivityNavigationExecutor>(named(scopeId))
+                                    .setActivity(this@declareScope)
+                            } catch (ignored: NoBeanDefFoundException) {
+                                throw IllegalStateException("Ey developer, if you use navigation, use declareXActivityRouter in your Module")
+                            }
                         }
+                        is DialogFragment, is Fragment -> try {
+                            Timber.v(SCOPE_LOG_TAG, "Biding Fragment with Executor in $scopeId")
+                            scope.get<FragmentNavigationExecutor>(named(scopeId))
+                                .setFragment(this@declareScope as Fragment)
+                        } catch (ignored: NoBeanDefFoundException) {
+                            throw IllegalStateException("Ey developer, if you use navigation, use declareXFragmentRouter in your Module")
+                        } catch (ignored: ClassCastException) {
+                            throw IllegalStateException("Ey developer, the activity of this fragment must be an AppCompatActivity")
+                        }
+                        else -> throw IllegalStateException("Ey developer, only AppCompatActivity, Fragment or DialogFragment is supported")
                     }
-                    is DialogFragment, is Fragment -> try {
-                        scope.get<FragmentNavigationExecutor>(named(mviConfig.scopeId))
-                            .setFragment(this as Fragment)
-                    } catch (ignored: NoBeanDefFoundException) {
-                        throw IllegalStateException("Ey developer, if you use navigation, use declareXFragmentRouter in your Module")
-                    } catch (ignored: ClassCastException) {
-                        throw IllegalStateException("Ey developer, the activity of this fragment must be an AppCompatActivity")
-                    }
-                    else -> throw IllegalStateException("Ey developer, only AppCompatActivity, Fragment or DialogFragment is supported")
                 }
             }
         }
