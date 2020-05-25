@@ -2,6 +2,8 @@ package com.marcohc.terminator.core.ads.video
 
 import android.app.Activity
 import com.marcohc.terminator.core.ads.video.VideoRepository.Companion.factoryStubVideoRepository
+import com.marcohc.terminator.core.ads.video.VideoRepository.Companion.factoryVideoRepository
+import com.marcohc.terminator.core.mvi.ext.fetchOrCreateFromParentScope
 import io.reactivex.Completable
 import io.reactivex.Observable
 import org.koin.core.scope.Scope
@@ -18,9 +20,11 @@ class VideoUseCase private constructor(
 
     fun show(activity: Activity) = repository.openVideo(activity)
 
+    fun getLastEvent() = repository.getLastEvent()
+
     companion object {
-        fun Scope.factoryVideoUseCase(scopeId: String) = VideoUseCase(
-            repository = getScope(scopeId).get(),
+        fun Scope.factoryVideoUseCase(scopeId: String, activity: Activity) = VideoUseCase(
+            repository = fetchOrCreateFromParentScope(scopeId) { factoryVideoRepository(activity) },
             analytics = VideoAnalyticsImpl(
                 analytics = get(),
                 scopeId = scopeId

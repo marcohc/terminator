@@ -3,4 +3,5 @@ apply from: "../config/android-library.gradle"
 dependencies {
     implementation libraries.appCompat
     implementation libraries.material
+    implementation libraries.rxJava
 }

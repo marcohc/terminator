@@ -9,6 +9,7 @@ dependencies {
     api libraries.timber
     api libraries.viewModelExtensions
     implementation project(":core-koin")
+    implementation project(":core-utils")
 
     testImplementation project(":core-mvi-test")
 }

@@ -1,4 +1,4 @@
-package com.marcohc.terminator.core.mvi.ext
+package com.marcohc.terminator.core.utils
 
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -42,7 +42,7 @@ fun <T> Subject<T>.onNextCompletable(value: T) = Completable.fromAction { this.o
 
 fun <T> Completable.toObservableDefault(value: T): Observable<T> = toSingleDefault(value).toObservable()
 
-fun <T> Subject<T>.toDisposableObserver(): DisposableObserver<T> = DisposableSubject(this)
+fun <T> Subject<T>.toDisposableObserver(): DisposableObserver<T> = com.marcohc.terminator.core.utils.DisposableSubject(this)
 
 private class DisposableSubject<T>(private val subject: Subject<T>) : DisposableObserver<T>() {
 

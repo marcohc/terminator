@@ -33,12 +33,13 @@ interface ActivityNavigationExecutor {
      */
     fun executeCompletable(block: (AppCompatActivity) -> Unit) = Completable.fromAction { execute(block::invoke) }
 
-    fun ActivityNavigationExecutor.getActivityReady() = Single
-        .create<AppCompatActivity> { emitter ->
-            execute { activity -> emitter.onSuccess(activity) }
-        }
-        .observeOn(AndroidSchedulers.mainThread())
 }
+
+fun ActivityNavigationExecutor.getActivityReady() = Single
+    .create<AppCompatActivity> { emitter ->
+        execute { activity -> emitter.onSuccess(activity) }
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
 class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
                                        LifecycleObserver {

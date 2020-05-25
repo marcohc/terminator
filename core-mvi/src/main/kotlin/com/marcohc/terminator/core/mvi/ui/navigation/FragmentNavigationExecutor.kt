@@ -54,21 +54,21 @@ interface FragmentNavigationExecutor {
         }
     }
 
-    fun FragmentNavigationExecutor.getFragmentReady() = Single
-        .create<Fragment> { emitter -> execute { fragment -> emitter.onSuccess(fragment) } }
-        .observeOn(AndroidSchedulers.mainThread())
+}
 
-    fun FragmentNavigationExecutor.getActivityReady() = Single
-        .create<AppCompatActivity> { emitter ->
-            execute { fragment ->
-                fragment.activity?.run {
-                    emitter.onSuccess(this as AppCompatActivity)
-                }
+fun FragmentNavigationExecutor.getFragmentReady() = Single
+    .create<Fragment> { emitter -> execute { fragment -> emitter.onSuccess(fragment) } }
+    .observeOn(AndroidSchedulers.mainThread())
+
+fun FragmentNavigationExecutor.getActivityReady() = Single
+    .create<AppCompatActivity> { emitter ->
+        execute { fragment ->
+            fragment.activity?.run {
+                emitter.onSuccess(this as AppCompatActivity)
             }
         }
-        .observeOn(AndroidSchedulers.mainThread())
-
-}
+    }
+    .observeOn(AndroidSchedulers.mainThread())
 
 class FragmentNavigationExecutorImpl : FragmentNavigationExecutor,
                                        LifecycleObserver {

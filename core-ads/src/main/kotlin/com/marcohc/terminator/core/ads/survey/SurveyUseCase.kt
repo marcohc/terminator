@@ -1,6 +1,9 @@
 package com.marcohc.terminator.core.ads.survey
 
+import androidx.appcompat.app.AppCompatActivity
 import com.marcohc.terminator.core.ads.survey.SurveyRepository.Companion.factoryStubSurveyRepository
+import com.marcohc.terminator.core.ads.survey.SurveyRepository.Companion.factorySurveyRepository
+import com.marcohc.terminator.core.mvi.ext.fetchOrCreateFromParentScope
 import io.reactivex.Completable
 import io.reactivex.Observable
 import org.koin.core.scope.Scope
@@ -17,9 +20,11 @@ class SurveyUseCase private constructor(
 
     fun show() = repository.openSurvey()
 
+    fun getLastEvent() = repository.getLastEvent()
+
     companion object {
-        fun Scope.factorySurveyUseCase(scopeId: String) = SurveyUseCase(
-            repository = getScope(scopeId).get(),
+        fun Scope.factorySurveyUseCase(scopeId: String, activity: AppCompatActivity) = SurveyUseCase(
+            repository = fetchOrCreateFromParentScope(scopeId) { factorySurveyRepository(activity) },
             analytics = SurveyAnalyticsImpl(
                 analytics = get(),
                 scopeId = scopeId

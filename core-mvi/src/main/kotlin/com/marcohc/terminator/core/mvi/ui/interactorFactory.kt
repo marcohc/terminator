@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.marcohc.terminator.core.mvi.BuildConfig
-import com.marcohc.terminator.core.mvi.MviConstants.TERMINATOR_LOG_TAG
+import com.marcohc.terminator.core.mvi.MviConstants.SCOPE_LOG_TAG
 import com.marcohc.terminator.core.mvi.domain.MviInteractor
 import com.marcohc.terminator.core.mvi.ui.navigation.ActivityNavigationExecutor
 import com.marcohc.terminator.core.mvi.ui.navigation.FragmentNavigationExecutor
@@ -65,12 +65,12 @@ fun <Intention, State> ComponentCallbacks.interactorFactory(scopeId: String): Mv
                 if (BuildConfig.DEBUG) {
                     throw IllegalStateException("Ey developer, your Koin module is not properly setup", throwable)
                 } else {
-                    Timber.w(TERMINATOR_LOG_TAG, "Couldn't create Interactor, creating a dummy one")
+                    Timber.w(SCOPE_LOG_TAG, "Couldn't create Interactor, creating a dummy one")
                     createDummyInteractor()
                 }
             }
             else -> {
-                Timber.w(TERMINATOR_LOG_TAG, "Non caught exception")
+                Timber.w(SCOPE_LOG_TAG, "Non caught exception")
                 throw throwable
             }
         }
@@ -110,10 +110,9 @@ private fun <Intention, State> createDummyInteractor(): MviInteractor<Intention,
 
 private fun ComponentCallbacks.closeScope(scopeId: String) {
     try {
-        Timber.v(TERMINATOR_LOG_TAG, "Closing scope $scopeId")
+        Timber.v(SCOPE_LOG_TAG, "Closing scope $scopeId")
         getKoin().getScope(scopeId).close()
-        Timber.v(TERMINATOR_LOG_TAG, "Scope $scopeId closed")
-    } catch (ignored: ScopeNotCreatedException) {
-        // No-op
+    } catch (e: ScopeNotCreatedException) {
+        Timber.w(SCOPE_LOG_TAG, "Closing scope $scopeId failed: ${e.message}")
     }
 }
