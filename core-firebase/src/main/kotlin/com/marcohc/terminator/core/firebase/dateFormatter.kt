@@ -12,7 +12,10 @@ fun LocalDateTime.toMillis(): Long {
 }
 
 fun Long.toLocalDateTime(): LocalDateTime {
-    return LocalDateTime.ofEpochSecond(this, 0, ZoneOffset.UTC)
+    return Instant
+        .ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
 }
 
 fun Date.toLocalDateTime(): LocalDateTime {

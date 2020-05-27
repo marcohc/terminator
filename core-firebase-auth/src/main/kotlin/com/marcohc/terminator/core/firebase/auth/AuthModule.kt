@@ -21,6 +21,15 @@ object AuthModule : FeatureModule {
 
         factory { GetFirebaseUserUseCase(firebaseAuth = get()) }
 
+        factory { IsGoogleUserSignedInUseCase(getGoogleUserUseCase = get()) }
+
+        factory {
+            GoogleSignOutUseCase(
+                context = androidApplication(),
+                signInOptions = get(named(AuthModule.GOOGLE_SIGN_IN_OPTIONS))
+            )
+        }
+
         declareFactoryFragmentRouter(scopeId) { executor ->
             GoogleSignInRouter(
                 executor = executor,
