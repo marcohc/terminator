@@ -23,7 +23,7 @@ object AuthModule : FeatureModule {
 
         declareFactoryFragmentRouter(scopeId) { executor ->
             GoogleSignInRouter(
-                navigationExecutor = executor,
+                executor = executor,
                 options = get(named(GOOGLE_SIGN_IN_OPTIONS))
             )
         }

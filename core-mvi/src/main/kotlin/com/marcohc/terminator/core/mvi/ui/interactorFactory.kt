@@ -37,7 +37,7 @@ fun ComponentCallbacks.declareScope(mviConfig: MviConfig) {
                                 scope.get<ActivityNavigationExecutor>(named(scopeId))
                                     .setActivity(this@declareScope)
                             } catch (ignored: NoBeanDefFoundException) {
-                                throw IllegalStateException("Ey developer, if you use navigation, use declareXActivityRouter in your Module")
+                                throw IllegalStateException("Ey developer, if you use navigation, use declare[Factory / Scoped]ActivityRouter in your Module")
                             }
                         }
                         is DialogFragment, is Fragment -> try {
@@ -45,7 +45,7 @@ fun ComponentCallbacks.declareScope(mviConfig: MviConfig) {
                             scope.get<FragmentNavigationExecutor>(named(scopeId))
                                 .setFragment(this@declareScope as Fragment)
                         } catch (ignored: NoBeanDefFoundException) {
-                            throw IllegalStateException("Ey developer, if you use navigation, use declareXFragmentRouter in your Module")
+                            throw IllegalStateException("Ey developer, if you use navigation, use declare[Factory / Scoped]FragmentRouter in your Module")
                         } catch (ignored: ClassCastException) {
                             throw IllegalStateException("Ey developer, the activity of this fragment must be an AppCompatActivity")
                         }

@@ -1,20 +1,18 @@
 package com.marcohc.terminator.core.firebase.auth
 
 import android.content.Context
+import com.gojuno.koptional.Optional
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import io.reactivex.Single
 
 class GetGoogleUserUseCase(private val context: Context) {
 
-    fun execute(): Single<GoogleSignInAccount> = Single
-        .fromCallable {
-            val account = GoogleSignIn.getLastSignedInAccount(context)
-            if (account == null || account.idToken == null || account.id == null || account.email == null) {
-                throw GoogleUserNotLoggedInException()
-            } else {
-                account
-            }
-        }
+    fun execute() = Single.fromCallable {
+        GoogleSignIn.getLastSignedInAccount(context) ?: throw GoogleUserNotLoggedInException()
+    }
+
+    fun executeOptional() = Single.fromCallable {
+        Optional.toOptional(GoogleSignIn.getLastSignedInAccount(context))
+    }
 
 }

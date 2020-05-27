@@ -5,7 +5,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import io.reactivex.Single
+import io.reactivex.SingleEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.lang.ref.WeakReference
 
@@ -31,15 +34,29 @@ interface ActivityNavigationExecutor {
     /**
      * Executes the block and wraps it with Completable
      */
-    fun executeCompletable(block: (AppCompatActivity) -> Unit) = Completable.fromAction { execute(block::invoke) }
+    fun executeCompletable(function: (AppCompatActivity) -> Unit) = getActivityReady()
+        .flatMapCompletable { activity -> Completable.fromAction { function.invoke(activity) } }
+
+    fun <T> executeSingle(function: (Pair<AppCompatActivity, SingleEmitter<T>>) -> Unit) = getActivityReady()
+        .flatMap { activity: AppCompatActivity ->
+            // This cast must be here
+            Single.create<T> { emitter -> function.invoke(activity to emitter) }
+        }
+
+    fun <T> executeObservable(function: (Pair<AppCompatActivity, ObservableEmitter<T>>) -> Unit): Observable<T> = getActivityReady()
+        .toObservable()
+        .flatMap { activity: AppCompatActivity ->
+            // This cast must be here
+            Observable.create<T> { emitter -> function.invoke(activity to emitter) }
+        }
+
+    fun getActivityReady() = Single
+        .create<AppCompatActivity> { emitter ->
+            execute { activity -> emitter.onSuccess(activity) }
+        }
+        .observeOn(AndroidSchedulers.mainThread())
 
 }
-
-fun ActivityNavigationExecutor.getActivityReady() = Single
-    .create<AppCompatActivity> { emitter ->
-        execute { activity -> emitter.onSuccess(activity) }
-    }
-    .observeOn(AndroidSchedulers.mainThread())
 
 class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
                                        LifecycleObserver {

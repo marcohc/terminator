@@ -6,7 +6,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import io.reactivex.Single
+import io.reactivex.SingleEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.lang.ref.WeakReference
 
@@ -46,29 +49,54 @@ interface FragmentNavigationExecutor {
     /**
      * Executes the function and wraps it with Completable
      */
-    fun executeCompletableWithActivity(function: (AppCompatActivity) -> Unit) = Completable.fromAction {
-        execute { fragment ->
-            fragment.activity?.run {
-                function.invoke(this as AppCompatActivity)
+    fun executeCompletableWithActivity(function: (AppCompatActivity) -> Unit) = getActivityReady()
+        .flatMapCompletable { activity -> Completable.fromAction { function.invoke(activity) } }
+
+    fun <T> executeSingle(function: (Pair<Fragment, SingleEmitter<T>>) -> Unit): Single<T> {
+        return getFragmentReady()
+            .flatMap { fragment ->
+                // This cast must be here
+                Single.create<T> { emitter -> function.invoke(fragment to emitter) }
+            }
+    }
+
+    fun <T> executeSingleWithActivity(function: (Pair<AppCompatActivity, SingleEmitter<T>>) -> Unit): Single<T> {
+        return getActivityReady()
+            .flatMap { activity: AppCompatActivity ->
+                // This cast must be here
+                Single.create<T> { emitter -> function.invoke(activity to emitter) }
+            }
+    }
+
+    fun <T> executeObservableWithActivity(function: (Pair<AppCompatActivity, ObservableEmitter<T>>) -> Unit): Observable<T> = getActivityReady()
+        .toObservable()
+        .flatMap { activity: AppCompatActivity ->
+            // This cast must be here
+            Observable.create<T> { emitter -> function.invoke(activity to emitter) }
+        }
+
+    fun <T> executeObservable(function: (Pair<Fragment, ObservableEmitter<T>>) -> Unit): Observable<T> = getFragmentReady()
+        .toObservable()
+        .flatMap { fragment: Fragment ->
+            // This cast must be here
+            Observable.create<T> { emitter -> function.invoke(fragment to emitter) }
+        }
+
+    fun getFragmentReady() = Single
+        .create<Fragment> { emitter -> execute { fragment -> emitter.onSuccess(fragment) } }
+        .observeOn(AndroidSchedulers.mainThread())
+
+    fun getActivityReady() = Single
+        .create<AppCompatActivity> { emitter ->
+            execute { fragment ->
+                fragment.activity?.run {
+                    emitter.onSuccess(this as AppCompatActivity)
+                }
             }
         }
-    }
+        .observeOn(AndroidSchedulers.mainThread())
 
 }
-
-fun FragmentNavigationExecutor.getFragmentReady() = Single
-    .create<Fragment> { emitter -> execute { fragment -> emitter.onSuccess(fragment) } }
-    .observeOn(AndroidSchedulers.mainThread())
-
-fun FragmentNavigationExecutor.getActivityReady() = Single
-    .create<AppCompatActivity> { emitter ->
-        execute { fragment ->
-            fragment.activity?.run {
-                emitter.onSuccess(this as AppCompatActivity)
-            }
-        }
-    }
-    .observeOn(AndroidSchedulers.mainThread())
 
 class FragmentNavigationExecutorImpl : FragmentNavigationExecutor,
                                        LifecycleObserver {
