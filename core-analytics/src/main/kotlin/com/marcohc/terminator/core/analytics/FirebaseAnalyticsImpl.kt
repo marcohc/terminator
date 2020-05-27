@@ -10,14 +10,14 @@ class FirebaseAnalyticsImpl(
 ) : Analytics {
 
     override fun logAppOpened() {
-        logEvent(FirebaseAnalytics.Event.APP_OPEN)
+        logEventInFirebase(FirebaseAnalytics.Event.APP_OPEN)
     }
 
     override fun logClick(
             screenId: String,
             itemId: String
     ) {
-        logEvent(
+        logEventInFirebase(
             FirebaseAnalytics.Event.SELECT_CONTENT,
             createContentTypeBundle(
                 screenId,
@@ -26,18 +26,18 @@ class FirebaseAnalyticsImpl(
         )
     }
 
-    override fun logCustomEvent(
+    override fun logEvent(
             eventId: String,
             bundle: Bundle
     ) {
-        logEvent(eventId, bundle)
+        logEventInFirebase(eventId, bundle)
     }
 
     override fun logCheckoutStart(
             value: Double,
             currency: String
     ) {
-        logEvent(
+        logEventInFirebase(
             FirebaseAnalytics.Event.BEGIN_CHECKOUT,
             Bundle().apply {
                 putDouble(FirebaseAnalytics.Param.VALUE, value)
@@ -50,7 +50,7 @@ class FirebaseAnalyticsImpl(
             value: Double,
             currency: String
     ) {
-        logEvent(
+        logEventInFirebase(
             FirebaseAnalytics.Event.PURCHASE,
             Bundle().apply {
                 putDouble(FirebaseAnalytics.Param.VALUE, value)
@@ -60,11 +60,11 @@ class FirebaseAnalyticsImpl(
     }
 
     override fun logTutorialStarted() {
-        logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN)
+        logEventInFirebase(FirebaseAnalytics.Event.TUTORIAL_BEGIN)
     }
 
     override fun logTutorialCompleted() {
-        logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE)
+        logEventInFirebase(FirebaseAnalytics.Event.TUTORIAL_COMPLETE)
     }
 
     override fun logCurrentScreen(activity: Activity, screen: String) {
@@ -87,8 +87,8 @@ class FirebaseAnalyticsImpl(
             }
     }
 
-    private fun logEvent(eventId: String, bundle: Bundle = Bundle()) {
-        Timber.v("logEvent: $eventId $bundle")
+    private fun logEventInFirebase(eventId: String, bundle: Bundle = Bundle()) {
+        Timber.v("$eventId $bundle")
         firebaseAnalytics.logEvent(eventId, bundle)
     }
 

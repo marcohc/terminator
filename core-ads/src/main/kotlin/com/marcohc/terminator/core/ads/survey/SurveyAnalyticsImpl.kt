@@ -11,35 +11,38 @@ internal class SurveyAnalyticsImpl(
 
     override fun logClick() = Completable.fromAction {
         analytics.logClick(scopeId, "survey_click")
-        logEvent("click")
+        logEvents("click")
     }
 
     override fun logEvent(event: SurveyEvent) = Completable.fromAction {
         when (event) {
-            is SurveyEvent.NotAvailable -> logEvent("not_available")
-            is SurveyEvent.Received -> logEvent("available")
+            is SurveyEvent.NotAvailable -> logEvents("not_available")
+            is SurveyEvent.Received -> logEvents("available")
             is SurveyEvent.Opened -> {
                 analytics.logCheckoutStart(
                     value = event.surveyPrice,
                     currency = "USD"
                 )
-                logEvent("opened")
+                logEvents("opened")
             }
-            is SurveyEvent.UserRejected -> logEvent("user_rejected")
-            is SurveyEvent.NotEligible -> logEvent("not_eligible")
+            is SurveyEvent.UserRejected -> logEvents("user_rejected")
+            is SurveyEvent.NotEligible -> logEvents("not_eligible")
             is SurveyEvent.Rewarded -> {
                 analytics.logCheckoutEnd(
                     value = event.surveyPrice,
                     currency = "USD"
                 )
-                logEvent("completed")
+                logEvents("rewarded")
             }
-            is SurveyEvent.Closed -> logEvent("closed")
+            is SurveyEvent.Closed -> logEvents("closed")
         }
     }
 
-    private fun logEvent(parameter: String) {
-        val parameterKey = "${scopeId}_${parameter}"
-        analytics.logCustomEvent("survey", Bundle().apply { putString("survey_action", parameterKey) })
+    private fun logEvents(parameter: String) {
+        analytics.logEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
+        analytics.logEvent("${scopeId}_${BASE_EVENT}_${parameter}")
+    }
+    private companion object {
+        const val BASE_EVENT = "survey"
     }
 }

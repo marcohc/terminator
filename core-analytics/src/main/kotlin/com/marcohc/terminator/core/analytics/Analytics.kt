@@ -12,7 +12,7 @@ interface Analytics {
             itemId: String
     )
 
-    fun logCustomEvent(
+    fun logEvent(
             eventId: String,
             bundle: Bundle = Bundle()
     )

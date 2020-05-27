@@ -17,22 +17,25 @@ internal class VideoAnalyticsImpl(
 
     override fun logEvent(event: VideoEvent) = Completable.fromAction {
         when (event) {
-            is Loaded -> logEvent("available")
-            is FailedToLoad -> logEvent("not_available")
-            is Opened -> logEvent("opened")
-            is Rewarded -> logEvent("rewarded")
-            is RewardedFailedToLoad -> logEvent("rewarded_failed_to_load")
-            is Closed -> logEvent("closed")
+            is Loaded -> logEvents("available")
+            is FailedToLoad -> logEvents("not_available")
+            is Opened -> logEvents("opened")
+            is Rewarded -> logEvents("rewarded")
+            is RewardedFailedToLoad -> logEvents("rewarded_failed_to_load")
+            is Closed -> logEvents("closed")
         }
     }
 
     override fun logClick() = Completable.fromAction {
         analytics.logClick(scopeId, "video_click")
-        logEvent("click")
+        logEvents("click")
     }
 
-    private fun logEvent(parameter: String) {
-        val parameterKey = "${scopeId}_${parameter}"
-        analytics.logCustomEvent("video", Bundle().apply { putString("video_action", parameterKey) })
+    private fun logEvents(parameter: String) {
+        analytics.logEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
+        analytics.logEvent("${scopeId}_${BASE_EVENT}_${parameter}")
+    }
+    private companion object {
+        const val BASE_EVENT = "video"
     }
 }
