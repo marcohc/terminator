@@ -1,5 +1,6 @@
 package com.marcohc.terminator.core.ads.survey
 
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import com.marcohc.terminator.core.ads.survey.SurveyRepository.Companion.factoryStubSurveyRepository
 import com.marcohc.terminator.core.ads.survey.SurveyRepository.Companion.factorySurveyRepository
@@ -18,9 +19,10 @@ class SurveyUseCase private constructor(
 
     fun logShowSurveyClick() = Completable.fromAction { analytics.logClick() }
 
-    fun show() = repository.openSurvey()
-
     fun getLastEvent() = repository.getLastEvent()
+
+    @MainThread
+    fun show() = repository.show()
 
     companion object {
         fun Scope.factorySurveyUseCase(

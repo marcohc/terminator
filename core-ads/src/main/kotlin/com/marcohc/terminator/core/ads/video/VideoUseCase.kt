@@ -1,6 +1,7 @@
 package com.marcohc.terminator.core.ads.video
 
 import android.app.Activity
+import androidx.annotation.MainThread
 import com.marcohc.terminator.core.ads.video.VideoRepository.Companion.factoryStubVideoRepository
 import com.marcohc.terminator.core.ads.video.VideoRepository.Companion.factoryVideoRepository
 import com.marcohc.terminator.core.mvi.ext.fetchOrCreateFromParentScope
@@ -18,9 +19,10 @@ class VideoUseCase private constructor(
 
     fun logShowVideoClick() = analytics.logClick()
 
-    fun show(activity: Activity) = repository.openVideo(activity)
-
     fun getLastEvent() = repository.getLastEvent()
+
+    @MainThread
+    fun show(activity: Activity) = repository.show(activity)
 
     companion object {
         fun Scope.factoryVideoUseCase(
