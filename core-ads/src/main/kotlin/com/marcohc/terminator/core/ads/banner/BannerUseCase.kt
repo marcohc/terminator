@@ -14,6 +14,8 @@ class BannerUseCase private constructor(
         private val analytics: BannerAnalytics
 ) {
 
+    fun observe(): Observable<BannerEvent> = repository.observe()
+
     fun observeAndTrack(): Observable<BannerEvent> = repository.observe()
         .flatMap { event -> analytics.logEvent(event).toSingleDefault(event).toObservable() }
 

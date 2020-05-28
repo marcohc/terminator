@@ -15,6 +15,8 @@ class SurveyUseCase private constructor(
         private val analytics: SurveyAnalytics
 ) {
 
+    fun observe(): Observable<SurveyEvent> = repository.observe()
+
     fun observeAndTrack(): Observable<SurveyEvent> = repository.observe()
         .flatMap { event -> analytics.logEvent(event).toSingleDefault(event).toObservable() }
 

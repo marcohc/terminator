@@ -15,6 +15,8 @@ class VideoUseCase private constructor(
         private val analytics: VideoAnalytics
 ) {
 
+    fun observe(): Observable<VideoEvent> = repository.observe()
+
     fun observeAndTrack(): Observable<VideoEvent> = repository.observe()
         .flatMap { event -> analytics.logEvent(event).toSingleDefault(event).toObservable() }
 

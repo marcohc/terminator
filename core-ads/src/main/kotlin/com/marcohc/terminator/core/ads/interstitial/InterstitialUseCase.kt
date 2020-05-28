@@ -15,6 +15,8 @@ class InterstitialUseCase private constructor(
         private val analytics: InterstitialAnalytics
 ) {
 
+    fun observe(): Observable<InterstitialEvent> = repository.observe()
+
     fun observeAndTrack(): Observable<InterstitialEvent> = repository.observe()
         .flatMap { event -> analytics.logEvent(event).toSingleDefault(event).toObservable() }
 
