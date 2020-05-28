@@ -1,6 +1,7 @@
 package com.marcohc.terminator.core.ads.banner
 
 import androidx.appcompat.app.AppCompatActivity
+import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.ads.banner.BannerRepository.Companion.factoryBannerRepository
 import com.marcohc.terminator.core.ads.banner.BannerRepository.Companion.factoryStubBannerRepository
 import com.marcohc.terminator.core.mvi.ext.fetchOrCreateFromParentScope
@@ -18,11 +19,10 @@ class BannerUseCase private constructor(
 
     companion object {
         fun Scope.factoryBannerUseCase(
-                libraryScopeId: String,
                 analyticsScopeId: String,
                 activity: AppCompatActivity
         ) = BannerUseCase(
-            repository = fetchOrCreateFromParentScope(libraryScopeId) {
+            repository = fetchOrCreateFromParentScope(AdsModule.scopeId) {
                 factoryBannerRepository(activity)
             },
             analytics = BannerAnalyticsImpl(

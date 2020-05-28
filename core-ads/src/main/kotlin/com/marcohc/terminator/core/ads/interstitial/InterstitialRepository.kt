@@ -27,12 +27,12 @@ interface InterstitialRepository {
     fun show(): Completable
 
     companion object {
-        fun Scope.factoryInterstitialRepository(activity: AppCompatActivity): InterstitialRepository = InterstitialRepositoryImpl(
+        internal fun Scope.factoryInterstitialRepository(activity: AppCompatActivity): InterstitialRepository = InterstitialRepositoryImpl(
             activity = activity,
             adUnitId = get(named(AdsConstants.INTERSTITIAL_ADS_UNIT_ID))
         )
 
-        fun factoryStubInterstitialRepository() = object : InterstitialRepository {
+        internal fun factoryStubInterstitialRepository() = object : InterstitialRepository {
             override fun observe() = Observable.never<InterstitialEvent>()
             override fun getLastEvent() = InterstitialEvent.NotLoadedYet
             override fun show() = Completable.complete()

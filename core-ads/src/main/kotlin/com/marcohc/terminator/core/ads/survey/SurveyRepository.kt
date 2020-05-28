@@ -28,13 +28,13 @@ interface SurveyRepository {
     fun show(): Completable
 
     companion object {
-        fun Scope.factorySurveyRepository(activity: AppCompatActivity): SurveyRepository = SurveyRepositoryImpl(
+        internal fun Scope.factorySurveyRepository(activity: AppCompatActivity): SurveyRepository = SurveyRepositoryImpl(
             activity = activity,
             debug = get(named(AdsConstants.SURVEY_DEBUG)),
             apiKey = get(named(AdsConstants.SURVEY_API_KEY))
         )
 
-        fun factoryStubSurveyRepository(): SurveyRepository = object : SurveyRepository {
+        internal fun factoryStubSurveyRepository(): SurveyRepository = object : SurveyRepository {
             override fun observe() = Observable.never<SurveyEvent>()
             override fun getLastEvent(): SurveyEvent = SurveyEvent.NotLoadedYet
             override fun show() = Completable.complete()

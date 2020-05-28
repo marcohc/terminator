@@ -21,12 +21,12 @@ interface BannerRepository {
     fun observe(): Observable<BannerEvent>
 
     companion object {
-        fun Scope.factoryBannerRepository(activity: AppCompatActivity): BannerRepository = BannerRepositoryImpl(
+        internal fun Scope.factoryBannerRepository(activity: AppCompatActivity): BannerRepository = BannerRepositoryImpl(
             activity = activity,
             adUnitId = get(named(AdsConstants.BANNER_ADS_UNIT_ID))
         )
 
-        fun factoryStubBannerRepository() = object : BannerRepository {
+        internal fun factoryStubBannerRepository() = object : BannerRepository {
             override fun observe() = Observable.never<BannerEvent>()
         }
     }

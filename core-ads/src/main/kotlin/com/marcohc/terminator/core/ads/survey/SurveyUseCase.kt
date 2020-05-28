@@ -2,6 +2,7 @@ package com.marcohc.terminator.core.ads.survey
 
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
+import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.ads.survey.SurveyRepository.Companion.factoryStubSurveyRepository
 import com.marcohc.terminator.core.ads.survey.SurveyRepository.Companion.factorySurveyRepository
 import com.marcohc.terminator.core.mvi.ext.fetchOrCreateFromParentScope
@@ -26,11 +27,10 @@ class SurveyUseCase private constructor(
 
     companion object {
         fun Scope.factorySurveyUseCase(
-                libraryScopeId: String,
                 analyticsScopeId: String,
                 activity: AppCompatActivity
         ) = SurveyUseCase(
-            repository = fetchOrCreateFromParentScope(libraryScopeId) {
+            repository = fetchOrCreateFromParentScope(AdsModule.scopeId) {
                 factorySurveyRepository(activity)
             },
             analytics = SurveyAnalyticsImpl(

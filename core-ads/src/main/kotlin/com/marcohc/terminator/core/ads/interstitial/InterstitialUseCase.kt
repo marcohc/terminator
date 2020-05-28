@@ -2,6 +2,7 @@ package com.marcohc.terminator.core.ads.interstitial
 
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
+import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.ads.interstitial.InterstitialRepository.Companion.factoryInterstitialRepository
 import com.marcohc.terminator.core.ads.interstitial.InterstitialRepository.Companion.factoryStubInterstitialRepository
 import com.marcohc.terminator.core.mvi.ext.fetchOrCreateFromParentScope
@@ -24,11 +25,10 @@ class InterstitialUseCase private constructor(
 
     companion object {
         fun Scope.factoryInterstitialUseCase(
-                libraryScopeId: String,
                 analyticsScopeId: String,
                 activity: AppCompatActivity
         ) = InterstitialUseCase(
-            repository = fetchOrCreateFromParentScope(libraryScopeId) {
+            repository = fetchOrCreateFromParentScope(AdsModule.scopeId) {
                 factoryInterstitialRepository(activity)
             },
             analytics = InterstitialAnalyticsImpl(

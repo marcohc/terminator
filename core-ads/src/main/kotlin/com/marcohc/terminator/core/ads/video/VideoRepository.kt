@@ -26,18 +26,19 @@ interface VideoRepository {
     fun show(activity: Activity): Completable
 
     companion object {
-        fun Scope.factoryVideoRepository(activity: Activity): VideoRepository = VideoRepositoryImpl(
+        internal fun Scope.factoryVideoRepository(activity: Activity): VideoRepository = VideoRepositoryImpl(
             context = activity,
             adUnitId = get(named(AdsConstants.VIDEO_ADS_UNIT_ID))
         )
 
-        fun factoryStubVideoRepository(): VideoRepository = object : VideoRepository {
+        internal fun factoryStubVideoRepository(): VideoRepository = object : VideoRepository {
             override fun observe() = Observable.never<VideoEvent>()
             override fun getLastEvent(): VideoEvent = VideoEvent.NotLoadedYet
             override fun show(activity: Activity) = Completable.complete()
         }
     }
 }
+
 internal class VideoRepositoryImpl(
         private val context: Context,
         private val adUnitId: String

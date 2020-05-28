@@ -2,6 +2,7 @@ package com.marcohc.terminator.core.ads.video
 
 import android.app.Activity
 import androidx.annotation.MainThread
+import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.ads.video.VideoRepository.Companion.factoryStubVideoRepository
 import com.marcohc.terminator.core.ads.video.VideoRepository.Companion.factoryVideoRepository
 import com.marcohc.terminator.core.mvi.ext.fetchOrCreateFromParentScope
@@ -26,11 +27,10 @@ class VideoUseCase private constructor(
 
     companion object {
         fun Scope.factoryVideoUseCase(
-                libraryScopeId: String,
                 analyticsScopeId: String,
                 activity: Activity
         ) = VideoUseCase(
-            repository = fetchOrCreateFromParentScope(libraryScopeId) {
+            repository = fetchOrCreateFromParentScope(AdsModule.scopeId) {
                 factoryVideoRepository(activity)
             },
             analytics = VideoAnalyticsImpl(
