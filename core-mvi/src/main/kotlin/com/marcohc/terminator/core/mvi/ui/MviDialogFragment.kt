@@ -41,7 +41,11 @@ abstract class MviDialogFragment<Intention, State>
     private val isFirstTime = AtomicBoolean(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setUpInteractor()
+        declareScope(mviConfig)
+
+        interactor = interactorFactory(mviConfig.scopeId)
+
+        closeScopeProcess(interactor, mviConfig)
 
         super.onCreate(savedInstanceState)
 
@@ -50,9 +54,12 @@ abstract class MviDialogFragment<Intention, State>
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //Inflate the layout for this fragment or reuse the existing one
+        // Inflate the layout for this fragment or reuse the existing one
         if (inflatedView == null) {
             inflatedView = inflater.inflate(mviConfig.layoutId, container, false)
+        } else {
+            // We must remove the view from the parent when it's a nested fragment
+            (inflatedView?.parent as ViewGroup?)?.removeView(inflatedView)
         }
         return inflatedView
     }
@@ -88,28 +95,12 @@ abstract class MviDialogFragment<Intention, State>
         super.onDestroy()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // We must remove the view from the parent when it's a nested fragment
-        view?.let {
-            (it.parent as? ViewGroup)?.removeView(inflatedView)
-        }
-    }
-
     override fun sendIntention(intention: Intention) {
         intentionsSubject.onNext(intention)
     }
 
     override fun intentions(): Observable<Intention> {
         return intentionsSubject.hide()
-    }
-
-    private fun setUpInteractor() {
-        declareScope(mviConfig)
-
-        interactor = interactorFactory(mviConfig.scopeId)
-
-        closeScopeProcess(interactor, mviConfig)
     }
 
 }
