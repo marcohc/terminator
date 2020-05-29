@@ -31,7 +31,7 @@ class UpdateAppNavigator {
                 }
             }
             .addOnFailureListener {
-                Timber.e(it, "UpdateAppNavigator: ${it.message}")
+                Timber.w(it, "UpdateAppNavigator: ${it.message}")
                 callback.invoke(false)
             }
     }
