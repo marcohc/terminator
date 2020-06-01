@@ -8,7 +8,7 @@ import org.threeten.bp.ZoneOffset
 import java.util.Date
 
 fun LocalDateTime.toMillis(): Long {
-    return toEpochSecond(ZoneOffset.UTC)
+    return atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
 
 fun Long.toLocalDateTime(): LocalDateTime {

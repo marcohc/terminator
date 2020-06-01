@@ -11,7 +11,7 @@ class MustForceUpdateUseCase(
 
     fun execute() = Single.fromCallable {
         val forceUpdateVersion = remoteConfigRepository.getLong(FORCE_UPDATE_VERSION)
-        val mustForceUpdate = remoteConfigRepository.getLong(FORCE_UPDATE_VERSION) > appVersionCode
+        val mustForceUpdate = forceUpdateVersion > appVersionCode
         Timber.v("$forceUpdateVersion (forceUpdateVersion) > $appVersionCode (appVersionCode) = $mustForceUpdate")
         mustForceUpdate
     }
