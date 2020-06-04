@@ -5,4 +5,5 @@ dependencies {
     implementation libraries.rxJava
     implementation libraries.timber
     implementation project(":core-firebase")
+    implementation project(":core-koin")
 }
