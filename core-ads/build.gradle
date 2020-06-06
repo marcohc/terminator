@@ -9,4 +9,5 @@ dependencies {
     implementation project(":core-analytics")
     implementation project(":core-koin")
     implementation project(":core-mvi")
+    implementation project(":core-utils")
 }

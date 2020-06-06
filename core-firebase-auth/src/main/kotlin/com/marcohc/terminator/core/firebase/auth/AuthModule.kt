@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.marcohc.terminator.core.koin.FeatureModule
 import com.marcohc.terminator.core.mvi.ext.declareFactoryFragmentRouter
 import com.marcohc.terminator.core.mvi.ext.declareFragmentInteractor
-import com.marcohc.terminator.core.mvi.ext.fetchOrCreateFromParentScope
+import com.marcohc.terminator.core.mvi.ext.getOrCreateFromParentScope
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -46,7 +46,7 @@ object AuthModule : FeatureModule {
         }
     }
 
-    fun Scope.scopedGoogleSignInEventPublisher() = fetchOrCreateFromParentScope(scopeId) { GoogleSignInEventPublisher() }
+    fun Scope.scopedGoogleSignInEventPublisher() = getOrCreateFromParentScope(scopeId) { GoogleSignInEventPublisher() }
 
     const val GOOGLE_SIGN_IN_OPTIONS = "GOOGLE_SIGN_IN_OPTIONS"
 

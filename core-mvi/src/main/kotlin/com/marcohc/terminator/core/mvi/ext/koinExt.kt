@@ -160,7 +160,7 @@ inline fun <reified T : MviBaseInteractor<*, *, *>> T.unlinkChildScopes(
  * Using the counter associated with this [libraryScopeId], fetches or creates the value [T] from the parent scope
  * on top of the counter
  */
-inline fun <reified T> Scope.fetchOrCreateFromParentScope(libraryScopeId: String, function: () -> T): T {
+inline fun <reified T> Scope.getOrCreateFromParentScope(libraryScopeId: String, function: () -> T): T {
 
     val libraryScope = getScope(libraryScopeId)
     val scopeCounter = libraryScope.get<ScopeCounter>()
