@@ -129,6 +129,7 @@ internal class InterstitialUseCaseImpl(
 
     override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
 
+    @MainThread
     override fun show() = Completable.fromAction {
         if (interstitialAd.isLoaded) {
             interstitialAd.show()

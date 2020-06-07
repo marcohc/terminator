@@ -1,5 +1,6 @@
 package com.marcohc.terminator.core.ads.banner
 
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -13,6 +14,7 @@ import com.marcohc.terminator.core.ads.AdsConstants
 import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.mvi.ext.getOrCreateFromParentScope
 import com.marcohc.terminator.core.utils.toObservableDefault
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import org.koin.core.qualifier.named
@@ -26,6 +28,9 @@ interface BannerUseCase {
     fun observeAndTrack(): Observable<BannerEvent>
 
     fun getLastEvent(): BannerEvent
+
+    @MainThread
+    fun loadNewAd(): Completable
 
     companion object {
 
@@ -50,6 +55,7 @@ interface BannerUseCase {
             override fun observe() = Observable.never<BannerEvent>()
             override fun observeAndTrack() = Observable.never<BannerEvent>()
             override fun getLastEvent() = BannerEvent.NotLoadedYet
+            override fun loadNewAd() = Completable.complete()
         }
     }
 
@@ -102,6 +108,7 @@ internal class BannerUseCaseImpl(
             override fun onAdClosed() {
                 Timber.v("BannerEvent.Closed")
                 subject.onNext(BannerEvent.Closed)
+                loadAd()
             }
 
             override fun onAdClicked() {
@@ -115,10 +122,7 @@ internal class BannerUseCaseImpl(
             }
         }
 
-        // Custom values could be added here
-        val builder = AdRequest.Builder()
-
-        adView.loadAd(builder.build())
+        loadAd()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -143,4 +147,10 @@ internal class BannerUseCaseImpl(
 
     override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
 
+    @MainThread
+    override fun loadNewAd() = Completable.fromAction { loadAd() }
+
+    private fun loadAd() {
+        adView.loadAd(AdRequest.Builder().build())
+    }
 }
