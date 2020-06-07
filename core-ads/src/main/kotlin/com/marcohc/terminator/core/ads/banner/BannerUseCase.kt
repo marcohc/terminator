@@ -25,6 +25,8 @@ interface BannerUseCase {
 
     fun observeAndTrack(): Observable<BannerEvent>
 
+    fun getLastEvent(): BannerEvent
+
     companion object {
 
         fun Scope.getOrCreateScopedBannerUseCase(
@@ -47,6 +49,7 @@ interface BannerUseCase {
         fun factoryStubBannerUseCase() = object : BannerUseCase {
             override fun observe() = Observable.never<BannerEvent>()
             override fun observeAndTrack() = Observable.never<BannerEvent>()
+            override fun getLastEvent() = BannerEvent.NotLoadedYet
         }
     }
 
@@ -137,5 +140,7 @@ internal class BannerUseCaseImpl(
 
     override fun observeAndTrack(): Observable<BannerEvent> = observe()
         .flatMap { event -> analytics.logEvent(event).toObservableDefault(event) }
+
+    override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
 
 }
