@@ -2,6 +2,7 @@ apply from: '../config/android-library.gradle'
 
 dependencies {
     api libraries.firebase.ads
+    api libraries.koptional
     implementation libraries.appCompat
     implementation libraries.pollfish
     implementation libraries.rxJava
