@@ -61,6 +61,7 @@ interface ActivityNavigationExecutor {
 class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
                                        LifecycleObserver {
 
+    // TODO: Keep an eye on "java.util.ConcurrentModificationException"
     private var commandsList: MutableList<((AppCompatActivity) -> Unit)> = mutableListOf()
     private var isPaused: Boolean = true
     private var activityWeakReference: WeakReference<AppCompatActivity?> = WeakReference(null)
