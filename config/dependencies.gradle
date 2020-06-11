@@ -21,6 +21,7 @@ ext.gradlePlugins = [
 ]
 
 ext.libraries = [
+        androidBilling          : "com.android.billingclient:billing-ktx:2.2.1",
         appCompat               : "androidx.appcompat:appcompat:1.1.0",
         constraintLayout        : "androidx.constraintlayout:constraintlayout:2.0.0-beta6",
         firebase                : [
@@ -37,7 +38,7 @@ ext.libraries = [
         googlePlayServicesAuth  : "com.google.android.gms:play-services-auth:18.0.0",
         googlePlayServicesTasks : "com.google.android.gms:play-services-tasks:17.0.2",
         gson                    : "com.google.code.gson:gson:2.8.5",
-        jetbrainsAnnotations    : "org.jetbrains:annotations-java5:16.0.2",
+        jetbrainsAnnotations    : "org.jetbrains:annotations-java5:17.0.0",
         junit                   : "junit:junit:4.13",
         koinAndroid             : "org.koin:koin-android:$versions.koin",
         koptional               : "com.gojuno.koptional:koptional:1.6.0",
@@ -55,7 +56,6 @@ ext.libraries = [
         roomCompile             : "androidx.room:room-compiler:$versions.room",
         roomRuntime             : "androidx.room:room-runtime:$versions.room",
         roomRxJava2             : "androidx.room:room-rxjava2:$versions.room",
-        rxAndroid               : "io.reactivex.rxjava2:rxandroid:2.1.1",
         rxJava                  : "io.reactivex.rxjava2:rxjava:2.2.18",
         rxJavaAndroid           : "io.reactivex.rxjava2:rxandroid:2.1.1",
         threeTenAbp             : [

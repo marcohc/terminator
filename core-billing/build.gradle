@@ -1,15 +1,15 @@
 apply from: '../config/android-library.gradle'
 
 dependencies {
-    api libraries.firebase.ads
-    api libraries.koptional
-    implementation libraries.appCompat
-    implementation libraries.pollfish
+    api libraries.androidBilling
+    implementation libraries.jetbrainsAnnotations
+    implementation libraries.koptional
+    implementation libraries.roomRuntime
+    implementation libraries.roomRxJava2
     implementation libraries.rxJava
     implementation libraries.rxJavaAndroid
     implementation libraries.timber
-    implementation project(":core-analytics")
     implementation project(":core-koin")
-    implementation project(":core-mvi")
     implementation project(":core-utils")
+    kapt libraries.roomCompile
 }
