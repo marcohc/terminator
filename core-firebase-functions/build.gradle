@@ -2,8 +2,8 @@ apply from: "../config/android-library.gradle"
 
 dependencies {
     api libraries.firebase.functions
+    implementation (libraries.timber) { exclude group: "org.intellij.lang.annotations" }
     implementation libraries.rxJava
-    implementation libraries.timber
     implementation project(":core-firebase")
     implementation project(":core-koin")
 }

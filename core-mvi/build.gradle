@@ -1,15 +1,14 @@
 apply from: "../config/android-library.gradle"
 
 dependencies {
+    api (libraries.timber) { exclude group: "org.intellij.lang.annotations" }
     api libraries.appCompat
     api libraries.koinAndroid
     api libraries.material
-    api libraries.rxJavaAndroid
     api libraries.rxJava
-    api libraries.timber
+    api libraries.rxJavaAndroid
     api libraries.viewModelExtensions
     implementation project(":core-koin")
     implementation project(":core-utils")
-
     testImplementation project(":core-mvi-test")
 }
