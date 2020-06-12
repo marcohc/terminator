@@ -3,12 +3,12 @@ apply from: '../config/android-library.gradle'
 dependencies {
     api libraries.androidBilling
     api libraries.koptional
-    implementation (libraries.timber) { exclude group: "org.jetbrains:annotations" }
     implementation libraries.jetbrainsAnnotations
     implementation libraries.roomRuntime
     implementation libraries.roomRxJava2
     implementation libraries.rxJava
     implementation libraries.rxJavaAndroid
+    implementation libraries.timber
     implementation project(":core-koin")
     implementation project(":core-utils")
     kapt libraries.roomCompile

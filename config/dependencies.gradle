@@ -38,7 +38,7 @@ ext.libraries = [
         googlePlayServicesAuth  : "com.google.android.gms:play-services-auth:18.0.0",
         googlePlayServicesTasks : "com.google.android.gms:play-services-tasks:17.0.2",
         gson                    : "com.google.code.gson:gson:2.8.5",
-        jetbrainsAnnotations    : "org.jetbrains:annotations-java5:17.0.0",
+        jetbrainsAnnotations    : "org.jetbrains:annotations:19.0.0",
         junit                   : "junit:junit:4.13",
         koinAndroid             : "org.koin:koin-android:$versions.koin",
         koptional               : "com.gojuno.koptional:koptional:1.6.0",
