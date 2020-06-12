@@ -3,7 +3,7 @@ apply from: '../config/android-library.gradle'
 dependencies {
     api libraries.firebase.ads
     api libraries.koptional
-    implementation (libraries.timber) { exclude group: "org.intellij.lang.annotations" }
+    implementation (libraries.timber) { exclude group: "org.jetbrains:annotations" }
     implementation libraries.appCompat
     implementation libraries.pollfish
     implementation libraries.rxJava

@@ -2,5 +2,5 @@ apply from: '../config/android-library.gradle'
 
 dependencies {
     api libraries.firebase.analytics
-    implementation (libraries.timber) { exclude group: "org.intellij.lang.annotations" }
+    implementation (libraries.timber) { exclude group: "org.jetbrains:annotations" }
 }

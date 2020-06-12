@@ -4,7 +4,7 @@ dependencies {
     api libraries.firebase.firestore
     api libraries.koptional
     api project(":core-firebase")
-    implementation (libraries.timber) { exclude group: "org.intellij.lang.annotations" }
+    implementation (libraries.timber) { exclude group: "org.jetbrains:annotations" }
     implementation libraries.kotlinReflect
     implementation libraries.rxJava
     implementation project(":core-koin")

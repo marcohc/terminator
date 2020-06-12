@@ -3,7 +3,7 @@ apply from: "../config/android-library.gradle"
 dependencies {
     api libraries.firebase.auth
     api libraries.googlePlayServicesAuth
-    implementation (libraries.timber) { exclude group: "org.intellij.lang.annotations" }
+    implementation (libraries.timber) { exclude group: "org.jetbrains:annotations" }
     implementation libraries.koptional
     implementation libraries.rxJava
     implementation project(":core-firebase")
