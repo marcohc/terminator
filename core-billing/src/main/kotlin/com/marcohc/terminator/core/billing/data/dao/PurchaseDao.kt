@@ -18,9 +18,6 @@ internal interface PurchaseDao {
     @Query("SELECT COUNT(*) FROM c")
     fun observeCount(): Flowable<Int>
 
-    @Query("SELECT * FROM c limit 1")
-    fun getLimit1(): Single<PurchaseEntity>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(purchase: PurchaseEntity)
 

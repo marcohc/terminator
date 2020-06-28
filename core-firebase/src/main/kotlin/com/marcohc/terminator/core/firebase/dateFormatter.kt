@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.marcohc.terminator.core.firebase
 
 import android.annotation.SuppressLint
@@ -5,7 +7,6 @@ import com.google.firebase.Timestamp
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
-import org.threeten.bp.ZoneOffset
 import java.text.SimpleDateFormat
 import java.util.Date
 
