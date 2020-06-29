@@ -1,0 +1,9 @@
+apply from: '../config/android-library.gradle'
+
+dependencies {
+    api libraries.firebase.messaging
+    implementation libraries.rxJava
+    implementation libraries.timber
+    implementation project(":core-koin")
+    implementation project(":core-utils")
+}
