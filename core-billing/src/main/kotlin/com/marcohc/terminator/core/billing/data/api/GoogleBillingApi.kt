@@ -45,7 +45,7 @@ internal class GoogleBillingApi(
             .enablePendingPurchases()
             // This listener gets trigger when initializing the app or the user buys something
             .setListener { billingResult, purchasesList ->
-                val responseCode = billingResult?.responseCode
+                val responseCode = billingResult.responseCode
                 Timber.v("onPurchasesUpdated: $responseCode")
                 logBillingResult(responseCode)
                 if (responseCode == BillingClient.BillingResponseCode.OK) {
@@ -59,8 +59,8 @@ internal class GoogleBillingApi(
         }
     }
 
-    override fun onBillingSetupFinished(billingResult: BillingResult?) {
-        val responseCode = billingResult?.responseCode
+    override fun onBillingSetupFinished(billingResult: BillingResult) {
+        val responseCode = billingResult.responseCode
         Timber.v("onBillingSetupFinished: $responseCode")
         logBillingResult(responseCode)
         if (responseCode == BillingClient.BillingResponseCode.OK) {
