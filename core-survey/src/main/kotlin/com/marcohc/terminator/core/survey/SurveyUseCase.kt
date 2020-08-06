@@ -1,12 +1,10 @@
-package com.marcohc.terminator.core.ads.survey
+package com.marcohc.terminator.core.survey
 
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.marcohc.terminator.core.ads.AdsConstants
-import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.mvi.ext.getOrCreateFromParentScope
 import com.marcohc.terminator.core.utils.toObservableDefault
 import com.pollfish.classes.SurveyInfo
@@ -39,7 +37,7 @@ interface SurveyUseCase {
         fun Scope.getOrCreateScopedSurveyUseCase(
                 analyticsScopeId: String,
                 activity: AppCompatActivity
-        ): SurveyUseCase = getOrCreateFromParentScope(AdsModule.scopeId) { factorySurveyUseCase(analyticsScopeId, activity) }
+        ): SurveyUseCase = getOrCreateFromParentScope(SurveyModule.scopeId) { factorySurveyUseCase(analyticsScopeId, activity) }
 
         fun Scope.factorySurveyUseCase(
                 analyticsScopeId: String,
@@ -50,8 +48,8 @@ interface SurveyUseCase {
                 analytics = get(),
                 scopeId = analyticsScopeId
             ),
-            debug = get(named(AdsConstants.SURVEY_DEBUG)),
-            apiKey = get(named(AdsConstants.SURVEY_API_KEY))
+            debug = get(named(SurveyConstants.SURVEY_DEBUG)),
+            apiKey = get(named(SurveyConstants.SURVEY_API_KEY))
         )
 
         fun factoryStubSurveyUseCase(): SurveyUseCase = object : SurveyUseCase {

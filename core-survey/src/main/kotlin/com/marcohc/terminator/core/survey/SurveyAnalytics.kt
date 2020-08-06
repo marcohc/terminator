@@ -1,4 +1,4 @@
-package com.marcohc.terminator.core.ads.survey
+package com.marcohc.terminator.core.survey
 
 import android.os.Bundle
 import com.marcohc.terminator.core.analytics.Analytics

@@ -1,4 +1,4 @@
-package com.marcohc.terminator.core.ads.survey
+package com.marcohc.terminator.core.survey
 
 sealed class SurveyEvent {
     object NotLoadedYet : SurveyEvent()
