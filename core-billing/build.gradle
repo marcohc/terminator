@@ -4,6 +4,7 @@ dependencies {
     api libraries.androidBilling
     api libraries.koptional
     implementation libraries.jetbrainsAnnotations
+    implementation libraries.lifecycle
     implementation libraries.roomRuntime
     implementation libraries.roomRxJava2
     implementation libraries.rxJava

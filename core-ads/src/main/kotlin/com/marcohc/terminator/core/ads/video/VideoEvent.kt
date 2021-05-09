@@ -9,6 +9,5 @@ sealed class VideoEvent {
             val type: String?,
             val amount: Int?
     ) : VideoEvent()
-    object RewardedFailedToLoad : VideoEvent()
     object Closed : VideoEvent()
 }

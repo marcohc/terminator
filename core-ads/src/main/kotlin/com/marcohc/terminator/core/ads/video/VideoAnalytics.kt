@@ -1,13 +1,11 @@
 package com.marcohc.terminator.core.ads.video
 
 import android.os.Bundle
-import com.marcohc.terminator.core.ads.banner.BannerAnalyticsImpl
 import com.marcohc.terminator.core.ads.video.VideoEvent.Closed
 import com.marcohc.terminator.core.ads.video.VideoEvent.FailedToLoad
 import com.marcohc.terminator.core.ads.video.VideoEvent.Loaded
 import com.marcohc.terminator.core.ads.video.VideoEvent.Opened
 import com.marcohc.terminator.core.ads.video.VideoEvent.Rewarded
-import com.marcohc.terminator.core.ads.video.VideoEvent.RewardedFailedToLoad
 import com.marcohc.terminator.core.analytics.Analytics
 import io.reactivex.Completable
 
@@ -28,8 +26,10 @@ internal class VideoAnalyticsImpl(
             is FailedToLoad -> logEvents("not_available")
             is Opened -> logEvents("opened")
             is Rewarded -> logEvents("rewarded")
-            is RewardedFailedToLoad -> logEvents("rewarded_failed_to_load")
             is Closed -> logEvents("closed")
+            else -> {
+                // No-op
+            }
         }
     }
 

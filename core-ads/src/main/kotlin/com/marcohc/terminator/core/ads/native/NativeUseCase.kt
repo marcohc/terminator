@@ -11,6 +11,7 @@ import com.gojuno.koptional.Some
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.formats.NativeAdOptions
 import com.google.android.gms.ads.formats.UnifiedNativeAd
@@ -109,8 +110,8 @@ internal class NativeUseCaseImpl(
                         subject.onNext(NativeEvent.Loaded)
                     }
 
-                    override fun onAdFailedToLoad(errorCode: Int) {
-                        Timber.v("NativeEvent.FailedToLoad: $errorCode")
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        Timber.v("NativeEvent.FailedToLoad: $loadAdError")
                         subject.onNext(NativeEvent.FailedToLoad)
                     }
 
@@ -132,11 +133,6 @@ internal class NativeUseCaseImpl(
                     override fun onAdClicked() {
                         Timber.v("NativeEvent.Click")
                         subject.onNext(NativeEvent.Click)
-                    }
-
-                    override fun onAdLeftApplication() {
-                        Timber.v("NativeEvent.LeftApplication")
-                        subject.onNext(NativeEvent.LeftApplication)
                     }
                 }
             )

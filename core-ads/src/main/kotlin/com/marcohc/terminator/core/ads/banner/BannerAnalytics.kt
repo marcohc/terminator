@@ -5,7 +5,6 @@ import com.marcohc.terminator.core.ads.banner.BannerEvent.Click
 import com.marcohc.terminator.core.ads.banner.BannerEvent.Closed
 import com.marcohc.terminator.core.ads.banner.BannerEvent.FailedToLoad
 import com.marcohc.terminator.core.ads.banner.BannerEvent.Impression
-import com.marcohc.terminator.core.ads.banner.BannerEvent.LeftApplication
 import com.marcohc.terminator.core.ads.banner.BannerEvent.Loaded
 import com.marcohc.terminator.core.ads.banner.BannerEvent.Opened
 import com.marcohc.terminator.core.analytics.Analytics
@@ -30,7 +29,6 @@ internal class BannerAnalyticsImpl(
                 analytics.logClick(scopeId, "${BASE_EVENT}_click")
                 logEvents("click")
             }
-            is LeftApplication -> logEvents("left_application")
             is Closed -> logEvents("closed")
         }
     }

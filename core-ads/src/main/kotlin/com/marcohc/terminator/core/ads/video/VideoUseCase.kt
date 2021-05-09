@@ -3,10 +3,11 @@ package com.marcohc.terminator.core.ads.video
 import android.app.Activity
 import android.content.Context
 import androidx.annotation.MainThread
+import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.marcohc.terminator.core.ads.AdsConstants
 import com.marcohc.terminator.core.ads.AdsModule
@@ -35,13 +36,13 @@ interface VideoUseCase {
     companion object {
 
         fun Scope.getOrCreateScopedVideoUseCase(
-                analyticsScopeId: String,
-                activity: Activity
+            analyticsScopeId: String,
+            activity: Activity
         ): VideoUseCase = getOrCreateFromParentScope(AdsModule.scopeId) { factoryVideoUseCase(analyticsScopeId, activity) }
 
         fun Scope.factoryVideoUseCase(
-                analyticsScopeId: String,
-                activity: Activity
+            analyticsScopeId: String,
+            activity: Activity
         ): VideoUseCase = VideoUseCaseImpl(
             context = activity,
             adUnitId = get(named(AdsConstants.VIDEO_ADS_UNIT_ID)),
@@ -62,17 +63,52 @@ interface VideoUseCase {
 }
 
 internal class VideoUseCaseImpl(
-        private val context: Context,
-        private val adUnitId: String,
-        private val analytics: VideoAnalytics
+    private val context: Context,
+    adUnitId: String,
+    private val analytics: VideoAnalytics
 ) : VideoUseCase {
 
     private val subject = BehaviorSubject.createDefault<VideoEvent>(VideoEvent.NotLoadedYet)
-    private lateinit var rewardedAd: RewardedAd
+    private var rewardedAd: RewardedAd? = null
 
     init {
-        loadAd()
-        Timber.v("rewardedVideoAd: $context / $rewardedAd")
+        RewardedAd.load(
+            context,
+            adUnitId,
+            AdRequest.Builder().build(),
+            object : RewardedAdLoadCallback() {
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    Timber.v("InterstitialEvent.onAdFailedToLoad: $loadAdError")
+                    subject.onNext(VideoEvent.FailedToLoad)
+                }
+
+                override fun onAdLoaded(rewardedAd: RewardedAd) {
+                    Timber.v("rewardedVideoAd: $context / $rewardedAd")
+                    this@VideoUseCaseImpl.rewardedAd = rewardedAd
+
+                    this@VideoUseCaseImpl.rewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                        override fun onAdDismissedFullScreenContent() {
+                            Timber.v("VideoEvent.onAdDismissedFullScreenContent")
+                            subject.onNext(VideoEvent.Closed)
+                        }
+
+                        override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                            Timber.v("VideoEvent.onAdFailedToShowFullScreenContent: $adError")
+                            subject.onNext(VideoEvent.FailedToLoad)
+                        }
+
+                        override fun onAdShowedFullScreenContent() {
+                            Timber.v("VideoEvent.onAdShowedFullScreenContent")
+                            subject.onNext(VideoEvent.Opened)
+                            this@VideoUseCaseImpl.rewardedAd = null
+                        }
+                    }
+
+                    Timber.v("InterstitialEvent.onAdLoaded")
+                    subject.onNext(VideoEvent.Loaded)
+                }
+            }
+        )
     }
 
     override fun observe(): Observable<VideoEvent> = subject.hide()
@@ -87,60 +123,9 @@ internal class VideoUseCaseImpl(
     override fun show(activity: Activity) = Completable
         .fromAction {
             Timber.v("VideoEvent: open video")
-            if (rewardedAd.isLoaded) {
-                Timber.v("VideoEvent: ad is loaded, show it!")
-                rewardedAd.show(activity, object : RewardedAdCallback() {
-                    override fun onRewardedAdOpened() {
-                        Timber.v("VideoEvent.Opened")
-                        subject.onNext(VideoEvent.Opened)
-                    }
-
-                    override fun onRewardedAdClosed() {
-                        Timber.v("VideoEvent.Closed")
-                        subject.onNext(VideoEvent.Closed)
-                        subject.onNext(VideoEvent.NotLoadedYet)
-                        loadAd()
-                    }
-
-                    override fun onUserEarnedReward(rewardItem: RewardItem) {
-                        Timber.v("VideoEvent.Rewarded: ${rewardItem.type} / ${rewardItem.amount}")
-                        subject.onNext(VideoEvent.Rewarded(rewardItem.type, rewardItem.amount))
-                    }
-
-                    override fun onRewardedAdFailedToShow(errorCode: Int) {
-                        when (errorCode) {
-                            ERROR_CODE_INTERNAL_ERROR -> Timber.v("VideoEvent.FailedToLoad: ERROR_CODE_INTERNAL_ERROR")
-                            ERROR_CODE_AD_REUSED -> Timber.v("VideoEvent.FailedToLoad: ERROR_CODE_AD_REUSED")
-                            ERROR_CODE_NOT_READY -> Timber.v("VideoEvent.FailedToLoad: ERROR_CODE_NOT_READY")
-                            ERROR_CODE_APP_NOT_FOREGROUND -> Timber.v("VideoEvent.FailedToLoad: ERROR_CODE_APP_NOT_FOREGROUND")
-                        }
-                        subject.onNext(VideoEvent.RewardedFailedToLoad)
-                    }
-                })
+            rewardedAd?.show(activity) { rewardItem ->
+                Timber.v("VideoEvent.Rewarded: ${rewardItem.type} / ${rewardItem.amount}")
+                subject.onNext(VideoEvent.Rewarded(rewardItem.type, rewardItem.amount))
             }
         }
-
-    private fun loadAd() {
-        val builder = AdRequest.Builder()
-        rewardedAd = RewardedAd(context, adUnitId)
-        rewardedAd.loadAd(
-            builder.build(),
-            object : RewardedAdLoadCallback() {
-                override fun onRewardedAdLoaded() {
-                    Timber.v("VideoEvent.Loaded")
-                    subject.onNext(VideoEvent.Loaded)
-                }
-
-                override fun onRewardedAdFailedToLoad(errorCode: Int) {
-                    when (errorCode) {
-                        AdRequest.ERROR_CODE_INTERNAL_ERROR -> Timber.v("VideoEvent.FailedToLoad: ERROR_CODE_INTERNAL_ERROR")
-                        AdRequest.ERROR_CODE_INVALID_REQUEST -> Timber.v("VideoEvent.FailedToLoad: ERROR_CODE_INVALID_REQUEST")
-                        AdRequest.ERROR_CODE_NETWORK_ERROR -> Timber.v("VideoEvent.FailedToLoad: ERROR_CODE_NETWORK_ERROR")
-                        AdRequest.ERROR_CODE_NO_FILL -> Timber.v("VideoEvent.FailedToLoad: ERROR_CODE_NO_FILL")
-                    }
-                    subject.onNext(VideoEvent.FailedToLoad)
-                }
-            })
-    }
-
 }

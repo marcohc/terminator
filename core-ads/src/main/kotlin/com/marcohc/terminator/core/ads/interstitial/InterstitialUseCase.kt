@@ -5,10 +5,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.marcohc.terminator.core.ads.AdsConstants
 import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.mvi.ext.getOrCreateFromParentScope
@@ -34,13 +40,13 @@ interface InterstitialUseCase {
     companion object {
 
         fun Scope.getOrCreateScopedInterstitialUseCase(
-                analyticsScopeId: String,
-                activity: AppCompatActivity
+            analyticsScopeId: String,
+            activity: AppCompatActivity
         ) = getOrCreateFromParentScope(AdsModule.scopeId) { factoryInterstitialUseCase(analyticsScopeId, activity) }
 
         fun Scope.factoryInterstitialUseCase(
-                analyticsScopeId: String,
-                activity: AppCompatActivity
+            analyticsScopeId: String,
+            activity: AppCompatActivity
         ): InterstitialUseCase = InterstitialUseCaseImpl(
             activity = activity,
             analytics = InterstitialAnalyticsImpl(
@@ -61,14 +67,14 @@ interface InterstitialUseCase {
 }
 
 internal class InterstitialUseCaseImpl(
-        private val activity: AppCompatActivity,
-        private val analytics: InterstitialAnalytics,
-        private val adUnitId: String
+    private val activity: AppCompatActivity,
+    private val analytics: InterstitialAnalytics,
+    private val adUnitId: String
 ) : InterstitialUseCase,
     LifecycleObserver {
 
     private val subject = BehaviorSubject.createDefault<InterstitialEvent>(InterstitialEvent.NotLoadedYet)
-    private lateinit var interstitialAd: InterstitialAd
+    private var interstitialAd: InterstitialAd? = null
 
     init {
         activity.lifecycle.addObserver(this)
@@ -77,50 +83,44 @@ internal class InterstitialUseCaseImpl(
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
 
-        MobileAds.initialize(activity) {}
+        MobileAds.initialize(activity)
 
-        interstitialAd = InterstitialAd(activity)
-        interstitialAd.adUnitId = adUnitId
+        InterstitialAd.load(
+            activity,
+            adUnitId,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    Timber.v("InterstitialEvent.onAdFailedToLoad: $loadAdError")
+                    subject.onNext(InterstitialEvent.FailedToLoad)
+                }
 
-        interstitialAd.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                Timber.v("InterstitialEvent.onAdLoaded")
-                subject.onNext(InterstitialEvent.Loaded)
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    this@InterstitialUseCaseImpl.interstitialAd = interstitialAd
+
+                    this@InterstitialUseCaseImpl.interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                        override fun onAdDismissedFullScreenContent() {
+                            Timber.v("InterstitialEvent.onAdDismissedFullScreenContent")
+                            subject.onNext(InterstitialEvent.Closed)
+                        }
+
+                        override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                            Timber.v("InterstitialEvent.onAdFailedToShowFullScreenContent: $adError")
+                            subject.onNext(InterstitialEvent.FailedToLoad)
+                        }
+
+                        override fun onAdShowedFullScreenContent() {
+                            Timber.v("InterstitialEvent.onAdShowedFullScreenContent")
+                            subject.onNext(InterstitialEvent.Opened)
+                            this@InterstitialUseCaseImpl.interstitialAd = null
+                        }
+                    }
+
+                    Timber.v("InterstitialEvent.onAdLoaded")
+                    subject.onNext(InterstitialEvent.Loaded)
+                }
             }
-
-            override fun onAdFailedToLoad(errorCode: Int) {
-                Timber.v("InterstitialEvent.FailedToLoad: $errorCode")
-                subject.onNext(InterstitialEvent.FailedToLoad)
-            }
-
-            override fun onAdOpened() {
-                Timber.v("InterstitialEvent.Opened")
-                subject.onNext(InterstitialEvent.Opened)
-            }
-
-            override fun onAdImpression() {
-                Timber.v("InterstitialEvent.onAdImpression")
-                subject.onNext(InterstitialEvent.Impression)
-            }
-
-            override fun onAdClosed() {
-                Timber.v("InterstitialEvent.Closed")
-                subject.onNext(InterstitialEvent.Closed)
-                loadNewAd()
-            }
-
-            override fun onAdClicked() {
-                Timber.v("InterstitialEvent.Click")
-                subject.onNext(InterstitialEvent.Click)
-            }
-
-            override fun onAdLeftApplication() {
-                Timber.v("InterstitialEvent.LeftApplication")
-                subject.onNext(InterstitialEvent.LeftApplication)
-            }
-        }
-
-        loadNewAd()
+        )
     }
 
     override fun observe(): Observable<InterstitialEvent> = subject.hide()
@@ -131,13 +131,6 @@ internal class InterstitialUseCaseImpl(
 
     @MainThread
     override fun show() = Completable.fromAction {
-        if (interstitialAd.isLoaded) {
-            interstitialAd.show()
-        }
+        interstitialAd?.show(activity)
     }
-
-    private fun loadNewAd() {
-        interstitialAd.loadAd(AdRequest.Builder().build())
-    }
-
 }

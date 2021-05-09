@@ -9,6 +9,5 @@ sealed class BannerEvent {
     object Opened : BannerEvent()
     object Impression : BannerEvent()
     object Click : BannerEvent()
-    object LeftApplication : BannerEvent()
     object Closed : BannerEvent()
 }

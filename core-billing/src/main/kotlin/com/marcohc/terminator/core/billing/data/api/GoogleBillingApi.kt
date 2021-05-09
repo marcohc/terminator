@@ -26,12 +26,12 @@ import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 
 internal class GoogleBillingApi(
-        private val context: Context,
-        private val skuList: List<String>,
-        private val saveProductsUseCase: SaveProductsUseCase,
-        private val deleteAllPurchasesUseCase: DeleteAllPurchasesUseCase,
-        private val deleteAndSavePurchasesUseCase: DeleteAndSavePurchasesUseCase,
-        private val purchaseEventBus: PurchaseEventBus
+    private val context: Context,
+    private val skuList: List<String>,
+    private val saveProductsUseCase: SaveProductsUseCase,
+    private val deleteAllPurchasesUseCase: DeleteAllPurchasesUseCase,
+    private val deleteAndSavePurchasesUseCase: DeleteAndSavePurchasesUseCase,
+    private val purchaseEventBus: PurchaseEventBus
 ) : BillingApi,
     BillingClientStateListener {
 
@@ -151,7 +151,7 @@ internal class GoogleBillingApi(
                 deleteAllPurchasesUseCase.execute()
             }
         } else {
-            val lastPurchase = purchasesList.maxBy { it.purchaseTime }
+            val lastPurchase = purchasesList.maxByOrNull { it.purchaseTime }
             if (lastPurchase != null) {
                 // Store purchase
                 compositeDisposable.executeCompletableOnIo {

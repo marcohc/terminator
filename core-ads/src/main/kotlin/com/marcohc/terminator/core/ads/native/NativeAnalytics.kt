@@ -5,7 +5,6 @@ import com.marcohc.terminator.core.ads.native.NativeEvent.Click
 import com.marcohc.terminator.core.ads.native.NativeEvent.Closed
 import com.marcohc.terminator.core.ads.native.NativeEvent.FailedToLoad
 import com.marcohc.terminator.core.ads.native.NativeEvent.Impression
-import com.marcohc.terminator.core.ads.native.NativeEvent.LeftApplication
 import com.marcohc.terminator.core.ads.native.NativeEvent.Loaded
 import com.marcohc.terminator.core.ads.native.NativeEvent.Opened
 import com.marcohc.terminator.core.analytics.Analytics
@@ -30,8 +29,10 @@ internal class NativeAnalyticsImpl(
                 analytics.logClick(scopeId, "${BASE_EVENT}_click")
                 logEvents("click")
             }
-            is LeftApplication -> logEvents("left_application")
             is Closed -> logEvents("closed")
+            else -> {
+                // No-op
+            }
         }
     }
 

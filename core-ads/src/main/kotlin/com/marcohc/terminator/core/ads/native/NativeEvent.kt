@@ -7,6 +7,5 @@ sealed class NativeEvent {
     object Opened : NativeEvent()
     object Impression : NativeEvent()
     object Click : NativeEvent()
-    object LeftApplication : NativeEvent()
     object Closed : NativeEvent()
 }

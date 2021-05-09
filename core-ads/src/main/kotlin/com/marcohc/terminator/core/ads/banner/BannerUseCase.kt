@@ -9,6 +9,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.marcohc.terminator.core.ads.AdsConstants
 import com.marcohc.terminator.core.ads.AdsModule
@@ -90,8 +91,8 @@ internal class BannerUseCaseImpl(
                 subject.onNext(BannerEvent.Loaded(adView))
             }
 
-            override fun onAdFailedToLoad(errorCode: Int) {
-                Timber.v("BannerEvent.FailedToLoad: $errorCode")
+            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                Timber.v("BannerEvent.FailedToLoad: $loadAdError")
                 subject.onNext(BannerEvent.FailedToLoad)
             }
 
@@ -114,11 +115,6 @@ internal class BannerUseCaseImpl(
             override fun onAdClicked() {
                 Timber.v("BannerEvent.Click")
                 subject.onNext(BannerEvent.Click)
-            }
-
-            override fun onAdLeftApplication() {
-                Timber.v("BannerEvent.LeftApplication")
-                subject.onNext(BannerEvent.LeftApplication)
             }
         }
 
