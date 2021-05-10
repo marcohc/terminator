@@ -3,7 +3,9 @@ package com.marcohc.terminator.core.ads.video
 import android.app.Activity
 import android.content.Context
 import androidx.annotation.MainThread
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
@@ -40,14 +42,14 @@ interface VideoUseCase {
 
         fun Scope.getOrCreateScopedVideoUseCase(
             analyticsScopeId: String,
-            activity: Activity
+            activity: AppCompatActivity
         ): VideoUseCase = getOrCreateFromParentScope(AdsModule.scopeId) { factoryVideoUseCase(analyticsScopeId, activity) }
 
         fun Scope.factoryVideoUseCase(
             analyticsScopeId: String,
-            activity: Activity
+            activity: AppCompatActivity
         ): VideoUseCase = VideoUseCaseImpl(
-            context = activity,
+            activity = activity,
             adUnitId = get(named(AdsConstants.VIDEO_ADS_UNIT_ID)),
             analytics = VideoAnalyticsImpl(
                 analytics = get(),
@@ -66,21 +68,26 @@ interface VideoUseCase {
 }
 
 internal class VideoUseCaseImpl(
-    private val context: Context,
+    private val activity: AppCompatActivity,
     private val adUnitId: String,
     private val analytics: VideoAnalytics
-) : VideoUseCase {
+) : VideoUseCase,
+    LifecycleObserver {
 
     private val subject = BehaviorSubject.createDefault<VideoEvent>(VideoEvent.NotLoadedYet)
     private var rewardedAd: RewardedAd? = null
 
+    init {
+        activity.lifecycle.addObserver(this)
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
 
-        MobileAds.initialize(context)
+        MobileAds.initialize(activity)
 
         RewardedAd.load(
-            context,
+            activity,
             adUnitId,
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
@@ -110,7 +117,7 @@ internal class VideoUseCaseImpl(
                         }
                     }
 
-                    Timber.v("rewardedVideoAd: $context / $rewardedAd")
+                    Timber.v("rewardedVideoAd: $activity / $rewardedAd")
                     Timber.v("VideoEvent.onAdLoaded")
                     subject.onNext(VideoEvent.Loaded)
                 }
