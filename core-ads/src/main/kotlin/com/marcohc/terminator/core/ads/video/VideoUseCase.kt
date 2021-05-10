@@ -3,10 +3,13 @@ package com.marcohc.terminator.core.ads.video
 import android.app.Activity
 import android.content.Context
 import androidx.annotation.MainThread
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.marcohc.terminator.core.ads.AdsConstants
@@ -64,26 +67,29 @@ interface VideoUseCase {
 
 internal class VideoUseCaseImpl(
     private val context: Context,
-    adUnitId: String,
+    private val adUnitId: String,
     private val analytics: VideoAnalytics
 ) : VideoUseCase {
 
     private val subject = BehaviorSubject.createDefault<VideoEvent>(VideoEvent.NotLoadedYet)
     private var rewardedAd: RewardedAd? = null
 
-    init {
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
+
+        MobileAds.initialize(context)
+
         RewardedAd.load(
             context,
             adUnitId,
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    Timber.v("InterstitialEvent.onAdFailedToLoad: $loadAdError")
+                    Timber.v("VideoEvent.onAdFailedToLoad: $loadAdError")
                     subject.onNext(VideoEvent.FailedToLoad)
                 }
 
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
-                    Timber.v("rewardedVideoAd: $context / $rewardedAd")
                     this@VideoUseCaseImpl.rewardedAd = rewardedAd
 
                     this@VideoUseCaseImpl.rewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
@@ -104,7 +110,8 @@ internal class VideoUseCaseImpl(
                         }
                     }
 
-                    Timber.v("InterstitialEvent.onAdLoaded")
+                    Timber.v("rewardedVideoAd: $context / $rewardedAd")
+                    Timber.v("VideoEvent.onAdLoaded")
                     subject.onNext(VideoEvent.Loaded)
                 }
             }
@@ -122,7 +129,7 @@ internal class VideoUseCaseImpl(
     @MainThread
     override fun show(activity: Activity) = Completable
         .fromAction {
-            Timber.v("VideoEvent: open video")
+            Timber.v("show: open video")
             rewardedAd?.show(activity) { rewardItem ->
                 Timber.v("VideoEvent.Rewarded: ${rewardItem.type} / ${rewardItem.amount}")
                 subject.onNext(VideoEvent.Rewarded(rewardItem.type, rewardItem.amount))
