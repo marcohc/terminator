@@ -13,8 +13,8 @@ import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.formats.NativeAdOptions
-import com.google.android.gms.ads.formats.UnifiedNativeAd
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.marcohc.terminator.core.ads.AdsConstants.NATIVE_ADS_UNIT_ID
 import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.mvi.ext.getOrCreateFromParentScope
@@ -29,7 +29,7 @@ import timber.log.Timber
 
 interface NativeUseCase {
 
-    fun getReadyToShowAd(): Single<Optional<UnifiedNativeAd>>
+    fun getReadyToShowAd(): Single<Optional<NativeAd>>
 
     @MainThread
     fun markLastAsSeen(): Completable
@@ -37,13 +37,13 @@ interface NativeUseCase {
     companion object {
 
         fun Scope.getOrCreateScopedNativeUseCase(
-                analyticsScopeId: String,
-                activity: AppCompatActivity
+            analyticsScopeId: String,
+            activity: AppCompatActivity
         ) = getOrCreateFromParentScope(AdsModule.scopeId) { factoryNativeUseCase(analyticsScopeId, activity) }
 
         fun Scope.factoryNativeUseCase(
-                analyticsScopeId: String,
-                activity: AppCompatActivity
+            analyticsScopeId: String,
+            activity: AppCompatActivity
         ): NativeUseCase = NativeUseCaseImpl(
             activity = activity,
             analytics = NativeAnalyticsImpl(
@@ -56,7 +56,7 @@ interface NativeUseCase {
         )
 
         fun factoryStubNativeUseCase() = object : NativeUseCase {
-            override fun getReadyToShowAd() = Single.never<Optional<UnifiedNativeAd>>()
+            override fun getReadyToShowAd() = Single.never<Optional<NativeAd>>()
             override fun markLastAsSeen() = Completable.complete()
         }
 
@@ -67,18 +67,18 @@ interface NativeUseCase {
 }
 
 internal class NativeUseCaseImpl(
-        private val activity: AppCompatActivity,
-        private val analytics: NativeAnalytics,
-        private val adUnitId: String,
-        private val adChoicesPlacement: Int,
-        private val numberOfAds: Int
+    private val activity: AppCompatActivity,
+    private val analytics: NativeAnalytics,
+    private val adUnitId: String,
+    private val adChoicesPlacement: Int,
+    private val numberOfAds: Int
 ) : NativeUseCase,
     LifecycleObserver {
 
     private val compositeDisposable = CompositeDisposable()
     private val subject = BehaviorSubject.createDefault<NativeEvent>(NativeEvent.NotLoadedYet)
     private var adLoader: AdLoader? = null
-    private var nativeAdsList = mutableListOf<NativeAd>()
+    private var nativeAdsList = mutableListOf<MyNativeAd>()
 
     init {
         activity.lifecycle.addObserver(this)
@@ -90,52 +90,50 @@ internal class NativeUseCaseImpl(
         MobileAds.initialize(activity) {}
 
         // Track events
-        compositeDisposable.add(
+        val add = compositeDisposable.add(
             subject
                 .flatMapCompletable(analytics::logEvent)
                 .subscribeOn(Schedulers.io())
                 .subscribe()
         )
 
-        adLoader = AdLoader.Builder(activity, adUnitId)
-            .forUnifiedNativeAd { unifiedNativeAd: UnifiedNativeAd ->
-                val nativeAd = NativeAd(unifiedNativeAd)
-                Timber.v("$nativeAd")
-                nativeAdsList.add(nativeAd)
+        val adLoader = AdLoader.Builder(activity, adUnitId)
+            .forNativeAd { nativeAd: NativeAd ->
+                val myNativeAd = MyNativeAd(nativeAd)
+                Timber.v("$myNativeAd")
+                nativeAdsList.add(myNativeAd)
             }
-            .withAdListener(
-                object : AdListener() {
-                    override fun onAdLoaded() {
-                        Timber.v("NativeEvent.onAdLoaded")
-                        subject.onNext(NativeEvent.Loaded)
-                    }
-
-                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        Timber.v("NativeEvent.FailedToLoad: $loadAdError")
-                        subject.onNext(NativeEvent.FailedToLoad)
-                    }
-
-                    override fun onAdOpened() {
-                        Timber.v("NativeEvent.Opened")
-                        subject.onNext(NativeEvent.Opened)
-                    }
-
-                    override fun onAdImpression() {
-                        Timber.v("NativeEvent.onAdImpression")
-                        subject.onNext(NativeEvent.Impression)
-                    }
-
-                    override fun onAdClosed() {
-                        Timber.v("NativeEvent.Closed")
-                        subject.onNext(NativeEvent.Closed)
-                    }
-
-                    override fun onAdClicked() {
-                        Timber.v("NativeEvent.Click")
-                        subject.onNext(NativeEvent.Click)
-                    }
+            .withAdListener(object : AdListener() {
+                override fun onAdLoaded() {
+                    Timber.v("NativeEvent.onAdLoaded")
+                    subject.onNext(NativeEvent.Loaded)
                 }
-            )
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    Timber.v("NativeEvent.FailedToLoad: $loadAdError")
+                    subject.onNext(NativeEvent.FailedToLoad)
+                }
+
+                override fun onAdOpened() {
+                    Timber.v("NativeEvent.Opened")
+                    subject.onNext(NativeEvent.Opened)
+                }
+
+                override fun onAdImpression() {
+                    Timber.v("NativeEvent.onAdImpression")
+                    subject.onNext(NativeEvent.Impression)
+                }
+
+                override fun onAdClosed() {
+                    Timber.v("NativeEvent.Closed")
+                    subject.onNext(NativeEvent.Closed)
+                }
+
+                override fun onAdClicked() {
+                    Timber.v("NativeEvent.Click")
+                    subject.onNext(NativeEvent.Click)
+                }
+            })
             .withNativeAdOptions(
                 NativeAdOptions.Builder()
                     .setAdChoicesPlacement(adChoicesPlacement)
@@ -146,11 +144,12 @@ internal class NativeUseCaseImpl(
             .build()
 
         loadAd()
+
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        nativeAdsList.forEach { it.unifiedNativeAd.destroy() }
+        nativeAdsList.forEach { it.nativeAd.destroy() }
         nativeAdsList.clear()
         compositeDisposable.clear()
     }
@@ -160,7 +159,7 @@ internal class NativeUseCaseImpl(
         if (firstNotSeen == null) {
             None
         } else {
-            Some(firstNotSeen.unifiedNativeAd)
+            Some(firstNotSeen.nativeAd)
         }
     }
 
@@ -179,18 +178,17 @@ internal class NativeUseCaseImpl(
             adLoader?.loadAds(
                 AdRequest.Builder()
                     // Use options
-                    .build()
-                , numberOfAds
+                    .build(), numberOfAds
             )
         }
     }
 
-    private data class NativeAd(
-            val unifiedNativeAd: UnifiedNativeAd,
-            var seen: Boolean = false
+    private data class MyNativeAd(
+        val nativeAd: NativeAd,
+        var seen: Boolean = false
     ) {
         override fun toString(): String {
-            return "NativeAd(unifiedNativeAd=${unifiedNativeAd.headline}, seen=$seen, hasVideoContent: ${unifiedNativeAd.mediaContent.videoController.hasVideoContent()})"
+            return "NativeAd(unifiedNativeAd=${nativeAd.headline}, seen=$seen, hasVideoContent: ${nativeAd.mediaContent?.videoController?.hasVideoContent()})"
         }
     }
 
