@@ -90,14 +90,14 @@ internal class NativeUseCaseImpl(
         MobileAds.initialize(activity) {}
 
         // Track events
-        val add = compositeDisposable.add(
+        compositeDisposable.add(
             subject
                 .flatMapCompletable(analytics::logEvent)
                 .subscribeOn(Schedulers.io())
                 .subscribe()
         )
 
-        val adLoader = AdLoader.Builder(activity, adUnitId)
+        adLoader = AdLoader.Builder(activity, adUnitId)
             .forNativeAd { nativeAd: NativeAd ->
                 val myNativeAd = MyNativeAd(nativeAd)
                 Timber.v("$myNativeAd")
@@ -144,7 +144,6 @@ internal class NativeUseCaseImpl(
             .build()
 
         loadAd()
-
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
