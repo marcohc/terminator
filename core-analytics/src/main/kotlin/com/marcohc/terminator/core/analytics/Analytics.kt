@@ -2,39 +2,40 @@ package com.marcohc.terminator.core.analytics
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 
 interface Analytics {
 
-    fun logAppOpened()
+    fun trackAppOpened()
 
-    fun logClick(
-            screenId: String,
-            itemId: String
+    @Deprecated("Use trackEvent instead")
+    fun trackClick(
+        screenId: String,
+        itemId: String
     )
 
-    fun logEvent(
-            eventId: String,
-            bundle: Bundle = Bundle()
+    fun trackEvent(
+        eventId: String,
+        bundle: Bundle = Bundle()
     )
 
-    fun logCheckoutStart(
-            value: Double,
-            currency: String
+    fun trackCheckoutStart(
+        value: Double,
+        currency: String
     )
 
-    fun logCheckoutEnd(
-            value: Double,
-            currency: String
+    fun trackCheckoutEnd(
+        value: Double,
+        currency: String
     )
 
-    fun logTutorialStarted()
+    fun trackTutorialStarted()
 
-    fun logTutorialCompleted()
+    fun trackTutorialCompleted()
 
-    fun logCurrentScreen(
-            activity: Activity,
-            screen: String
-    )
+    fun trackScreen(activity: Activity)
+
+    fun trackScreen(fragment: Fragment)
 
 }
 

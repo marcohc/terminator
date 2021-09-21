@@ -20,7 +20,7 @@ internal class SurveyAnalyticsImpl(
             is SurveyEvent.NotAvailable -> logEvents("not_available")
             is SurveyEvent.Received -> logEvents("available")
             is SurveyEvent.Opened -> {
-                analytics.logCheckoutStart(
+                analytics.trackCheckoutStart(
                     value = event.surveyPrice,
                     currency = "USD"
                 )
@@ -29,7 +29,7 @@ internal class SurveyAnalyticsImpl(
             is SurveyEvent.UserRejected -> logEvents("user_rejected")
             is SurveyEvent.NotEligible -> logEvents("not_eligible")
             is SurveyEvent.Rewarded -> {
-                analytics.logCheckoutEnd(
+                analytics.trackCheckoutEnd(
                     value = event.surveyPrice,
                     currency = "USD"
                 )
@@ -40,13 +40,13 @@ internal class SurveyAnalyticsImpl(
     }
 
     override fun logClick() = Completable.fromAction {
-        analytics.logClick(scopeId, "${BASE_EVENT}_click")
+        analytics.trackClick(scopeId, "${BASE_EVENT}_click")
         logEvents("click")
     }
 
     private fun logEvents(parameter: String) {
-        analytics.logEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
-        analytics.logEvent("${scopeId}_${BASE_EVENT}_${parameter}")
+        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
+        analytics.trackEvent("${scopeId}_${BASE_EVENT}_${parameter}")
     }
 
     private companion object {

@@ -30,8 +30,8 @@ internal class InterstitialAnalyticsImpl(
     }
 
     private fun logEvents(parameter: String) {
-        analytics.logEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
-        analytics.logEvent("${scopeId}_${BASE_EVENT}_${parameter}")
+        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
+        analytics.trackEvent("${scopeId}_${BASE_EVENT}_${parameter}")
     }
 
     private companion object {

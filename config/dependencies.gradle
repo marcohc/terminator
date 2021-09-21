@@ -7,7 +7,7 @@ ext.versions = [
         ],
         espresso: "3.2.0",
         koin    : "2.1.6",
-        kotlin  : "1.5.0",
+        kotlin  : "1.5.31",
         retrofit: "2.6.2",
         room    : "2.3.0"
 ]
