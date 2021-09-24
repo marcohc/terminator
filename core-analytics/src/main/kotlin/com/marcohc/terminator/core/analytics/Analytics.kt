@@ -1,8 +1,6 @@
 package com.marcohc.terminator.core.analytics
 
-import android.app.Activity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 
 interface Analytics {
 
@@ -33,9 +31,7 @@ interface Analytics {
 
     fun trackTutorialCompleted()
 
-    fun trackScreen(activity: Activity)
-
-    fun trackScreen(fragment: Fragment)
+    fun trackScreen(screenId: String)
 
 }
 

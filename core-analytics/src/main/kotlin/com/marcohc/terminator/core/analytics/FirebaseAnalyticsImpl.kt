@@ -68,20 +68,12 @@ class FirebaseAnalyticsImpl(
         logEventInFirebase(FirebaseAnalytics.Event.TUTORIAL_COMPLETE)
     }
 
-    override fun trackScreen(activity: Activity) {
-        trackScreen(activity::class.java.simpleName)
-    }
-
-    override fun trackScreen(fragment: Fragment) {
-        trackScreen(fragment::class.java.simpleName)
-    }
-
-    private fun trackScreen(screen: String) {
-        Timber.v("trackCurrentScreen: $screen")
+    override fun trackScreen(screenId: String) {
+        Timber.v("trackCurrentScreen: $screenId")
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW,
             Bundle().apply {
-                putString(FirebaseAnalytics.Param.SCREEN_NAME, screen)
-                putString(FirebaseAnalytics.Param.SCREEN_CLASS, screen)
+                putString(FirebaseAnalytics.Param.SCREEN_NAME, screenId)
+                putString(FirebaseAnalytics.Param.SCREEN_CLASS, screenId)
             }
         )
     }
