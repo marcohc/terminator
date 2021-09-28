@@ -1,4 +1,5 @@
 apply from: 'config/detekt.gradle'
+apply plugin: "maven"
 
 allprojects {
 

@@ -1,15 +1,16 @@
 ext.versions = [
-        android : [
+        android   : [
                 minSdk    : 17,
                 compileSdk: 30,
                 targetSdk : 30,
                 buildTools: "30.0.2"
         ],
-        espresso: "3.2.0",
-        koin    : "2.1.6",
-        kotlin  : "1.5.31",
-        retrofit: "2.6.2",
-        room    : "2.3.0"
+        espresso  : "3.2.0",
+        koin      : "2.1.6",
+        kotlin    : "1.5.31",
+        retrofit  : "2.6.2",
+        room      : "2.3.0",
+        terminator: "2.8.5",
 ]
 
 ext.gradlePlugins = [

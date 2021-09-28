@@ -4,6 +4,7 @@ apply plugin: "kotlin-android"
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
 
+apply from: "../config/publishLocal.gradle"
 apply from: "../config/version-update.gradle"
 
 android {
@@ -39,6 +40,11 @@ android {
     kapt {
         correctErrorTypes true
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {
