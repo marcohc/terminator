@@ -1,8 +1,6 @@
 package com.marcohc.terminator.core.analytics
 
-import android.app.Activity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 
@@ -11,14 +9,14 @@ class FirebaseAnalyticsImpl(
 ) : Analytics {
 
     override fun trackAppOpened() {
-        logEventInFirebase(FirebaseAnalytics.Event.APP_OPEN)
+        trackEventInFirebase(FirebaseAnalytics.Event.APP_OPEN)
     }
 
     override fun trackClick(
         screenId: String,
         itemId: String
     ) {
-        logEventInFirebase(
+        trackEventInFirebase(
             FirebaseAnalytics.Event.SELECT_CONTENT,
             createContentTypeBundle(
                 screenId,
@@ -31,14 +29,14 @@ class FirebaseAnalyticsImpl(
         eventId: String,
         bundle: Bundle
     ) {
-        logEventInFirebase(eventId, bundle)
+        trackEventInFirebase(eventId, bundle)
     }
 
     override fun trackCheckoutStart(
         value: Double,
         currency: String
     ) {
-        logEventInFirebase(
+        trackEventInFirebase(
             FirebaseAnalytics.Event.BEGIN_CHECKOUT,
             Bundle().apply {
                 putDouble(FirebaseAnalytics.Param.VALUE, value)
@@ -51,7 +49,7 @@ class FirebaseAnalyticsImpl(
         value: Double,
         currency: String
     ) {
-        logEventInFirebase(
+        trackEventInFirebase(
             FirebaseAnalytics.Event.PURCHASE,
             Bundle().apply {
                 putDouble(FirebaseAnalytics.Param.VALUE, value)
@@ -61,15 +59,15 @@ class FirebaseAnalyticsImpl(
     }
 
     override fun trackTutorialStarted() {
-        logEventInFirebase(FirebaseAnalytics.Event.TUTORIAL_BEGIN)
+        trackEventInFirebase(FirebaseAnalytics.Event.TUTORIAL_BEGIN)
     }
 
     override fun trackTutorialCompleted() {
-        logEventInFirebase(FirebaseAnalytics.Event.TUTORIAL_COMPLETE)
+        trackEventInFirebase(FirebaseAnalytics.Event.TUTORIAL_COMPLETE)
     }
 
     override fun trackScreen(screenId: String) {
-        Timber.v("trackCurrentScreen: $screenId")
+        Timber.v("trackScreen: $screenId")
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW,
             Bundle().apply {
                 putString(FirebaseAnalytics.Param.SCREEN_NAME, screenId)
@@ -89,8 +87,8 @@ class FirebaseAnalyticsImpl(
             }
     }
 
-    private fun logEventInFirebase(eventId: String, bundle: Bundle = Bundle()) {
-        Timber.v("$eventId $bundle")
+    private fun trackEventInFirebase(eventId: String, bundle: Bundle = Bundle()) {
+        Timber.v("trackEvent: $eventId${if (bundle.isEmpty) "" else " $bundle"}")
         firebaseAnalytics.logEvent(eventId, bundle)
     }
 
