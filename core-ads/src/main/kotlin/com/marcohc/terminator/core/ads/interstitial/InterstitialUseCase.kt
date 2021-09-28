@@ -6,15 +6,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.marcohc.terminator.core.ads.AdsConstants
 import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.mvi.ext.getOrCreateFromParentScope
@@ -125,7 +122,7 @@ internal class InterstitialUseCaseImpl(
 
     override fun observe(): Observable<InterstitialEvent> = subject.hide()
 
-    override fun observeAndTrack(): Observable<InterstitialEvent> = observe().flatMap { analytics.logEvent(it).toObservableDefault(it) }
+    override fun observeAndTrack(): Observable<InterstitialEvent> = observe().flatMap { analytics.trackEvent(it).toObservableDefault(it) }
 
     override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
 

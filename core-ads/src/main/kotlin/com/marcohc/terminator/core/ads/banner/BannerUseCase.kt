@@ -139,7 +139,7 @@ internal class BannerUseCaseImpl(
     override fun observe(): Observable<BannerEvent> = subject.hide()
 
     override fun observeAndTrack(): Observable<BannerEvent> = observe()
-        .flatMap { event -> analytics.logEvent(event).toObservableDefault(event) }
+        .flatMap { event -> analytics.trackEvent(event).toObservableDefault(event) }
 
     override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
 

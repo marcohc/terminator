@@ -92,7 +92,7 @@ internal class NativeUseCaseImpl(
         // Track events
         compositeDisposable.add(
             subject
-                .flatMapCompletable(analytics::logEvent)
+                .flatMapCompletable(analytics::trackEvent)
                 .subscribeOn(Schedulers.io())
                 .subscribe()
         )

@@ -1,48 +1,41 @@
 package com.marcohc.terminator.core.ads.video
 
 import android.os.Bundle
-import com.marcohc.terminator.core.ads.video.VideoEvent.Closed
-import com.marcohc.terminator.core.ads.video.VideoEvent.FailedToLoad
-import com.marcohc.terminator.core.ads.video.VideoEvent.Loaded
-import com.marcohc.terminator.core.ads.video.VideoEvent.Opened
-import com.marcohc.terminator.core.ads.video.VideoEvent.Rewarded
+import com.marcohc.terminator.core.ads.video.VideoEvent.*
 import com.marcohc.terminator.core.analytics.Analytics
 import io.reactivex.Completable
 
 interface VideoAnalytics {
-    fun logEvent(event: VideoEvent): Completable
-
-    fun logClick(): Completable
+    fun trackEvent(event: VideoEvent): Completable
+    fun trackClick(): Completable
 }
 
 internal class VideoAnalyticsImpl(
-        private val analytics: Analytics,
-        private val scopeId: String
+    private val analytics: Analytics,
+    private val scopeId: String
 ) : VideoAnalytics {
 
-    override fun logEvent(event: VideoEvent) = Completable.fromAction {
+    override fun trackEvent(event: VideoEvent) = Completable.fromAction {
         when (event) {
-            is Loaded -> logEvents("available")
-            is FailedToLoad -> logEvents("not_available")
-            is Opened -> logEvents("opened")
-            is Rewarded -> logEvents("rewarded")
-            is Closed -> logEvents("closed")
+            is Loaded -> trackEvents("Available")
+            is FailedToLoad -> trackEvents("NotAvailable")
+            is Opened -> trackEvents("Opened")
+            is Rewarded -> trackEvents("Rewarded")
+            is Closed -> trackEvents("Closed")
             else -> {
                 // No-op
             }
         }
     }
 
-    override fun logClick() = Completable.fromAction {
-        analytics.trackClick(scopeId, "${BASE_EVENT}_click")
-        logEvents("click")
+    override fun trackClick() = Completable.fromAction { trackEvents("Click") }
+
+    private fun trackEvents(event: String) {
+        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}Action", "$scopeId$event") })
+        analytics.trackEvent("$scopeId$BASE_EVENT${event}")
     }
 
-    private fun logEvents(parameter: String) {
-        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
-        analytics.trackEvent("${scopeId}_${BASE_EVENT}_${parameter}")
-    }
     private companion object {
-        const val BASE_EVENT = "video"
+        const val BASE_EVENT = "Video"
     }
 }

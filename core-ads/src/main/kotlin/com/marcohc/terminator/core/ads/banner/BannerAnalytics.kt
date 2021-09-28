@@ -11,34 +11,34 @@ import com.marcohc.terminator.core.analytics.Analytics
 import io.reactivex.Completable
 
 interface BannerAnalytics {
-    fun logEvent(event: BannerEvent): Completable
+    fun trackEvent(event: BannerEvent): Completable
 }
 
 internal class BannerAnalyticsImpl(
-        private val analytics: Analytics,
-        private val scopeId: String
+    private val analytics: Analytics,
+    private val scopeId: String
 ) : BannerAnalytics {
 
-    override fun logEvent(event: BannerEvent) = Completable.fromAction {
+    override fun trackEvent(event: BannerEvent) = Completable.fromAction {
         when (event) {
-            is Loaded -> logEvents("available")
-            is FailedToLoad -> logEvents("not_available")
-            is Opened -> logEvents("opened")
-            is Impression -> logEvents("impression")
-            is Click -> {
-                analytics.trackClick(scopeId, "${BASE_EVENT}_click")
-                logEvents("click")
+            is Loaded -> trackEvents("Available")
+            is FailedToLoad -> trackEvents("NotAvailable")
+            is Opened -> trackEvents("Opened")
+            is Impression -> trackEvents("Impression")
+            is Click -> trackEvents("Click")
+            is Closed -> trackEvents("Closed")
+            else -> {
+                // No-op
             }
-            is Closed -> logEvents("closed")
         }
     }
 
-    private fun logEvents(parameter: String) {
-        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
-        analytics.trackEvent("${scopeId}_${BASE_EVENT}_${parameter}")
+    private fun trackEvents(event: String) {
+        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}Action", "$scopeId$event") })
+        analytics.trackEvent("$scopeId$BASE_EVENT${event}")
     }
 
     private companion object {
-        const val BASE_EVENT = "banner"
+        const val BASE_EVENT = "Banner"
     }
 }

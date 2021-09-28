@@ -1,15 +1,13 @@
 package com.marcohc.terminator.core.ads.interstitial
 
 import android.os.Bundle
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Closed
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.FailedToLoad
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Loaded
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Opened
+import com.marcohc.terminator.core.ads.banner.BannerEvent
+import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.*
 import com.marcohc.terminator.core.analytics.Analytics
 import io.reactivex.Completable
 
 interface InterstitialAnalytics {
-    fun logEvent(event: InterstitialEvent): Completable
+    fun trackEvent(event: InterstitialEvent): Completable
 }
 
 internal class InterstitialAnalyticsImpl(
@@ -17,24 +15,24 @@ internal class InterstitialAnalyticsImpl(
     private val scopeId: String
 ) : InterstitialAnalytics {
 
-    override fun logEvent(event: InterstitialEvent) = Completable.fromAction {
+    override fun trackEvent(event: InterstitialEvent) = Completable.fromAction {
         when (event) {
-            is Loaded -> logEvents("available")
-            is FailedToLoad -> logEvents("not_available")
-            is Opened -> logEvents("opened")
-            is Closed -> logEvents("closed")
+            is Loaded -> trackEvents("Available")
+            is FailedToLoad -> trackEvents("NotAvailable")
+            is Opened -> trackEvents("Opened")
+            is Closed -> trackEvents("Closed")
             else -> {
                 // No-op
             }
         }
     }
 
-    private fun logEvents(parameter: String) {
-        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
-        analytics.trackEvent("${scopeId}_${BASE_EVENT}_${parameter}")
+    private fun trackEvents(event: String) {
+        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}Action", "$scopeId$event") })
+        analytics.trackEvent("$scopeId$BASE_EVENT${event}")
     }
 
     private companion object {
-        const val BASE_EVENT = "interstitial"
+        const val BASE_EVENT = "Interstitial"
     }
 }

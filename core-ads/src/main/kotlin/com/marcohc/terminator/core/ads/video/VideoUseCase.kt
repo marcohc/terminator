@@ -1,17 +1,12 @@
 package com.marcohc.terminator.core.ads.video
 
 import android.app.Activity
-import android.content.Context
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.marcohc.terminator.core.ads.AdsConstants
@@ -127,11 +122,11 @@ internal class VideoUseCaseImpl(
 
     override fun observe(): Observable<VideoEvent> = subject.hide()
 
-    override fun observeAndTrack(): Observable<VideoEvent> = observe().flatMap { analytics.logEvent(it).toObservableDefault(it) }
+    override fun observeAndTrack(): Observable<VideoEvent> = observe().flatMap { analytics.trackEvent(it).toObservableDefault(it) }
 
     override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
 
-    override fun logShowVideoClick() = analytics.logClick()
+    override fun logShowVideoClick() = analytics.trackClick()
 
     @MainThread
     override fun show(activity: Activity) = Completable
