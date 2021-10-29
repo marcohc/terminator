@@ -13,6 +13,8 @@ class OneTimeExecutable private constructor(value: Unit? = null) {
         wrapperAtomicReference.getAndSet(null)?.let { function.invoke() }
     }
 
+    fun isLoaded() = wrapperAtomicReference.get() != null
+
     companion object {
         fun load() = OneTimeExecutable(Unit)
 
