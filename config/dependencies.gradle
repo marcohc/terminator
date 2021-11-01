@@ -10,7 +10,7 @@ ext.versions = [
         kotlin    : "1.5.31",
         retrofit  : "2.6.2",
         room      : "2.3.0",
-        terminator: "2.9.1",
+        terminator: "2.10.0",
 ]
 
 ext.gradlePlugins = [
@@ -23,8 +23,14 @@ ext.gradlePlugins = [
 
 ext.libraries = [
         androidBilling          : "com.android.billingclient:billing-ktx:3.0.3",
+        androidJunit            : "androidx.test.ext:junit:1.1.1",
+        androidTestOrchestrator : "androidx.test:orchestrator:1.2.0",
+        androidTestRunner       : "androidx.test:runner:1.2.0",
         appCompat               : "androidx.appcompat:appcompat:1.2.0",
         constraintLayout        : "androidx.constraintlayout:constraintlayout:2.0.0-beta7",
+        espressoContrib         : "androidx.test.espresso:espresso-contrib:$versions.espresso",
+        espressoCore            : "androidx.test.espresso:espresso-core:$versions.espresso",
+        espressoIntents         : "androidx.test.espresso:espresso-intents:$versions.espresso",
         firebase                : [
                 ads         : "com.google.android.gms:play-services-ads:20.1.0",
                 analytics   : "com.google.firebase:firebase-analytics:18.0.3",
@@ -58,6 +64,7 @@ ext.libraries = [
         roomCompile             : "androidx.room:room-compiler:$versions.room",
         roomRuntime             : "androidx.room:room-runtime:$versions.room",
         roomRxJava2             : "androidx.room:room-rxjava2:$versions.room",
+        rxIdlingResource        : "com.squareup.rx.idler:rx2-idler:0.10.0",
         rxJava                  : "io.reactivex.rxjava2:rxjava:2.2.21",
         rxJavaAndroid           : "io.reactivex.rxjava2:rxandroid:2.1.1",
         threeTenAbp             : [
