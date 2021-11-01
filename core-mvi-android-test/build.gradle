@@ -1,0 +1,13 @@
+apply from: "../config/android-library.gradle"
+
+dependencies {
+
+    api libraries.rxIdlingResource
+    api libraries.espressoCore
+    api libraries.espressoIntents
+
+    implementation project(":core-koin")
+    implementation project(":core-mvi")
+    implementation project(":core-utils")
+
+}

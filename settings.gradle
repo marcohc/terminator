@@ -1,17 +1,3 @@
-/**
- * Sample modules are sorted by visibility and then name.
- */
-//include ":app"
-//
-//include ":feature-venue-search"
-//include ":feature-venue-detail"
-//
-//include ":shared-data"
-//include ":shared-resources"
-
-/**
- * Library modules are sorted by name.
- */
 include ":core-ads"
 include ":core-analytics"
 include ":core-billing"
@@ -21,6 +7,7 @@ include ":core-firebase-firestore"
 include ":core-firebase-functions"
 include ":core-koin"
 include ":core-mvi"
+include ":core-mvi-android-test"
 include ":core-mvi-test"
 include ":core-notifications"
 include ":core-preferences"
