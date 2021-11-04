@@ -1,6 +1,7 @@
 package com.marcohc.terminator.core.mvi.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.marcohc.terminator.core.mvi.domain.MviInteractor
 import com.marcohc.terminator.core.mvi.ui.navigation.BackPressedObserver
@@ -27,7 +28,7 @@ import io.reactivex.subjects.PublishSubject
  */
 abstract class MviActivity<Intention, State>
     : MviView<Intention, State>,
-      AppCompatActivity() {
+    AppCompatActivity() {
 
     private val intentionsSubject: PublishSubject<Intention> = PublishSubject.create<Intention>()
 
@@ -35,6 +36,8 @@ abstract class MviActivity<Intention, State>
     private lateinit var intentionsDisposable: Disposable
 
     private var statesCompositeDisposable = CompositeDisposable()
+
+    protected lateinit var inflatedView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         declareScope(mviConfig)
@@ -49,9 +52,8 @@ abstract class MviActivity<Intention, State>
         intentionsDisposable = interactor.subscribeToIntentions(intentions())
 
         // Inflate and build layout
-        if (mviConfig.layoutId != 0) {
-            setContentView(mviConfig.layoutId)
-        }
+        inflatedView = layoutInflater.inflate(mviConfig.layoutId, null)
+        setContentView(inflatedView)
 
         afterComponentCreated(savedInstanceState)
     }

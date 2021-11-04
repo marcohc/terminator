@@ -1,7 +1,5 @@
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
-// TODO: Migrate to view binding
-apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
 
 apply from: "../config/publishLocal.gradle"
