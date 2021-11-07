@@ -20,7 +20,7 @@ class MviBaseInteractorTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         initInteractorMocks()
 
         interactor = object : MviBaseInteractor<MockIntention, MockAction, MockState>(

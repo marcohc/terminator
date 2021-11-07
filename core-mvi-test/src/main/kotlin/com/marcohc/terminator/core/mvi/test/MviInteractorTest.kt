@@ -50,7 +50,7 @@ abstract class MviInteractorTest<Intention, Action, State> {
 
     @Before
     fun init() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         ViewInteractorTestUtils.initInteractorMocks()
         interactor = provideInteractor()
 
