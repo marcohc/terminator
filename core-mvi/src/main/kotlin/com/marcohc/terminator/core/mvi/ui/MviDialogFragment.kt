@@ -56,7 +56,7 @@ abstract class MviDialogFragment<Intention, State>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment or reuse the existing one
-        if (::inflatedView.isInitialized) {
+        if (!::inflatedView.isInitialized) {
             inflatedView = inflater.inflate(mviConfig.layoutId, container, false)
         } else {
             // We must remove the view from the parent when it's a nested fragment
