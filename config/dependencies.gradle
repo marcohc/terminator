@@ -5,19 +5,20 @@ ext.versions = [
                 targetSdk : 30,
                 buildTools: "30.0.2"
         ],
+        detekt    : "1.19.0-RC1",
         espresso  : "3.2.0",
         koin      : "2.1.6",
-        kotlin    : "1.5.31",
+        kotlin    : "1.6.0",
         retrofit  : "2.6.2",
         room      : "2.3.0",
-        terminator: "3.0.1",
+        terminator: "3.0.2",
 ]
 
 ext.gradlePlugins = [
-        detekt            : "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.1",
-        gradle            : "com.android.tools.build:gradle:4.0.0",
+        detekt            : "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
+        googlePlayServices: "com.google.gms:google-services:4.3.5",
+        gradle            : "com.android.tools.build:gradle:7.0.3",
         gradleVersions    : "com.github.ben-manes:gradle-versions-plugin:0.38.0",
-        googlePlayServices: "com.google.gms:google-services:4.3.2",
         kotlin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
 ]
 

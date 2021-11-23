@@ -1,5 +1,4 @@
-apply from: 'config/detekt.gradle'
-apply plugin: "maven"
+apply from: "config/detekt.gradle"
 
 allprojects {
 

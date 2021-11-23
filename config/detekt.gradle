@@ -1,28 +1,19 @@
 apply plugin: "io.gitlab.arturbosch.detekt"
 
 detekt {
+    // Applies the config files on top of detekt's default config file. `false` by default.
+    buildUponDefaultConfig = true
 
-    toolVersion = "1.0.1"
-    failFast = false
-    input = files(
-            "${project.rootDir}/app/src/main/kotlin",
-            "${project.rootDir}/data/src/main/kotlin",
-            "${project.rootDir}/detail/src/main/kotlin",
-            "${project.rootDir}/mvi/src/main/kotlin",
-            "${project.rootDir}/search/src/main/kotlin",
-    )
+    // Define the detekt configuration(s) you want to use.
+    // Defaults to the default detekt configuration.
+    config = files("$rootDir/config/detekt-config.yml")
 
-    filters = ".*/resources/.*,.*/build/.*"
-    config = files("config/detekt-config.yml")
+
     parallel = true
+    source = files(projectDir)
+    toolVersion = versions.detekt
 
-    reports {
-        xml {
-            enabled = false
-        }
-        html {
-            enabled = true
-            destination = file("build/detekt/index.html")
-        }
+    dependencies {
+        detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:$versions.detekt"
     }
 }
