@@ -20,5 +20,4 @@ class OneTimeExecutable private constructor(value: Unit? = null) {
 
         fun empty() = OneTimeExecutable()
     }
-
 }

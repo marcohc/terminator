@@ -22,5 +22,4 @@ internal interface ProductDao {
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveAll(products: List<ProductEntity>): Completable
-
 }

@@ -20,7 +20,8 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
     private val delegates: SparseArray<AdapterDelegate<ItemModel>>
     private val itemModelAndViewHoldersMap: Map<KClass<*>, Int>
     private var itemClickListenerFun: ((view: View, position: Int, item: ItemModel) -> Unit)? = null
-    private var itemLongClickListenerFun: ((view: View, position: Int, item: ItemModel) -> Unit)? = null
+    private var itemLongClickListenerFun: ((view: View, position: Int, item: ItemModel) -> Unit)? =
+        null
 
     init {
         val supportedViewHolderInfoList = this.getDelegatesList()
@@ -36,7 +37,8 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
     override fun getItemCount() = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
-        return delegates[viewType]?.onCreateViewHolder(parent) ?: throw IllegalStateException("No delegate for $viewType viewType")
+        return delegates[viewType]?.onCreateViewHolder(parent)
+            ?: throw IllegalStateException("No delegate for $viewType viewType")
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
@@ -68,7 +70,8 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
     }
 
     override fun getItemViewType(position: Int): Int {
-        return itemModelAndViewHoldersMap[items[position]::class] ?: throw IllegalStateException("This item doesn't have any delegate associated")
+        return itemModelAndViewHoldersMap[items[position]::class]
+            ?: throw IllegalStateException("This item doesn't have any delegate associated")
     }
 
     abstract fun getDelegatesList(): List<Delegate<ItemModel>>
@@ -88,11 +91,4 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
     fun setOnItemLongClickListener(itemLongClickListenerFun: (view: View, position: Int, item: ItemModel) -> Unit) {
         this.itemLongClickListenerFun = itemLongClickListenerFun
     }
-
 }
-
-
-
-
-
-

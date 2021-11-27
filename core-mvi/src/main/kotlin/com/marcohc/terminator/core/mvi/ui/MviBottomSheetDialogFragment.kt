@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 @Suppress("TooManyFunctions")
 abstract class MviBottomSheetDialogFragment<Intention, State>
     : MviView<Intention, State>,
-      BottomSheetDialogFragment() {
+    BottomSheetDialogFragment() {
 
     private val intentionsSubject: PublishSubject<Intention> = PublishSubject.create()
 
@@ -39,6 +39,8 @@ abstract class MviBottomSheetDialogFragment<Intention, State>
     private var statesCompositeDisposable = CompositeDisposable()
     private val isFirstTime = AtomicBoolean(true)
 
+    // Expose the inflated view so you can it for view binding
+    @SuppressWarnings("WeakerAccess")
     protected lateinit var inflatedView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +52,12 @@ abstract class MviBottomSheetDialogFragment<Intention, State>
         intentionsDisposable = interactor.subscribeToIntentions(intentions())
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //Inflate the layout for this fragment or reuse the existing one
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment or reuse the existing one
         if (!::inflatedView.isInitialized) {
             inflatedView = inflater.inflate(mviConfig.layoutId, container, false)
         }
@@ -98,7 +104,7 @@ abstract class MviBottomSheetDialogFragment<Intention, State>
     }
 
     override fun sendIntention(intention: Intention) {
-        intentionsSubject.onNext(intention)
+        intentionsSubject.onNext(requireNotNull(intention))
     }
 
     override fun intentions(): Observable<Intention> {
@@ -112,5 +118,4 @@ abstract class MviBottomSheetDialogFragment<Intention, State>
 
         closeScopeProcess(interactor, mviConfig)
     }
-
 }

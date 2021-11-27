@@ -10,8 +10,8 @@ class GoogleSignInEventPublisher internal constructor() {
 
     fun observe(): Observable<GoogleSignInResult> = publisher.hide()
 
-    internal fun dispatchResult(event: GoogleSignInResult) = Completable.fromAction { publisher.onNext(event) }
-
+    internal fun dispatchResult(event: GoogleSignInResult) = Completable
+        .fromAction { publisher.onNext(event) }
 }
 
 sealed class GoogleSignInResult {

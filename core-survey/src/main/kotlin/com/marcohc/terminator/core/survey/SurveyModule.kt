@@ -10,7 +10,6 @@ object SurveyModule : FeatureModule {
     override val scopeId: String = "SurveyModule"
 
     override val module: Module = module {
-        scope(named(scopeId)) {  }
+        scope(named(scopeId)) { }
     }
-
 }

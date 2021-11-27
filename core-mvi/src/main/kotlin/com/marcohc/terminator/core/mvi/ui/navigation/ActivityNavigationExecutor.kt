@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.marcohc.terminator.core.mvi.ui.navigation
 
 import androidx.appcompat.app.AppCompatActivity
@@ -37,31 +39,29 @@ interface ActivityNavigationExecutor {
     fun executeCompletable(function: (AppCompatActivity) -> Unit) = getActivityReady()
         .flatMapCompletable { activity -> Completable.fromAction { function.invoke(activity) } }
 
-    fun <T> executeSingle(function: (Pair<AppCompatActivity, SingleEmitter<T>>) -> Unit) = getActivityReady()
-        .flatMap { activity: AppCompatActivity ->
-            // This cast must be here
-            Single.create<T> { emitter -> function.invoke(activity to emitter) }
-        }
+    fun <T> executeSingle(function: (Pair<AppCompatActivity, SingleEmitter<T>>) -> Unit) =
+        getActivityReady()
+            .flatMap { activity: AppCompatActivity ->
+                // This cast must be here
+                Single.create<T> { emitter -> function.invoke(activity to emitter) }
+            }
 
-    fun <T> executeObservable(function: (Pair<AppCompatActivity, ObservableEmitter<T>>) -> Unit): Observable<T> = getActivityReady()
-        .toObservable()
-        .flatMap { activity: AppCompatActivity ->
-            // This cast must be here
-            Observable.create<T> { emitter -> function.invoke(activity to emitter) }
-        }
+    fun <T> executeObservable(function: (Pair<AppCompatActivity, ObservableEmitter<T>>) -> Unit): Observable<T> =
+        getActivityReady()
+            .toObservable()
+            .flatMap { activity: AppCompatActivity ->
+                // This cast must be here
+                Observable.create<T> { emitter -> function.invoke(activity to emitter) }
+            }
 
     fun getActivityReady() = Single
-        .create<AppCompatActivity> { emitter ->
-            execute { activity -> emitter.onSuccess(activity) }
-        }
+        .create<AppCompatActivity> { emitter -> execute { activity -> emitter.onSuccess(activity) } }
         .observeOn(AndroidSchedulers.mainThread())
-
 }
 
 class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
-                                       LifecycleObserver {
+    LifecycleObserver {
 
-    // TODO: Keep an eye on "java.util.ConcurrentModificationException"
     private var commandsList: MutableList<((AppCompatActivity) -> Unit)> = mutableListOf()
     private var isPaused: Boolean = true
     private var activityWeakReference: WeakReference<AppCompatActivity?> = WeakReference(null)
@@ -108,5 +108,4 @@ class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
             }
         }
     }
-
 }

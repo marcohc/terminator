@@ -9,5 +9,4 @@ class IsGoogleUserSignedInUseCase(private val getGoogleUserUseCase: GetGoogleUse
             .map { true }
             .onErrorReturn { false }
     }
-
 }

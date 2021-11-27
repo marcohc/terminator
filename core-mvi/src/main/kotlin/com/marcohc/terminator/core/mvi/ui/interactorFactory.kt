@@ -37,7 +37,10 @@ fun ComponentCallbacks.declareScope(mviConfig: MviConfig) {
                                 scope.get<ActivityNavigationExecutor>(named(scopeId))
                                     .setActivity(this@declareScope)
                             } catch (ignored: NoBeanDefFoundException) {
-                                throw IllegalStateException("Ey developer, if you use navigation, use declare[Factory / Scoped]ActivityRouter in your Module")
+                                throw IllegalStateException(
+                                    "Ey developer, if you use navigation," +
+                                        " use declare[Factory / Scoped]ActivityRouter in your Module"
+                                )
                             }
                         }
                         is DialogFragment, is Fragment -> try {
@@ -45,11 +48,20 @@ fun ComponentCallbacks.declareScope(mviConfig: MviConfig) {
                             scope.get<FragmentNavigationExecutor>(named(scopeId))
                                 .setFragment(this@declareScope as Fragment)
                         } catch (ignored: NoBeanDefFoundException) {
-                            throw IllegalStateException("Ey developer, if you use navigation, use declare[Factory / Scoped]FragmentRouter in your Module")
+                            throw IllegalStateException(
+                                "Ey developer, if you use navigation," +
+                                    " use declare[Factory / Scoped]FragmentRouter in your Module"
+                            )
                         } catch (ignored: ClassCastException) {
-                            throw IllegalStateException("Ey developer, the activity of this fragment must be an AppCompatActivity")
+                            throw IllegalStateException(
+                                "Ey developer," +
+                                    " the activity of this fragment must be an AppCompatActivity"
+                            )
                         }
-                        else -> throw IllegalStateException("Ey developer, only AppCompatActivity, Fragment or DialogFragment is supported")
+                        else -> throw IllegalStateException(
+                            "Ey developer, " +
+                                "only AppCompatActivity, Fragment or DialogFragment is supported"
+                        )
                     }
                 }
             }
@@ -68,7 +80,10 @@ fun <Intention, State> ComponentCallbacks.interactorFactory(scopeId: String): Mv
             is InstanceCreationException, is ScopeNotCreatedException -> {
                 closeScope(scopeId)
                 if (BuildConfig.DEBUG) {
-                    throw IllegalStateException("Ey developer, your Koin module is not properly setup", throwable)
+                    throw IllegalStateException(
+                        "Ey developer, your Koin module is not properly setup",
+                        throwable
+                    )
                 } else {
                     Timber.w(SCOPE_LOG_TAG, "Couldn't create Interactor, creating a dummy one")
                     createDummyInteractor()
@@ -82,7 +97,10 @@ fun <Intention, State> ComponentCallbacks.interactorFactory(scopeId: String): Mv
     }
 }
 
-fun <Intention, State> ComponentCallbacks.closeScopeProcess(interactor: MviInteractor<Intention, State>, mviConfig: MviConfig) {
+fun <Intention, State> ComponentCallbacks.closeScopeProcess(
+    interactor: MviInteractor<Intention, State>,
+    mviConfig: MviConfig
+) {
     when (mviConfig.mviConfigType) {
         MviConfigType.NO_SCOPE -> {
             // No-op

@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.DiffUtil
  * Class used to ensure equality of items in the list and update only the necessary ones
  */
 class CommonDiffUtilCallback<ItemModel : RecyclerItem>(
-        private val oldItems: List<ItemModel>,
-        private val newItems: List<ItemModel>
+    private val oldItems: List<ItemModel>,
+    private val newItems: List<ItemModel>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize() = oldItems.size

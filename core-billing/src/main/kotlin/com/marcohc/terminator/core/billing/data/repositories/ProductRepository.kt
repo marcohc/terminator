@@ -16,12 +16,11 @@ interface ProductRepository {
     fun getById(id: String): Single<Optional<ProductEntity>>
 
     fun saveAll(productsList: List<ProductEntity>): Completable
-
 }
 
 internal class ProductRepositoryImpl(
-        private val dao: ProductDao,
-        private val scheduler: Scheduler
+    private val dao: ProductDao,
+    private val scheduler: Scheduler
 ) : ProductRepository {
 
     override fun getSubscriptions(): Single<List<ProductEntity>> = dao
@@ -38,5 +37,4 @@ internal class ProductRepositoryImpl(
     override fun saveAll(productsList: List<ProductEntity>) = dao
         .saveAll(productsList)
         .subscribeOn(scheduler)
-
 }

@@ -7,7 +7,8 @@ import androidx.fragment.app.Fragment
 fun ComponentCallbacks.isFinishing(): Boolean {
     return when (this) {
         is Activity -> this.isFinishing
-        is Fragment -> this.isRemoving || this.isDetached || !this.isAdded || (this.activity?.run { isFinishing } ?: false)
+        is Fragment -> this.isRemoving || this.isDetached ||
+            !this.isAdded || (this.activity?.run { isFinishing } ?: false)
         else -> false
     }
 }

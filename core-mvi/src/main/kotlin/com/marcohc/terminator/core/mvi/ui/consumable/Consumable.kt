@@ -12,5 +12,4 @@ class Consumable<T>(value: T? = null) {
     fun consume(): T? {
         return wrapperAtomicReference.getAndSet(null)
     }
-
 }

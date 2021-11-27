@@ -15,5 +15,4 @@ abstract class BaseViewHolder<ItemModel : RecyclerItem>(itemView: View) : Recycl
     abstract fun setChildOnClickListener(onClickListener: View.OnClickListener)
 
     abstract fun setChildOnLongClickListener(onLongClickListener: View.OnLongClickListener)
-
 }

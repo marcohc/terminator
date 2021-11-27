@@ -41,7 +41,7 @@ interface ReactivePreferences {
 
 @Suppress("NAME_SHADOWING")
 class ReactivePreferencesImpl(
-        private val preferences: Preferences
+    private val preferences: Preferences
 ) : ReactivePreferences {
 
     override fun getString(key: String, defValue: String?): Single<Optional<String>> =
@@ -93,19 +93,34 @@ class ReactivePreferencesImpl(
         PreferencesObservable(preferences, key, defValue) { key, defValue -> getInt(key, defValue) }
 
     override fun observeLong(key: String, defValue: Long): Observable<Long> =
-        PreferencesObservable(preferences, key, defValue) { key, defValue -> getLong(key, defValue) }
+        PreferencesObservable(preferences, key, defValue) { key, defValue ->
+            getLong(
+                key,
+                defValue
+            )
+        }
 
     override fun observeFloat(key: String, defValue: Float): Observable<Float> =
-        PreferencesObservable(preferences, key, defValue) { key, defValue -> getFloat(key, defValue) }
+        PreferencesObservable(preferences, key, defValue) { key, defValue ->
+            getFloat(
+                key,
+                defValue
+            )
+        }
 
     override fun observeBoolean(key: String, defValue: Boolean): Observable<Boolean> =
-        PreferencesObservable(preferences, key, defValue) { key, defValue -> getBoolean(key, defValue) }
+        PreferencesObservable(preferences, key, defValue) { key, defValue ->
+            getBoolean(
+                key,
+                defValue
+            )
+        }
 }
 
 private class PreferencesStringObservable(
-        private val preferences: Preferences,
-        private val prefKey: String,
-        private val defValue: String?
+    private val preferences: Preferences,
+    private val prefKey: String,
+    private val defValue: String?
 ) : Observable<Optional<String>>() {
 
     override fun subscribeActual(observer: Observer<in Optional<String>>) {
@@ -117,10 +132,10 @@ private class PreferencesStringObservable(
 }
 
 private class PreferencesStringObservableListener(
-        private val preferences: Preferences,
-        private val prefKey: String,
-        private val defValue: String?,
-        private val observer: Observer<in Optional<String>>
+    private val preferences: Preferences,
+    private val prefKey: String,
+    private val defValue: String?,
+    private val observer: Observer<in Optional<String>>
 ) : SimpleDisposable(),
     PreferencesChangeListener {
 
@@ -136,14 +151,15 @@ private class PreferencesStringObservableListener(
 }
 
 private class PreferencesObservable<Type>(
-        private val preferences: Preferences,
-        private val prefKey: String,
-        private val defValue: Type,
-        private val retriever: Preferences.(String, Type) -> Type
+    private val preferences: Preferences,
+    private val prefKey: String,
+    private val defValue: Type,
+    private val retriever: Preferences.(String, Type) -> Type
 ) : Observable<Type>() {
 
     override fun subscribeActual(observer: Observer<in Type>) {
-        val listener = PreferencesObservableListener(preferences, prefKey, defValue, observer, retriever)
+        val listener =
+            PreferencesObservableListener(preferences, prefKey, defValue, observer, retriever)
         observer.onSubscribe(listener)
         preferences.addChangeListener(listener)
         observer.onNext(preferences.retriever(prefKey, defValue))
@@ -151,11 +167,11 @@ private class PreferencesObservable<Type>(
 }
 
 private class PreferencesObservableListener<Type>(
-        private val preferences: Preferences,
-        private val key: String,
-        private val defValue: Type,
-        private val observer: Observer<in Type>,
-        private val retriever: Preferences.(String, Type) -> Type
+    private val preferences: Preferences,
+    private val key: String,
+    private val defValue: Type,
+    private val observer: Observer<in Type>,
+    private val retriever: Preferences.(String, Type) -> Type
 ) : SimpleDisposable(),
     PreferencesChangeListener {
 

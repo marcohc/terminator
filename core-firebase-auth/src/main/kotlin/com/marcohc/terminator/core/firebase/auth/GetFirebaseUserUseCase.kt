@@ -13,5 +13,4 @@ class GetFirebaseUserUseCase(private val firebaseAuth: FirebaseAuth) {
     fun executeOptional() = Single.fromCallable {
         Optional.toOptional(firebaseAuth.currentUser)
     }
-
 }

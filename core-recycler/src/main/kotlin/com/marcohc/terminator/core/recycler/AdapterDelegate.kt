@@ -11,5 +11,4 @@ interface AdapterDelegate<ItemModel : RecyclerItem> {
     fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<ItemModel>
 
     fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, items: List<ItemModel>)
-
 }

@@ -10,7 +10,6 @@ object AdsModule : FeatureModule {
     override val scopeId: String = "AdsModule"
 
     override val module: Module = module {
-        scope(named(scopeId)) {  }
+        scope(named(scopeId)) { }
     }
-
 }

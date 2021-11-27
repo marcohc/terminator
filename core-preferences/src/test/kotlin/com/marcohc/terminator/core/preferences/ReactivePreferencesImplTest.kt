@@ -342,8 +342,6 @@ class ReactivePreferencesImplTest {
         assertEquals(0, preferences.listenersCount)
     }
 
-
-
     @Test
     fun whenBooleanExistsThenReturnIt() {
         preferences.putBoolean(TEST_KEY, true)
@@ -420,8 +418,6 @@ class ReactivePreferencesImplTest {
         disposable.dispose()
         assertEquals(0, preferences.listenersCount)
     }
-
-
 
     @Test
     fun whenValueDoesNotExistsForTheKeyThenReturnFalseForContainsCall() {

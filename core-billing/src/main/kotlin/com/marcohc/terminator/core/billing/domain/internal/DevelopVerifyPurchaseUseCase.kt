@@ -7,5 +7,4 @@ import io.reactivex.Completable
 internal class DevelopVerifyPurchaseUseCase : VerifyPurchaseUseCase {
 
     override fun execute(purchase: PurchaseEntity) = Completable.complete()
-
 }

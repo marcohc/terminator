@@ -11,31 +11,41 @@ class InMemoryPreferences : Preferences {
     val itemsCount get() = preferencesMap.size
     val listenersCount get() = listeners.size
 
-    override fun getString(key: String, defValue: String?): String? = preferencesMap.getOrElse(key) { defValue } as String?
+    override fun getString(key: String, defValue: String?): String? =
+        preferencesMap.getOrElse(key) { defValue } as String?
+
     override fun putString(key: String, value: String?) {
         preferencesMap[key] = value
         notifyListeners(key)
     }
 
-    override fun getInt(key: String, defValue: Int): Int = preferencesMap.getOrElse(key) { defValue } as Int
+    override fun getInt(key: String, defValue: Int): Int =
+        preferencesMap.getOrElse(key) { defValue } as Int
+
     override fun putInt(key: String, value: Int) {
         preferencesMap[key] = value
         notifyListeners(key)
     }
 
-    override fun getLong(key: String, defValue: Long): Long = preferencesMap.getOrElse(key) { defValue } as Long
+    override fun getLong(key: String, defValue: Long): Long =
+        preferencesMap.getOrElse(key) { defValue } as Long
+
     override fun putLong(key: String, value: Long) {
         preferencesMap[key] = value
         notifyListeners(key)
     }
 
-    override fun getFloat(key: String, defValue: Float): Float = preferencesMap.getOrElse(key) { defValue } as Float
+    override fun getFloat(key: String, defValue: Float): Float =
+        preferencesMap.getOrElse(key) { defValue } as Float
+
     override fun putFloat(key: String, value: Float) {
         preferencesMap[key] = value
         notifyListeners(key)
     }
 
-    override fun getBoolean(key: String, defValue: Boolean): Boolean = preferencesMap.getOrElse(key) { defValue } as Boolean
+    override fun getBoolean(key: String, defValue: Boolean): Boolean =
+        preferencesMap.getOrElse(key) { defValue } as Boolean
+
     override fun putBoolean(key: String, value: Boolean) {
         preferencesMap[key] = value
         notifyListeners(key)
@@ -70,9 +80,9 @@ class InMemoryPreferences : Preferences {
 }
 
 private class InMemoryPrefsBatchEditor constructor(
-        private val preferences: Preferences,
-        private val map: MutableMap<String, Any?>,
-        private val listeners: Set<PreferencesChangeListener>
+    private val preferences: Preferences,
+    private val map: MutableMap<String, Any?>,
+    private val listeners: Set<PreferencesChangeListener>
 ) : PrefsBatchEditor {
 
     override fun putString(key: String, value: String?) {

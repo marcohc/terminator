@@ -24,8 +24,9 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
-object BillingModule : CoreModule,
-                       KoinComponent {
+object BillingModule :
+    CoreModule,
+    KoinComponent {
 
     override val module = module {
 
@@ -77,11 +78,21 @@ object BillingModule : CoreModule,
 
     // Do not expose data classes into Koin
     private val database: BillingDatabase by lazy { BillingDatabase.getInstance(context = get()) }
-    private val purchaseRepository: PurchaseRepository by lazy { PurchaseRepositoryImpl(dao = database.purchaseDao(), scheduler = get()) }
-    private val productRepository: ProductRepository by lazy { ProductRepositoryImpl(dao = database.productDao(), scheduler = get()) }
-    private fun Scope.getConfiguration() = getOrNull<BillingConfiguration>(named(CONFIGURATION)) ?: throw IllegalStateException("Ey developer, you must declare BillingConfiguration into Koin")
+    private val purchaseRepository: PurchaseRepository by lazy {
+        PurchaseRepositoryImpl(
+            dao = database.purchaseDao(),
+            scheduler = get()
+        )
+    }
+    private val productRepository: ProductRepository by lazy {
+        ProductRepositoryImpl(
+            dao = database.productDao(),
+            scheduler = get()
+        )
+    }
+
+    private fun Scope.getConfiguration() = getOrNull<BillingConfiguration>(named(CONFIGURATION))
+        ?: throw IllegalStateException("Ey developer, you must declare BillingConfiguration into Koin")
 
     const val CONFIGURATION = "BILLING_CONFIGURATION"
-
 }
-

@@ -23,7 +23,10 @@ import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent.getKoin
 import timber.log.Timber
 
-inline fun <reified T> Module.declareScopedActivityRouter(scopeId: String, crossinline block: Scope.(ActivityNavigationExecutor) -> T) {
+inline fun <reified T> Module.declareScopedActivityRouter(
+    scopeId: String,
+    crossinline block: Scope.(ActivityNavigationExecutor) -> T
+) {
     scope(named(scopeId)) {
         // Declare navigator
         scoped<ActivityNavigationExecutor>(named(scopeId)) { ActivityNavigationExecutorImpl() }
@@ -32,7 +35,10 @@ inline fun <reified T> Module.declareScopedActivityRouter(scopeId: String, cross
     }
 }
 
-inline fun <reified T> Module.declareFactoryActivityRouter(scopeId: String, crossinline block: Scope.(ActivityNavigationExecutor) -> T) {
+inline fun <reified T> Module.declareFactoryActivityRouter(
+    scopeId: String,
+    crossinline block: Scope.(ActivityNavigationExecutor) -> T
+) {
     scope(named(scopeId)) {
         // Declare navigator
         scoped<ActivityNavigationExecutor>(named(scopeId)) { ActivityNavigationExecutorImpl() }
@@ -43,7 +49,10 @@ inline fun <reified T> Module.declareFactoryActivityRouter(scopeId: String, cros
     }
 }
 
-inline fun <reified T> Module.declareFactoryFragmentRouter(scopeId: String, crossinline block: Scope.(FragmentNavigationExecutor) -> T) {
+inline fun <reified T> Module.declareFactoryFragmentRouter(
+    scopeId: String,
+    crossinline block: Scope.(FragmentNavigationExecutor) -> T
+) {
     scope(named(scopeId)) {
         // Declare navigator
         scoped<FragmentNavigationExecutor>(named(scopeId)) { FragmentNavigationExecutorImpl() }
@@ -55,7 +64,10 @@ inline fun <reified T> Module.declareFactoryFragmentRouter(scopeId: String, cros
 }
 
 inline fun <reified T> Scope.defineInScope(scopeId: String, crossinline function: () -> T) {
-    Timber.v(SCOPE_LOG_TAG, "Define in scope: scopeId: $scopeId / value: ${T::class.java.simpleName}")
+    Timber.v(
+        SCOPE_LOG_TAG,
+        "Define in scope: scopeId: $scopeId / value: ${T::class.java.simpleName}"
+    )
     loadKoinModules(
         module {
             scope(named(scopeId)) {
@@ -66,38 +78,45 @@ inline fun <reified T> Scope.defineInScope(scopeId: String, crossinline function
 }
 
 inline fun <reified T : MviBaseInteractor<*, *, *>> Module.declareActivityInteractor(
-        scopeId: String,
-        associateScopeIdsWith: List<String> = emptyList(),
-        crossinline interactorFactoryFunction: Scope.(AppCompatActivity) -> T
+    scopeId: String,
+    associateScopeIdsWith: List<String> = emptyList(),
+    crossinline interactorFactoryFunction: Scope.(AppCompatActivity) -> T
 ) {
     factory(named(scopeId)) { (appCompatActivity: AppCompatActivity) ->
-        return@factory ViewModelProvider(appCompatActivity, ViewModelFactory {
-            linkChildScopes(scopeId, associateScopeIdsWith)
-            interactorFactoryFunction.invoke(this, appCompatActivity)
-                .apply {
-                    unlinkChildScopes(scopeId, associateScopeIdsWith) {
-                        appCompatActivity.isFinishing
+        return@factory ViewModelProvider(
+            appCompatActivity,
+            ViewModelFactory {
+                linkChildScopes(scopeId, associateScopeIdsWith)
+                interactorFactoryFunction
+                    .invoke(this, appCompatActivity)
+                    .apply {
+                        unlinkChildScopes(scopeId, associateScopeIdsWith) {
+                            appCompatActivity.isFinishing
+                        }
                     }
-                }
-        }).get(T::class.java) as MviInteractor<*, *> // This "useless" cast is necessary for Koin
+            }
+        ).get(T::class.java) as MviInteractor<*, *> // This "useless" cast is necessary for Koin
     }
 }
 
 inline fun <reified T : MviBaseInteractor<*, *, *>> Module.declareFragmentInteractor(
-        scopeId: String,
-        associateScopeIdsWith: List<String> = emptyList(),
-        crossinline interactorFactoryFunction: Scope.(Fragment) -> T
+    scopeId: String,
+    associateScopeIdsWith: List<String> = emptyList(),
+    crossinline interactorFactoryFunction: Scope.(Fragment) -> T
 ) {
     factory(named(scopeId)) { (fragment: Fragment) ->
-        ViewModelProvider(fragment, ViewModelFactory {
-            linkChildScopes(scopeId, associateScopeIdsWith)
-            interactorFactoryFunction.invoke(this, fragment)
-                .apply {
-                    unlinkChildScopes(scopeId, associateScopeIdsWith) {
-                        fragment.activity == null || requireNotNull(fragment.activity).isFinishing
+        ViewModelProvider(
+            fragment,
+            ViewModelFactory {
+                linkChildScopes(scopeId, associateScopeIdsWith)
+                interactorFactoryFunction.invoke(this, fragment)
+                    .apply {
+                        unlinkChildScopes(scopeId, associateScopeIdsWith) {
+                            fragment.activity == null || requireNotNull(fragment.activity).isFinishing
+                        }
                     }
-                }
-        }).get(T::class.java) as MviInteractor<*, *> // This "useless" cast is necessary for Koin
+            }
+        ).get(T::class.java) as MviInteractor<*, *> // This "useless" cast is necessary for Koin
     }
 }
 
@@ -118,11 +137,17 @@ fun Scope.linkChildScopes(scopeId: String, scopesIdsToAssociateWith: List<String
         val childScope = getOrCreateScope(scopeIdToAssociate)
         var scopeCounter = childScope.getOrNull<ScopeCounter>()
         if (scopeCounter == null) {
-            Timber.v(SCOPE_LOG_TAG, "Associate child ids with: $scopeId / childScope: $childScope / empty scopeCounter")
+            Timber.v(
+                SCOPE_LOG_TAG,
+                "Associate child ids with: $scopeId / childScope: $childScope / empty scopeCounter"
+            )
             scopeCounter = ScopeCounter().apply { add(scopeId) }
             defineInScope(scopeIdToAssociate) { scopeCounter }
         } else {
-            Timber.v(SCOPE_LOG_TAG, "Associate child ids with: $scopeId / childScope: $childScope / scopeCounter: $scopeCounter")
+            Timber.v(
+                SCOPE_LOG_TAG,
+                "Associate child ids with: $scopeId / childScope: $childScope / scopeCounter: $scopeCounter"
+            )
             scopeCounter.add(scopeId)
         }
     }
@@ -134,18 +159,22 @@ fun Scope.linkChildScopes(scopeId: String, scopesIdsToAssociateWith: List<String
  *
  */
 inline fun <reified T : MviBaseInteractor<*, *, *>> T.unlinkChildScopes(
-        scopeId: String,
-        associateScopeIdsWith: List<String>,
-        crossinline isFinishingFunction: () -> Boolean
+    scopeId: String,
+    associateScopeIdsWith: List<String>,
+    crossinline isFinishingFunction: () -> Boolean
 ) {
     if (associateScopeIdsWith.isNotEmpty()) {
         doOnDestroy {
             // Only release attached module when the activity is really finishing not when OS kill it
             if (isFinishingFunction.invoke()) {
                 associateScopeIdsWith.forEach { scopeIdToAssociate ->
-                    val childScope = getKoin().getOrCreateScope(scopeIdToAssociate, named(scopeIdToAssociate))
+                    val childScope =
+                        getKoin().getOrCreateScope(scopeIdToAssociate, named(scopeIdToAssociate))
                     val scopeCounter = childScope.get<ScopeCounter>().apply { remove(scopeId) }
-                    Timber.v(SCOPE_LOG_TAG, "Remove scopeId: $scopeId / childScope: $childScope / scopeCounter: $scopeCounter")
+                    Timber.v(
+                        SCOPE_LOG_TAG,
+                        "Remove scopeId: $scopeId / childScope: $childScope / scopeCounter: $scopeCounter"
+                    )
                     if (scopeCounter.isEmpty()) {
                         Timber.v(SCOPE_LOG_TAG, "Closing childScope: $childScope")
                         childScope.close()
@@ -160,7 +189,10 @@ inline fun <reified T : MviBaseInteractor<*, *, *>> T.unlinkChildScopes(
  * Using the counter associated with this [libraryScopeId], fetches or creates the value [T] from the parent scope
  * on top of the counter
  */
-inline fun <reified T> Scope.getOrCreateFromParentScope(libraryScopeId: String, function: () -> T): T {
+inline fun <reified T> Scope.getOrCreateFromParentScope(
+    libraryScopeId: String,
+    function: () -> T
+): T {
 
     val libraryScope = getScope(libraryScopeId)
     val scopeCounter = libraryScope.get<ScopeCounter>()
@@ -169,11 +201,17 @@ inline fun <reified T> Scope.getOrCreateFromParentScope(libraryScopeId: String, 
 
     return if (value == null) {
         value = function.invoke()
-        Timber.v(SCOPE_LOG_TAG, "Fetch and create from: libraryScopeId: $libraryScopeId / parentScopeId: $parentScopeId / new value: $value")
+        Timber.v(
+            SCOPE_LOG_TAG,
+            "Fetch and create from: libraryScopeId: $libraryScopeId / parentScopeId: $parentScopeId / new value: $value"
+        )
         defineInScope(parentScopeId) { value }
         value
     } else {
-        Timber.v(SCOPE_LOG_TAG, "Fetch from: libraryScopeId: $libraryScopeId / parentScopeId: $parentScopeId / existing value: $value")
+        Timber.v(
+            SCOPE_LOG_TAG,
+            "Fetch from: libraryScopeId: $libraryScopeId / parentScopeId: $parentScopeId / existing value: $value"
+        )
         value
     }
 }
@@ -190,7 +228,7 @@ fun FeatureModule.getParentScope(): Scope {
 private fun Scope.getOrCreateScope(scopeIdToAssociate: String): Scope {
     return try {
         getKoin().getOrCreateScope(scopeIdToAssociate, named(scopeIdToAssociate))
-    } catch (e: NoScopeDefFoundException) {
+    } catch (ignored: NoScopeDefFoundException) {
         Timber.w(SCOPE_LOG_TAG, "Scope $scopeIdToAssociate was not defined, defining it...")
         loadKoinModules(module { scope(named(scopeIdToAssociate)) {} })
         getOrCreateScope(scopeIdToAssociate)

@@ -95,7 +95,6 @@ internal class GoogleBillingApi(
                 billingClient.launchBillingFlow(activity, purchaseParams)
 
                 Timber.v("Launching billing flow...")
-
             } else {
                 Timber.e("BillingClient is not ready to start billing flow")
             }

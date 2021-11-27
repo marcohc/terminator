@@ -30,7 +30,7 @@ abstract class MviFragment<Intention, State>
     : MviView<Intention, State>,
     Fragment() {
 
-    private val intentionsSubject: PublishSubject<Intention> = PublishSubject.create()
+    private val intentionsSubject = PublishSubject.create<Intention>()
 
     private lateinit var interactor: MviInteractor<Intention, State>
     private lateinit var intentionsDisposable: Disposable
@@ -38,6 +38,8 @@ abstract class MviFragment<Intention, State>
     private var statesCompositeDisposable = CompositeDisposable()
     private val isFirstTime = AtomicBoolean(true)
 
+    // Expose the inflated view so you can it for view binding
+    @SuppressWarnings("WeakerAccess")
     protected lateinit var inflatedView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +55,11 @@ abstract class MviFragment<Intention, State>
         intentionsDisposable = interactor.subscribeToIntentions(intentions())
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment or reuse the existing one
         if (!::inflatedView.isInitialized) {
             inflatedView = inflater.inflate(mviConfig.layoutId, container, false)
@@ -96,7 +102,7 @@ abstract class MviFragment<Intention, State>
     }
 
     override fun sendIntention(intention: Intention) {
-        intentionsSubject.onNext(intention)
+        intentionsSubject.onNext(requireNotNull(intention))
     }
 
     override fun intentions(): Observable<Intention> {

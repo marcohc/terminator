@@ -9,5 +9,4 @@ class ViewModelFactory<out V : ViewModel>(private val viewModelFactoryFunction: 
         @Suppress("UNCHECKED_CAST")
         return viewModelFactoryFunction.invoke() as T
     }
-
 }

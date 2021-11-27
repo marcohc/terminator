@@ -15,8 +15,8 @@ import org.koin.dsl.module
 object ViewInteractorTestUtils : KoinComponent {
 
     fun <Intention, State> bindViewToInteractor(
-            view: MviView<Intention, State>,
-            interactor: MviInteractor<Intention, State>
+        view: MviView<Intention, State>,
+        interactor: MviInteractor<Intention, State>
     ): Pair<PublishSubject<Intention>, TestObserver<State>> {
         val intentions = PublishSubject.create<Intention>()
         whenever(view.intentions()).thenReturn(intentions)
@@ -30,13 +30,14 @@ object ViewInteractorTestUtils : KoinComponent {
             getKoin()
         } catch (ignored: IllegalStateException) {
             startKoin {
-                modules(listOf(module {
-                    single(named(MVI_RX_UI_SCHEDULER)) { Schedulers.trampoline() }
-                }))
+                modules(
+                    listOf(
+                        module {
+                            single(named(MVI_RX_UI_SCHEDULER)) { Schedulers.trampoline() }
+                        }
+                    )
+                )
             }
         }
     }
 }
-
-
-

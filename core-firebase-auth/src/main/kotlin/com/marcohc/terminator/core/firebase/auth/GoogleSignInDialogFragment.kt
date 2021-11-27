@@ -47,5 +47,4 @@ class GoogleSignInDialogFragment : MviDialogFragment<GoogleSignInIntention, Goog
     companion object {
         fun newInstance() = GoogleSignInDialogFragment()
     }
-
 }

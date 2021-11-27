@@ -13,5 +13,4 @@ interface MviInteractor<Intention, State> {
     fun states(): Observable<State>
 
     fun doOnDestroy(onDestroyFunction: () -> Unit)
-
 }

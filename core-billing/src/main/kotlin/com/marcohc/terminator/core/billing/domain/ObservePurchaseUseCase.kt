@@ -10,8 +10,8 @@ import com.marcohc.terminator.core.utils.toObservableDefault
 import io.reactivex.Observable
 
 class ObservePurchaseUseCase(
-        private val verifyPurchaseUseCase: VerifyPurchaseUseCase,
-        private val repository: PurchaseRepository
+    private val verifyPurchaseUseCase: VerifyPurchaseUseCase,
+    private val repository: PurchaseRepository
 ) {
 
     fun execute(): Observable<Optional<PurchaseEntity>> = repository.observe()

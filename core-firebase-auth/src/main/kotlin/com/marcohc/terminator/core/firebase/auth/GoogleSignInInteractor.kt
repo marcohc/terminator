@@ -14,23 +14,27 @@ import timber.log.Timber
 sealed class GoogleSignInIntention {
     object Initial : GoogleSignInIntention()
     data class ActivityResult(
-            val requestCode: Int,
-            val intent: Intent?
+        val requestCode: Int,
+        val intent: Intent?
     ) : GoogleSignInIntention()
 }
 
 internal class GoogleSignInInteractor(
-        private val publisher: GoogleSignInEventPublisher,
-        private val analytics: GoogleSignInAnalytics,
-        private val router: GoogleSignInRouter
+    private val publisher: GoogleSignInEventPublisher,
+    private val analytics: GoogleSignInAnalytics,
+    private val router: GoogleSignInRouter
 ) : MviBaseInteractor<GoogleSignInIntention, GoogleSignInAction, GoogleSignInState>(defaultState = GoogleSignInState) {
 
-    override fun intentionToAction(): (GoogleSignInIntention) -> Observable<out GoogleSignInAction> = { intention ->
-        when (intention) {
-            is Initial -> initial().toObservable()
-            is ActivityResult -> activityResult(intention.requestCode, intention.intent).toObservable()
+    override fun intentionToAction(): (GoogleSignInIntention) -> Observable<out GoogleSignInAction> =
+        { intention ->
+            when (intention) {
+                is Initial -> initial().toObservable()
+                is ActivityResult -> activityResult(
+                    intention.requestCode,
+                    intention.intent
+                ).toObservable()
+            }
         }
-    }
 
     private fun initial() = analytics.logScreen()
         .andThen(router.showSignInDialog())
@@ -41,7 +45,10 @@ internal class GoogleSignInInteractor(
                 try {
                     if (intent != null) GoogleSignIn.getSignedInAccountFromIntent(intent)?.exception as ApiException? else null
                 } catch (exception: Exception) {
-                    Timber.e(exception, "GoogleSignIn.getSignedInAccountFromIntent(data).exception as ApiException?")
+                    Timber.e(
+                        exception,
+                        "GoogleSignIn.getSignedInAccountFromIntent(data).exception as ApiException?"
+                    )
                     exception
                 }
             }
@@ -62,9 +69,10 @@ internal class GoogleSignInInteractor(
         }
     }
 
-    override fun actionToState(): (GoogleSignInState, GoogleSignInAction) -> GoogleSignInState = { _, _ ->
-        GoogleSignInState
-    }
+    override fun actionToState(): (GoogleSignInState, GoogleSignInAction) -> GoogleSignInState =
+        { _, _ ->
+            GoogleSignInState
+        }
 }
 
 object GoogleSignInAction

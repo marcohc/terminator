@@ -17,12 +17,11 @@ interface PurchaseRepository {
     fun deleteAllAndSave(purchase: PurchaseEntity): Completable
 
     fun deleteAll(): Completable
-
 }
 
 internal class PurchaseRepositoryImpl(
-        private val dao: PurchaseDao,
-        private val scheduler: Scheduler
+    private val dao: PurchaseDao,
+    private val scheduler: Scheduler
 ) : PurchaseRepository {
 
     override fun observe(): Observable<Optional<PurchaseEntity>> {
@@ -53,5 +52,4 @@ internal class PurchaseRepositoryImpl(
     override fun deleteAll() = Completable
         .fromAction { dao.deleteAll() }
         .subscribeOn(scheduler)
-
 }

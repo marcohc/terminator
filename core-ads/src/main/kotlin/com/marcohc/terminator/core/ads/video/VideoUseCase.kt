@@ -38,7 +38,12 @@ interface VideoUseCase {
         fun Scope.getOrCreateScopedVideoUseCase(
             analyticsScopeId: String,
             activity: AppCompatActivity
-        ): VideoUseCase = getOrCreateFromParentScope(AdsModule.scopeId) { factoryVideoUseCase(analyticsScopeId, activity) }
+        ): VideoUseCase = getOrCreateFromParentScope(AdsModule.scopeId) {
+            factoryVideoUseCase(
+                analyticsScopeId,
+                activity
+            )
+        }
 
         fun Scope.factoryVideoUseCase(
             analyticsScopeId: String,
@@ -94,23 +99,24 @@ internal class VideoUseCaseImpl(
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
                     this@VideoUseCaseImpl.rewardedAd = rewardedAd
 
-                    this@VideoUseCaseImpl.rewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-                        override fun onAdDismissedFullScreenContent() {
-                            Timber.v("VideoEvent.onAdDismissedFullScreenContent")
-                            subject.onNext(VideoEvent.Closed)
-                        }
+                    this@VideoUseCaseImpl.rewardedAd?.fullScreenContentCallback =
+                        object : FullScreenContentCallback() {
+                            override fun onAdDismissedFullScreenContent() {
+                                Timber.v("VideoEvent.onAdDismissedFullScreenContent")
+                                subject.onNext(VideoEvent.Closed)
+                            }
 
-                        override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                            Timber.v("VideoEvent.onAdFailedToShowFullScreenContent: $adError")
-                            subject.onNext(VideoEvent.FailedToLoad)
-                        }
+                            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                                Timber.v("VideoEvent.onAdFailedToShowFullScreenContent: $adError")
+                                subject.onNext(VideoEvent.FailedToLoad)
+                            }
 
-                        override fun onAdShowedFullScreenContent() {
-                            Timber.v("VideoEvent.onAdShowedFullScreenContent")
-                            subject.onNext(VideoEvent.Opened)
-                            this@VideoUseCaseImpl.rewardedAd = null
+                            override fun onAdShowedFullScreenContent() {
+                                Timber.v("VideoEvent.onAdShowedFullScreenContent")
+                                subject.onNext(VideoEvent.Opened)
+                                this@VideoUseCaseImpl.rewardedAd = null
+                            }
                         }
-                    }
 
                     Timber.v("rewardedVideoAd: $activity / $rewardedAd")
                     Timber.v("VideoEvent.onAdLoaded")
@@ -122,9 +128,12 @@ internal class VideoUseCaseImpl(
 
     override fun observe(): Observable<VideoEvent> = subject.hide()
 
-    override fun observeAndTrack(): Observable<VideoEvent> = observe().flatMap { analytics.trackEvent(it).toObservableDefault(it) }
+    override fun observeAndTrack(): Observable<VideoEvent> = observe()
+        .flatMap { analytics.trackEvent(it).toObservableDefault(it) }
 
-    override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
+    override fun getLastEvent() = requireNotNull(subject.value) {
+        "This subject must contain always a value"
+    }
 
     override fun logShowVideoClick() = analytics.trackClick()
 

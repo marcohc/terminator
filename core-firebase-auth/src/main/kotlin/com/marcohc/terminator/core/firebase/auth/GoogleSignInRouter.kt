@@ -6,13 +6,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.marcohc.terminator.core.mvi.ui.navigation.FragmentNavigationExecutor
 
 internal class GoogleSignInRouter(
-        private val executor: FragmentNavigationExecutor,
-        private val options: GoogleSignInOptions
+    private val executor: FragmentNavigationExecutor,
+    private val options: GoogleSignInOptions
 ) {
 
     fun showSignInDialog() = executor.executeCompletable { fragment ->
         fragment.activity?.let { activity ->
-            fragment.startActivityForResult(GoogleSignIn.getClient(activity, options).signInIntent, REQUEST_CODE_SIGN_IN)
+            fragment.startActivityForResult(
+                GoogleSignIn.getClient(activity, options).signInIntent,
+                REQUEST_CODE_SIGN_IN
+            )
         }
     }
 
@@ -23,5 +26,4 @@ internal class GoogleSignInRouter(
     internal companion object {
         const val REQUEST_CODE_SIGN_IN = 0x1234
     }
-
 }

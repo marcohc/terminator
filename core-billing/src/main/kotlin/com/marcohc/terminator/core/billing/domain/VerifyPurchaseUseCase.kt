@@ -9,5 +9,4 @@ import io.reactivex.Completable
 interface VerifyPurchaseUseCase {
 
     fun execute(purchase: PurchaseEntity): Completable
-
 }

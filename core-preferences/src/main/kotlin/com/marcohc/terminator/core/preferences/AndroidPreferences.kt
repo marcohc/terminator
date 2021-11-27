@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.marcohc.terminator.core.preferences
 
 import android.content.Context
@@ -5,8 +7,8 @@ import android.content.SharedPreferences
 import java.util.concurrent.CopyOnWriteArraySet
 
 class AndroidPreferences(
-        context: Context,
-        preferencesName: String
+    context: Context,
+    preferencesName: String
 ) : Preferences {
 
     private val preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
@@ -20,7 +22,9 @@ class AndroidPreferences(
         preferences.registerOnSharedPreferenceChangeListener(changeListener)
     }
 
-    override fun getString(key: String, defValue: String?): String? = preferences.getString(key, defValue)
+    override fun getString(key: String, defValue: String?): String? =
+        preferences.getString(key, defValue)
+
     override fun putString(key: String, value: String?) {
         preferences.edit().putString(key, value).apply()
     }
@@ -40,7 +44,9 @@ class AndroidPreferences(
         preferences.edit().putFloat(key, value).apply()
     }
 
-    override fun getBoolean(key: String, defValue: Boolean): Boolean = preferences.getBoolean(key, defValue)
+    override fun getBoolean(key: String, defValue: Boolean): Boolean =
+        preferences.getBoolean(key, defValue)
+
     override fun putBoolean(key: String, value: Boolean) {
         preferences.edit().putBoolean(key, value).apply()
     }
@@ -73,7 +79,7 @@ class AndroidPreferences(
 }
 
 private class AndroidPrefsBatchEditor constructor(
-        val editor: SharedPreferences.Editor
+    val editor: SharedPreferences.Editor
 ) : PrefsBatchEditor {
 
     override fun putString(key: String, value: String?) {

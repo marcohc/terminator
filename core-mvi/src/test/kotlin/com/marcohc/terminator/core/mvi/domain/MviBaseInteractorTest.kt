@@ -27,28 +27,30 @@ class MviBaseInteractorTest {
             defaultState = MockState(),
             debugMode = true
         ) {
-            override fun intentionToAction(): (intention: MockIntention) -> Observable<out MockAction> = { intention ->
-                when (intention) {
-                    is MockIntention.Initial -> Observable.just(MockAction.IncrementCount())
-                    is MockIntention.ButtonClick -> Observable.just(
-                        MockAction.IncrementCount(
-                            intention.freezeCounter
+            override fun intentionToAction(): (intention: MockIntention) -> Observable<out MockAction> =
+                { intention ->
+                    when (intention) {
+                        is MockIntention.Initial -> Observable.just(MockAction.IncrementCount())
+                        is MockIntention.ButtonClick -> Observable.just(
+                            MockAction.IncrementCount(
+                                intention.freezeCounter
+                            )
                         )
-                    )
+                    }
                 }
-            }
 
-            override fun actionToState(): (currentState: MockState, action: MockAction) -> MockState = { currentState, action ->
-                when (action) {
-                    is MockAction.IncrementCount -> {
-                        if (action.freezeCounter) {
-                            currentState
-                        } else {
-                            currentState.copy(count = currentState.count + 1)
+            override fun actionToState(): (currentState: MockState, action: MockAction) -> MockState =
+                { currentState, action ->
+                    when (action) {
+                        is MockAction.IncrementCount -> {
+                            if (action.freezeCounter) {
+                                currentState
+                            } else {
+                                currentState.copy(count = currentState.count + 1)
+                            }
                         }
                     }
                 }
-            }
         }
     }
 
@@ -150,7 +152,6 @@ class MviBaseInteractorTest {
     }
 
     data class MockState(
-            val count: Int = 0
+        val count: Int = 0
     )
-
 }

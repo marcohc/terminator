@@ -19,8 +19,8 @@ import timber.log.Timber
  * Base class which orchestrates the subscriptions and logic to manage a [MviInteractor]
  */
 abstract class MviBaseInteractor<Intention, Action, State>(
-        defaultState: State,
-        private val debugMode: Boolean? = false
+    defaultState: State,
+    private val debugMode: Boolean? = false
 ) : MviInteractor<Intention, State>,
     ViewModel(),
     KoinComponent {
@@ -34,9 +34,19 @@ abstract class MviBaseInteractor<Intention, Action, State>(
     init {
         disposable.add(
             intentionsSubject
-                .doOnNext { intention -> Timber.v(INTERACTOR_LOG_TAG, printClassName(intention as Any, debugMode)) }
+                .doOnNext { intention ->
+                    Timber.v(
+                        INTERACTOR_LOG_TAG,
+                        printClassName(intention as Any, debugMode)
+                    )
+                }
                 .flatMap(this.intentionToAction())
-                .doOnNext { action -> Timber.v(INTERACTOR_LOG_TAG, printClassName(action as Any, debugMode)) }
+                .doOnNext { action ->
+                    Timber.v(
+                        INTERACTOR_LOG_TAG,
+                        printClassName(action as Any, debugMode)
+                    )
+                }
                 .scan(defaultState, this.actionToState())
                 .doOnError { Timber.e(it) }
                 .observeOn(uiScheduler)
@@ -55,7 +65,12 @@ abstract class MviBaseInteractor<Intention, Action, State>(
     override fun states(): Observable<State> {
         return stateSubject.hide()
             .distinctUntilChanged()
-            .doOnNext { state -> Timber.v(INTERACTOR_LOG_TAG, printClassName(state as Any, debugMode)) }
+            .doOnNext { state ->
+                Timber.v(
+                    INTERACTOR_LOG_TAG,
+                    printClassName(state as Any, debugMode)
+                )
+            }
     }
 
     override fun doOnDestroy(onDestroyFunction: () -> Unit) {
@@ -86,4 +101,3 @@ abstract class MviBaseInteractor<Intention, Action, State>(
         const val MVI_RX_UI_SCHEDULER = "MVI_RX_UI_SCHEDULER"
     }
 }
-

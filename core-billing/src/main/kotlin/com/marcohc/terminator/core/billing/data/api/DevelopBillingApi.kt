@@ -16,11 +16,11 @@ import io.reactivex.disposables.CompositeDisposable
 
 // TODO: Move this development code to debug buildType so it's not dragged into production
 internal class DevelopBillingApi(
-        private val skuList: List<String>,
-        private val saveProductsUseCase: SaveProductsUseCase,
-        private val deleteAllPurchasesUseCase: DeleteAllPurchasesUseCase,
-        private val deleteAndSavePurchasesUseCase: DeleteAndSavePurchasesUseCase,
-        private val purchaseEventBus: PurchaseEventBus
+    private val skuList: List<String>,
+    private val saveProductsUseCase: SaveProductsUseCase,
+    private val deleteAllPurchasesUseCase: DeleteAllPurchasesUseCase,
+    private val deleteAndSavePurchasesUseCase: DeleteAndSavePurchasesUseCase,
+    private val purchaseEventBus: PurchaseEventBus
 ) : BillingApi {
 
     private val compositeDisposable = CompositeDisposable()
@@ -53,5 +53,4 @@ internal class DevelopBillingApi(
     }
 
     override fun clearAll() = deleteAllPurchasesUseCase.execute()
-
 }

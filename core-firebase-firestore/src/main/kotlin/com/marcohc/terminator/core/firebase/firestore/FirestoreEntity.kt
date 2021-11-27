@@ -4,5 +4,4 @@ interface FirestoreEntity {
     var id: String
 
     fun toMap(): Map<String, Any>
-
 }

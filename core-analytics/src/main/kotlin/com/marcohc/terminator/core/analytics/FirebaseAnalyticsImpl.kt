@@ -68,7 +68,8 @@ class FirebaseAnalyticsImpl(
 
     override fun trackScreen(screenId: String) {
         Timber.v("trackScreen: $screenId")
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW,
+        firebaseAnalytics.logEvent(
+            FirebaseAnalytics.Event.SCREEN_VIEW,
             Bundle().apply {
                 putString(FirebaseAnalytics.Param.SCREEN_NAME, screenId)
                 putString(FirebaseAnalytics.Param.SCREEN_CLASS, screenId)
@@ -91,5 +92,4 @@ class FirebaseAnalyticsImpl(
         Timber.v("trackEvent: $eventId${if (bundle.isEmpty) "" else " $bundle"}")
         firebaseAnalytics.logEvent(eventId, bundle)
     }
-
 }

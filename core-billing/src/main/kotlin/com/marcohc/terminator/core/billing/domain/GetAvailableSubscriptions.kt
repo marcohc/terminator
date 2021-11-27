@@ -7,5 +7,4 @@ import io.reactivex.Single
 class GetAvailableSubscriptions(private val repository: ProductRepository) {
 
     fun execute(): Single<List<ProductEntity>> = repository.getSubscriptions()
-
 }

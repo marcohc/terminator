@@ -21,5 +21,4 @@ abstract class CoordinatorModule {
      * The list of feature's modules under the roof of this Coordinator
      */
     abstract val modules: List<Module>
-
 }

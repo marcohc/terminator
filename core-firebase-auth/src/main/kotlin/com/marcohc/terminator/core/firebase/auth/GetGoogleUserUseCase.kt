@@ -14,5 +14,4 @@ class GetGoogleUserUseCase(private val context: Context) {
     fun executeOptional() = Single.fromCallable {
         Optional.toOptional(GoogleSignIn.getLastSignedInAccount(context))
     }
-
 }

@@ -5,8 +5,8 @@ import io.reactivex.Single
 import timber.log.Timber
 
 class MustForceUpdateUseCase(
-        private val appVersionCode: Int,
-        private val remoteConfigRepository: RemoteConfigRepository
+    private val appVersionCode: Int,
+    private val remoteConfigRepository: RemoteConfigRepository
 ) {
 
     fun execute() = Single.fromCallable {

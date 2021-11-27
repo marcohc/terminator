@@ -6,5 +6,4 @@ import com.marcohc.terminator.core.billing.data.repositories.ProductRepository
 internal class SaveProductsUseCase(private val repository: ProductRepository) {
 
     fun execute(products: List<ProductEntity>) = repository.saveAll(products)
-
 }

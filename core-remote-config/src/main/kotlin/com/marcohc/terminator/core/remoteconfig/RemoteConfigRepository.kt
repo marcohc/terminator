@@ -19,5 +19,4 @@ class RemoteConfigRepository(private val firebaseRemoteConfig: FirebaseRemoteCon
     fun getLong(key: String) = firebaseRemoteConfig.getLong(key).apply { Timber.v("key: $key, value: $this") }
 
     fun getValue(key: String) = firebaseRemoteConfig.getValue(key).apply { Timber.v("key: $key, value: $this") }
-
 }

@@ -36,13 +36,18 @@ interface BannerUseCase {
     companion object {
 
         fun Scope.getOrCreateScopedBannerUseCase(
-                analyticsScopeId: String,
-                activity: AppCompatActivity
-        ): BannerUseCase = getOrCreateFromParentScope(AdsModule.scopeId) { factoryBannerUseCase(analyticsScopeId, activity) }
+            analyticsScopeId: String,
+            activity: AppCompatActivity
+        ): BannerUseCase = getOrCreateFromParentScope(AdsModule.scopeId) {
+            factoryBannerUseCase(
+                analyticsScopeId,
+                activity
+            )
+        }
 
         fun Scope.factoryBannerUseCase(
-                analyticsScopeId: String,
-                activity: AppCompatActivity
+            analyticsScopeId: String,
+            activity: AppCompatActivity
         ): BannerUseCase = BannerUseCaseImpl(
             activity = activity,
             analytics = BannerAnalyticsImpl(
@@ -59,13 +64,12 @@ interface BannerUseCase {
             override fun loadNewAd() = Completable.complete()
         }
     }
-
 }
 
 internal class BannerUseCaseImpl(
-        private val activity: AppCompatActivity,
-        private val analytics: BannerAnalytics,
-        private val adUnitId: String
+    private val activity: AppCompatActivity,
+    private val analytics: BannerAnalytics,
+    private val adUnitId: String
 ) : BannerUseCase,
     LifecycleObserver {
 
@@ -141,7 +145,8 @@ internal class BannerUseCaseImpl(
     override fun observeAndTrack(): Observable<BannerEvent> = observe()
         .flatMap { event -> analytics.trackEvent(event).toObservableDefault(event) }
 
-    override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
+    override fun getLastEvent() =
+        requireNotNull(subject.value) { "This subject must contain always a value" }
 
     @MainThread
     override fun loadNewAd() = Completable.fromAction { loadAd() }

@@ -3,9 +3,9 @@ apply from: "../config/android-library.gradle"
 dependencies {
     api libraries.firebase.auth
     api libraries.googlePlayServicesAuth
-    implementation libraries.timber
     implementation libraries.koptional
     implementation libraries.rxJava
+    implementation libraries.timber
     implementation project(":core-firebase")
     implementation project(":core-koin")
     implementation project(":core-mvi")

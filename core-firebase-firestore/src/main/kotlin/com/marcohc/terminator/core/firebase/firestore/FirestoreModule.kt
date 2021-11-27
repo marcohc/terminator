@@ -9,5 +9,4 @@ object FirestoreModule : CoreModule {
     override val module = module {
         single { FirebaseFirestore.getInstance() }
     }
-
 }

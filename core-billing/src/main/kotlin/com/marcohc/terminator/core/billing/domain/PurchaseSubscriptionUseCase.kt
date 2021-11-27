@@ -7,8 +7,8 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class PurchaseSubscriptionUseCase(
-        private val billingApi: BillingApi,
-        private val productRepository: ProductRepository
+    private val billingApi: BillingApi,
+    private val productRepository: ProductRepository
 ) {
 
     fun execute(activity: Activity, sku: String) = productRepository.getById(sku)
@@ -21,6 +21,4 @@ class PurchaseSubscriptionUseCase(
                 billingApi.launchBillingFlow(activity, product)
             }
         }
-
 }
-

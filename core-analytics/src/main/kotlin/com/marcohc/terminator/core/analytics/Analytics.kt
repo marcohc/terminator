@@ -32,6 +32,4 @@ interface Analytics {
     fun trackTutorialCompleted()
 
     fun trackScreen(screenId: String)
-
 }
-

@@ -29,7 +29,10 @@ internal class NativeAnalyticsImpl(
     }
 
     private fun trackEvents(event: String) {
-        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}Action", "$scopeId$event") })
+        analytics.trackEvent(
+            BASE_EVENT,
+            Bundle().apply { putString("${BASE_EVENT}Action", "$scopeId$event") }
+        )
         analytics.trackEvent("$scopeId$BASE_EVENT${event}")
     }
 

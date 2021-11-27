@@ -1,7 +1,6 @@
 package com.marcohc.terminator.core.mvi.android.test
 
 import android.content.Context
-import androidx.annotation.VisibleForTesting
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.rule.ActivityTestRule
 import com.marcohc.terminator.core.mvi.ui.MviFragment
@@ -11,11 +10,10 @@ import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
 
-@VisibleForTesting
-abstract class MviFragmentTest<Intention, State, Robot>(
-        private val fragment: MviFragment<Intention, State>,
-        private val scopeId: String,
-        val robot: Robot
+open class MviFragmentTest<Intention, State, Robot>(
+    private val fragment: MviFragment<Intention, State>,
+    private val scopeId: String,
+    val robot: Robot
 ) {
 
     @get:Rule
@@ -33,7 +31,10 @@ abstract class MviFragmentTest<Intention, State, Robot>(
         block.invoke(rule.activity)
     }
 
-    protected inline fun <reified T : Intention> assertTypedIntentionAt(position: Int, crossinline predicate: T.() -> Boolean) {
+    protected inline fun <reified T : Intention> assertTypedIntentionAt(
+        position: Int,
+        crossinline predicate: T.() -> Boolean
+    ) {
         testObserver.assertValueAt(position) {
             require(it is T)
             predicate(it)
@@ -64,10 +65,11 @@ abstract class MviFragmentTest<Intention, State, Robot>(
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.SECONDS)
     }
 
-    private fun prepareMocks(): Pair<TestObserver<Intention>, BehaviorSubject<State>> = prepareInputAndOutputMocks(
-        scopeId = scopeId,
-        activityNavigation = false
-    )
+    private fun prepareMocks(): Pair<TestObserver<Intention>, BehaviorSubject<State>> =
+        prepareInputAndOutputMocks(
+            scopeId = scopeId,
+            activityNavigation = false
+        )
 
     inline fun robot(block: Robot.() -> Unit) {
         robot.apply(block)

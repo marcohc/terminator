@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
  * Implementation for Adapter Delegate pattern
  */
 class TypedAdapterDelegate<ItemModel : RecyclerItem>(
-        private val delegate: Delegate<ItemModel>
+    private val delegate: Delegate<ItemModel>
 ) : AdapterDelegate<ItemModel> {
 
     override fun onCreateViewHolder(parent: ViewGroup): BaseViewHolder<ItemModel> {
 
-        val itemView = LayoutInflater.from(parent.context).inflate(delegate.delegateConfig.layoutId, parent, false)
+        val itemView = LayoutInflater.from(parent.context)
+            .inflate(delegate.delegateConfig.layoutId, parent, false)
         return object : BaseViewHolder<ItemModel>(itemView) {
 
             override val delegateConfig = delegate.delegateConfig
@@ -37,15 +38,24 @@ class TypedAdapterDelegate<ItemModel : RecyclerItem>(
                     childLongClickListener
                 )
             }
-
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, items: List<ItemModel>) {
-        val data = items[position] as? ItemModel ?: throw IllegalStateException("Incorrect data for position $position. Was ${items[position]}. Check your items list.")
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        items: List<ItemModel>
+    ) {
+        val itemModel = items[position] as? ItemModel
+        val data = if (itemModel is ItemModel) {
+            itemModel
+        } else {
+            throw IllegalStateException(
+                "Incorrect data for position $position." +
+                    " Was ${items[position]}. Check your items list."
+            )
+        }
         (holder as BaseViewHolder<ItemModel>).bind(data)
     }
-
 }
-

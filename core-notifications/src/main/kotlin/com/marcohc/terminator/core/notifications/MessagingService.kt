@@ -7,7 +7,7 @@ import org.koin.core.inject
 import timber.log.Timber
 
 class MessagingService : FirebaseMessagingService(),
-                         KoinComponent {
+    KoinComponent {
 
     private val notificationsRepository by inject<NotificationsRepository>()
 
@@ -24,5 +24,4 @@ class MessagingService : FirebaseMessagingService(),
     override fun onNewToken(token: String) {
         // No-op
     }
-
 }

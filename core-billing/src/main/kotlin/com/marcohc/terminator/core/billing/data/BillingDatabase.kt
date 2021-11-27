@@ -32,11 +32,11 @@ internal abstract class BillingDatabase : RoomDatabase() {
         fun getInstance(context: Context): BillingDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
-                        ?: buildDatabase(
-                            context.applicationContext
-                        ).also {
-                    INSTANCE = it
-                }
+                    ?: buildDatabase(
+                        context.applicationContext
+                    ).also {
+                        INSTANCE = it
+                    }
             }
 
         /**

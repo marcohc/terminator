@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.marcohc.terminator.core.mvi.ui.navigation
 
 import androidx.appcompat.app.AppCompatActivity
@@ -44,7 +46,8 @@ interface FragmentNavigationExecutor {
     /**
      * Executes the function and wraps it with Completable
      */
-    fun executeCompletable(function: (Fragment) -> Unit) = Completable.fromAction { execute(function::invoke) }
+    fun executeCompletable(function: (Fragment) -> Unit) =
+        Completable.fromAction { execute(function::invoke) }
 
     /**
      * Executes the function and wraps it with Completable
@@ -68,19 +71,21 @@ interface FragmentNavigationExecutor {
             }
     }
 
-    fun <T> executeObservableWithActivity(function: (Pair<AppCompatActivity, ObservableEmitter<T>>) -> Unit): Observable<T> = getActivityReady()
-        .toObservable()
-        .flatMap { activity: AppCompatActivity ->
-            // This cast must be here
-            Observable.create<T> { emitter -> function.invoke(activity to emitter) }
-        }
+    fun <T> executeObservableWithActivity(function: (Pair<AppCompatActivity, ObservableEmitter<T>>) -> Unit): Observable<T> =
+        getActivityReady()
+            .toObservable()
+            .flatMap { activity: AppCompatActivity ->
+                // This cast must be here
+                Observable.create<T> { emitter -> function.invoke(activity to emitter) }
+            }
 
-    fun <T> executeObservable(function: (Pair<Fragment, ObservableEmitter<T>>) -> Unit): Observable<T> = getFragmentReady()
-        .toObservable()
-        .flatMap { fragment: Fragment ->
-            // This cast must be here
-            Observable.create<T> { emitter -> function.invoke(fragment to emitter) }
-        }
+    fun <T> executeObservable(function: (Pair<Fragment, ObservableEmitter<T>>) -> Unit): Observable<T> =
+        getFragmentReady()
+            .toObservable()
+            .flatMap { fragment: Fragment ->
+                // This cast must be here
+                Observable.create<T> { emitter -> function.invoke(fragment to emitter) }
+            }
 
     fun getFragmentReady() = Single
         .create<Fragment> { emitter -> execute { fragment -> emitter.onSuccess(fragment) } }
@@ -95,11 +100,11 @@ interface FragmentNavigationExecutor {
             }
         }
         .observeOn(AndroidSchedulers.mainThread())
-
 }
 
-class FragmentNavigationExecutorImpl : FragmentNavigationExecutor,
-                                       LifecycleObserver {
+class FragmentNavigationExecutorImpl :
+    FragmentNavigationExecutor,
+    LifecycleObserver {
 
     private var commandsList: MutableList<((Fragment) -> Unit)> = mutableListOf()
     private var isPaused: Boolean = true
@@ -148,5 +153,4 @@ class FragmentNavigationExecutorImpl : FragmentNavigationExecutor,
             }
         }
     }
-
 }

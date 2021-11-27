@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.marcohc.terminator.core.firebase.firestore
 
 import com.gojuno.koptional.None
@@ -28,7 +30,9 @@ inline fun <reified T : FirestoreEntity> FirebaseFirestore.getEntitiesList(path:
                 if (documentSnapshot.data.isNullOrEmpty()) {
                     T::class.java.newInstance().apply { id = documentSnapshot.id }
                 } else {
-                    requireNotNull(documentSnapshot.toObject(T::class.java)).apply { id = documentSnapshot.id }
+                    requireNotNull(documentSnapshot.toObject(T::class.java)).apply {
+                        id = documentSnapshot.id
+                    }
                 }
             }
         }
@@ -51,7 +55,9 @@ inline fun <reified T : FirestoreEntity> Query.getEntitiesList(): Single<List<T>
                 if (documentSnapshot.data.isNullOrEmpty()) {
                     T::class.java.newInstance().apply { id = documentSnapshot.id }
                 } else {
-                    requireNotNull(documentSnapshot.toObject(T::class.java)).apply { id = documentSnapshot.id }
+                    requireNotNull(documentSnapshot.toObject(T::class.java)).apply {
+                        id = documentSnapshot.id
+                    }
                 }
             }
         }
@@ -77,19 +83,23 @@ inline fun <reified T : FirestoreEntity> Query.getEntityLimitToOne(): Single<Opt
                         }
                         else -> {
                             val document = querySnapshot.documents.first()
-                            val entity = Optional.toOptional(document.toObject(T::class.java)!!.apply { id = document.id })
+                            val entity = Optional.toOptional(
+                                document.toObject(T::class.java)!!.apply { id = document.id }
+                            )
                             Timber.v("Firestore --> ${entity::class.simpleName} found")
                             emitter.onSuccess(entity)
                         }
                     }
-
                 }
                 .onError { emitter.onError(it) }
         }
         .doOnError { Timber.e(it, "Firestore --> error") }
 }
 
-inline fun <reified T : FirestoreEntity> FirebaseFirestore.getEntity(path: String, documentId: String): Single<Optional<T>> {
+inline fun <reified T : FirestoreEntity> FirebaseFirestore.getEntity(
+    path: String,
+    documentId: String
+): Single<Optional<T>> {
     return Single
         .create<DocumentSnapshot> { emitter ->
             Timber.v("Firestore --> getEntity(path: $path, entityId: $documentId)")

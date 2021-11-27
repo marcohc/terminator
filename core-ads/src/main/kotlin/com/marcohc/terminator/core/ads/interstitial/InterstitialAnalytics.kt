@@ -1,8 +1,10 @@
 package com.marcohc.terminator.core.ads.interstitial
 
 import android.os.Bundle
-import com.marcohc.terminator.core.ads.banner.BannerEvent
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.*
+import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Closed
+import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.FailedToLoad
+import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Loaded
+import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Opened
 import com.marcohc.terminator.core.analytics.Analytics
 import io.reactivex.Completable
 

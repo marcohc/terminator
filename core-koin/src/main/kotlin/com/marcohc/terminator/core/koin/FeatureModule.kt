@@ -16,5 +16,4 @@ interface FeatureModule {
      * The Koin module
      */
     val module: Module
-
 }

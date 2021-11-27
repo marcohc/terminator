@@ -49,5 +49,4 @@ object AuthModule : FeatureModule {
     fun Scope.scopedGoogleSignInEventPublisher() = getOrCreateFromParentScope(scopeId) { GoogleSignInEventPublisher() }
 
     const val GOOGLE_SIGN_IN_OPTIONS = "GOOGLE_SIGN_IN_OPTIONS"
-
 }

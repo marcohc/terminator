@@ -39,7 +39,12 @@ interface NativeUseCase {
         fun Scope.getOrCreateScopedNativeUseCase(
             analyticsScopeId: String,
             activity: AppCompatActivity
-        ) = getOrCreateFromParentScope(AdsModule.scopeId) { factoryNativeUseCase(analyticsScopeId, activity) }
+        ) = getOrCreateFromParentScope(AdsModule.scopeId) {
+            factoryNativeUseCase(
+                analyticsScopeId,
+                activity
+            )
+        }
 
         fun Scope.factoryNativeUseCase(
             analyticsScopeId: String,
@@ -175,9 +180,8 @@ internal class NativeUseCaseImpl(
         val notSeenItems = nativeAdsList.count { !it.seen }
         if (notSeenItems < numberOfAds) {
             adLoader?.loadAds(
-                AdRequest.Builder()
-                    // Use options
-                    .build(), numberOfAds
+                AdRequest.Builder().build(),
+                numberOfAds
             )
         }
     }
@@ -190,5 +194,4 @@ internal class NativeUseCaseImpl(
             return "NativeAd(unifiedNativeAd=${nativeAd.headline}, seen=$seen, hasVideoContent: ${nativeAd.mediaContent?.videoController?.hasVideoContent()})"
         }
     }
-
 }

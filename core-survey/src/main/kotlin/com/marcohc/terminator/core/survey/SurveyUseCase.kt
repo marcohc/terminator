@@ -34,14 +34,21 @@ interface SurveyUseCase {
 
     companion object {
 
+        @Suppress("unused")
         fun Scope.getOrCreateScopedSurveyUseCase(
-                analyticsScopeId: String,
-                activity: AppCompatActivity
-        ): SurveyUseCase = getOrCreateFromParentScope(SurveyModule.scopeId) { factorySurveyUseCase(analyticsScopeId, activity) }
+            analyticsScopeId: String,
+            activity: AppCompatActivity
+        ): SurveyUseCase = getOrCreateFromParentScope(SurveyModule.scopeId) {
+            factorySurveyUseCase(
+                analyticsScopeId,
+                activity
+            )
+        }
 
+        @SuppressWarnings("WeakerAccess")
         fun Scope.factorySurveyUseCase(
-                analyticsScopeId: String,
-                activity: AppCompatActivity
+            analyticsScopeId: String,
+            activity: AppCompatActivity
         ): SurveyUseCase = SurveyUseCaseImpl(
             activity = activity,
             analytics = SurveyAnalyticsImpl(
@@ -52,6 +59,7 @@ interface SurveyUseCase {
             apiKey = get(named(SurveyConstants.SURVEY_API_KEY))
         )
 
+        @Suppress("unused")
         fun factoryStubSurveyUseCase(): SurveyUseCase = object : SurveyUseCase {
             override fun observe() = Observable.never<SurveyEvent>()
             override fun observeAndTrack() = Observable.never<SurveyEvent>()
@@ -63,10 +71,10 @@ interface SurveyUseCase {
 }
 
 internal class SurveyUseCaseImpl(
-        private val activity: AppCompatActivity,
-        private val analytics: SurveyAnalytics,
-        private val debug: Boolean,
-        private val apiKey: String
+    private val activity: AppCompatActivity,
+    private val analytics: SurveyAnalytics,
+    private val debug: Boolean,
+    private val apiKey: String
 ) : SurveyUseCase,
     LifecycleObserver {
 
@@ -89,7 +97,8 @@ internal class SurveyUseCaseImpl(
     override fun observeAndTrack(): Observable<SurveyEvent> = observe()
         .flatMap { event -> analytics.logEvent(event).toObservableDefault(event) }
 
-    override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
+    override fun getLastEvent() =
+        requireNotNull(subject.value) { "This subject must contain always a value" }
 
     @MainThread
     override fun show() = Completable.fromAction {
@@ -140,7 +149,7 @@ internal class SurveyUseCaseImpl(
                         subject.onNext(SurveyEvent.Rewarded(price))
                     }
                     .userProperties(
-                        // TODO: This should be somehow extracted out but without dragging the Pollfish dependency
+                        // This should be somehow extracted out but without dragging the Pollfish dependency
                         UserProperties().setSpokenLanguages(
                             if (userHasLocaleFromSpain()) {
                                 UserProperties.SpokenLanguages.SPANISH
@@ -154,6 +163,6 @@ internal class SurveyUseCaseImpl(
         PollFish.hide()
     }
 
-    private fun userHasLocaleFromSpain() = listOf("es", "ca", "gl", "eu").contains(Locale.getDefault().language)
-
+    private fun userHasLocaleFromSpain() =
+        listOf("es", "ca", "gl", "eu").contains(Locale.getDefault().language)
 }

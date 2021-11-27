@@ -11,7 +11,10 @@ fun <T> Observable<T>.toSingle(): Single<T> = take(1).singleOrError()
 
 fun <T> T.observableJust() = Observable.just(this)
 
-fun <A, B> observableCombineLatest(streamA: Observable<A>, streamB: Observable<B>): Observable<Pair<A, B>> = Observable
+fun <A, B> observableCombineLatest(
+    streamA: Observable<A>,
+    streamB: Observable<B>
+): Observable<Pair<A, B>> = Observable
     .combineLatest(
         streamA,
         streamB,
@@ -19,9 +22,9 @@ fun <A, B> observableCombineLatest(streamA: Observable<A>, streamB: Observable<B
     )
 
 fun <A, B, C> observableCombineLatest(
-        streamA: Observable<A>,
-        streamB: Observable<B>,
-        streamC: Observable<C>
+    streamA: Observable<A>,
+    streamB: Observable<B>,
+    streamC: Observable<C>
 ): Observable<Triple<A, B, C>> = Observable
     .combineLatest(
         streamA,
@@ -30,9 +33,10 @@ fun <A, B, C> observableCombineLatest(
         Function3 { a, b, c -> Triple(a, b, c) }
     )
 
-fun <A, B> observableZip(streamA: Observable<A>, streamB: Observable<B>): Observable<Pair<A, B>> = Observable
-    .zip(
-        streamA,
-        streamB,
-        BiFunction { a, b -> a to b }
-    )
+fun <A, B> observableZip(streamA: Observable<A>, streamB: Observable<B>): Observable<Pair<A, B>> =
+    Observable
+        .zip(
+            streamA,
+            streamB,
+            BiFunction { a, b -> a to b }
+        )

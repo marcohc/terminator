@@ -1,13 +1,8 @@
 package com.marcohc.terminator.core.billing.data.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.marcohc.terminator.core.billing.data.entities.PurchaseEntity
 import io.reactivex.Flowable
-import io.reactivex.Single
 
 @Dao
 internal interface PurchaseDao {
@@ -29,5 +24,4 @@ internal interface PurchaseDao {
         deleteAll()
         save(purchase)
     }
-
 }

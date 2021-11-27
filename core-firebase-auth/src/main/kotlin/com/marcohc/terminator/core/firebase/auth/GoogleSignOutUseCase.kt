@@ -6,8 +6,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import io.reactivex.Completable
 
 class GoogleSignOutUseCase(
-        private val context: Context,
-        private val signInOptions: GoogleSignInOptions
+    private val context: Context,
+    private val signInOptions: GoogleSignInOptions
 ) {
 
     fun execute(): Completable {
@@ -26,5 +26,4 @@ class GoogleSignOutUseCase(
                     }
             }
     }
-
 }

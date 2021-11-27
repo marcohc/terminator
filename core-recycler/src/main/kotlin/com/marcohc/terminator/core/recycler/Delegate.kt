@@ -11,10 +11,9 @@ interface Delegate<ItemModel : RecyclerItem> {
      * Use {childOnClickListener} to hook child events into the main recycler view adapter click listener.
      */
     fun bind(
-            view: View,
-            item: ItemModel,
-            childOnClickListener: View.OnClickListener,
-            childOnLongClickListener: View.OnLongClickListener
+        view: View,
+        item: ItemModel,
+        childOnClickListener: View.OnClickListener,
+        childOnLongClickListener: View.OnLongClickListener
     )
-
 }

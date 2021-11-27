@@ -10,6 +10,5 @@ object NotificationsModule : CoreModule {
         single { NotificationsRepository() }
 
         factory { RegisterFirebaseNotificationsUseCase() }
-
     }
 }

@@ -24,19 +24,20 @@ import io.reactivex.subjects.PublishSubject
  * - inject / release dependencies
  * - binding / unbinding to view model
  * - etc...
- *
  */
-abstract class MviActivity<Intention, State>
-    : MviView<Intention, State>,
+abstract class MviActivity<Intention, State> :
+    MviView<Intention, State>,
     AppCompatActivity() {
 
-    private val intentionsSubject: PublishSubject<Intention> = PublishSubject.create<Intention>()
+    private val intentionsSubject = PublishSubject.create<Intention>()
 
     private lateinit var interactor: MviInteractor<Intention, State>
     private lateinit var intentionsDisposable: Disposable
 
-    private var statesCompositeDisposable = CompositeDisposable()
+    private val statesCompositeDisposable = CompositeDisposable()
 
+    // Expose the inflated view so you can it for view binding
+    @SuppressWarnings("WeakerAccess")
     protected lateinit var inflatedView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,11 +93,10 @@ abstract class MviActivity<Intention, State>
     }
 
     override fun sendIntention(intention: Intention) {
-        intentionsSubject.onNext(intention)
+        intentionsSubject.onNext(requireNotNull(intention))
     }
 
     override fun intentions(): Observable<Intention> {
         return intentionsSubject.hide()
     }
-
 }

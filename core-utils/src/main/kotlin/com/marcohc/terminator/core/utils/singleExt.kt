@@ -16,9 +16,9 @@ fun <A, B> singleZip(streamA: Single<A>, streamB: Single<B>): Single<Pair<A, B>>
     )
 
 fun <A, B, C> singleZip(
-        streamA: Single<A>,
-        streamB: Single<B>,
-        streamC: Single<C>
+    streamA: Single<A>,
+    streamB: Single<B>,
+    streamC: Single<C>
 ): Single<Triple<A, B, C>> = Single
     .zip(
         streamA,

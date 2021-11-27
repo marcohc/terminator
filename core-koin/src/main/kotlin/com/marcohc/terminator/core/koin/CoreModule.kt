@@ -11,5 +11,4 @@ interface CoreModule {
      * The Koin module
      */
     val module: Module
-
 }

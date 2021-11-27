@@ -11,8 +11,8 @@ interface SurveyAnalytics {
 }
 
 internal class SurveyAnalyticsImpl(
-        private val analytics: Analytics,
-        private val scopeId: String
+    private val analytics: Analytics,
+    private val scopeId: String
 ) : SurveyAnalytics {
 
     override fun logEvent(event: SurveyEvent) = Completable.fromAction {
@@ -36,6 +36,9 @@ internal class SurveyAnalyticsImpl(
                 logEvents("rewarded")
             }
             is SurveyEvent.Closed -> logEvents("closed")
+            is SurveyEvent.NotLoadedYet -> {
+                // No-op
+            }
         }
     }
 
@@ -45,7 +48,12 @@ internal class SurveyAnalyticsImpl(
     }
 
     private fun logEvents(parameter: String) {
-        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}_action", "${scopeId}_${parameter}") })
+        analytics.trackEvent(
+            BASE_EVENT,
+            Bundle().apply {
+                putString("${BASE_EVENT}_action", "${scopeId}_${parameter}")
+            }
+        )
         analytics.trackEvent("${scopeId}_${BASE_EVENT}_${parameter}")
     }
 

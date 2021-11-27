@@ -6,8 +6,9 @@ sealed class VideoEvent {
     object FailedToLoad : VideoEvent()
     object Opened : VideoEvent()
     data class Rewarded(
-            val type: String?,
-            val amount: Int?
+        val type: String?,
+        val amount: Int?
     ) : VideoEvent()
+
     object Closed : VideoEvent()
 }

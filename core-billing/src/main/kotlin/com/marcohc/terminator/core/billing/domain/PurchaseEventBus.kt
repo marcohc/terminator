@@ -11,5 +11,4 @@ class PurchaseEventBus {
     fun triggerEvent() = subject.onNextCompletable(Unit)
 
     fun observe(): Observable<Unit> = subject.hide()
-
 }

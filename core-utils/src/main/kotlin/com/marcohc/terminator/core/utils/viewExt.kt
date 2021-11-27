@@ -19,9 +19,13 @@ fun View.setVisible(animate: Boolean = false) {
         animation = AlphaAnimation(0f, 1f)
             .apply {
                 interpolator = DecelerateInterpolator()
-                duration = context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+                duration = context
+                    .resources
+                    .getInteger(android.R.integer.config_shortAnimTime)
+                    .toLong()
                 setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationRepeat(animation: Animation?) {
+                        // No-op
                     }
 
                     override fun onAnimationEnd(animation: Animation?) {
@@ -29,6 +33,7 @@ fun View.setVisible(animate: Boolean = false) {
                     }
 
                     override fun onAnimationStart(animation: Animation?) {
+                        // No-op
                     }
                 })
             }
@@ -62,9 +67,13 @@ private fun View.removeVisibility(visibilityParam: Int, animate: Boolean = false
         animation = AlphaAnimation(1f, 0f)
             .apply {
                 interpolator = AccelerateInterpolator()
-                duration = context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+                duration = context
+                    .resources
+                    .getInteger(android.R.integer.config_shortAnimTime)
+                    .toLong()
                 setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationRepeat(animation: Animation?) {
+                        // No-op
                     }
 
                     override fun onAnimationEnd(animation: Animation?) {

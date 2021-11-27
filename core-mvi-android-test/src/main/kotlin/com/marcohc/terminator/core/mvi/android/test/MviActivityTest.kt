@@ -12,12 +12,11 @@ import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
 
-@VisibleForTesting
-abstract class MviActivityTest<Intention, State, Robot>(
-        activity: Class<out MviActivity<Intention, State>>,
-        private val scopeId: String,
-        val robot: Robot,
-        val intent: Intent = Intent()
+open class MviActivityTest<Intention, State, Robot>(
+    activity: Class<out MviActivity<Intention, State>>,
+    private val scopeId: String,
+    val robot: Robot,
+    val intent: Intent = Intent()
 ) {
 
     @get:Rule
@@ -67,13 +66,13 @@ abstract class MviActivityTest<Intention, State, Robot>(
         rule.launchActivity(intent)
     }
 
-    private fun prepareMocks(): Pair<TestObserver<Intention>, BehaviorSubject<State>> = prepareInputAndOutputMocks(
-        scopeId = scopeId,
-        activityNavigation = true
-    )
+    private fun prepareMocks(): Pair<TestObserver<Intention>, BehaviorSubject<State>> =
+        prepareInputAndOutputMocks(
+            scopeId = scopeId,
+            activityNavigation = true
+        )
 
     inline fun robot(block: Robot.() -> Unit) {
         robot.apply(block)
     }
 }
-
