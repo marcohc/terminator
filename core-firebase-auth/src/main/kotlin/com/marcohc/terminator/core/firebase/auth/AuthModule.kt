@@ -26,7 +26,7 @@ object AuthModule : FeatureModule {
         factory {
             GoogleSignOutUseCase(
                 context = androidApplication(),
-                signInOptions = get(named(AuthModule.GOOGLE_SIGN_IN_OPTIONS))
+                signInOptions = get(named(GOOGLE_SIGN_IN_OPTIONS))
             )
         }
 
