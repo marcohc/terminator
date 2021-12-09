@@ -45,14 +45,14 @@ abstract class BaseAdapter<ItemModel : RecyclerItem> : RecyclerView.Adapter<Base
         val adapterDelegate = delegates[getItemViewType(position)]
 
         val onClickListener = View.OnClickListener { view ->
-            val index = holder.adapterPosition
+            val index = holder.bindingAdapterPosition
             if (RecyclerView.NO_POSITION != index) {
                 itemClickListenerFun?.invoke(view, index, items[index])
             }
         }
 
         val onLongClickListener = View.OnLongClickListener { view ->
-            val index = holder.adapterPosition
+            val index = holder.bindingAdapterPosition
             if (RecyclerView.NO_POSITION != index) {
                 itemLongClickListenerFun?.invoke(view, index, items[index])
                 return@OnLongClickListener true

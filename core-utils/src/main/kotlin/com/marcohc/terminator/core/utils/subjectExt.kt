@@ -6,14 +6,14 @@ import io.reactivex.Completable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.subjects.Subject
 
-fun <T> Subject<T>.onNextCompletable(value: T) = Completable.fromAction { this.onNext(value) }
+fun <T> Subject<T>.onNextCompletable(value: T) = Completable.fromAction { this.onNext(requireNotNull(value)) }
 
 fun <T> Subject<T>.toDisposableObserver(): DisposableObserver<T> = DisposableSubject(this)
 
 private class DisposableSubject<T>(private val subject: Subject<T>) : DisposableObserver<T>() {
 
     override fun onNext(next: T) {
-        subject.onNext(next)
+        subject.onNext(requireNotNull(next))
     }
 
     override fun onComplete() {

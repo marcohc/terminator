@@ -18,7 +18,7 @@ fun <A, B> observableCombineLatest(
     .combineLatest(
         streamA,
         streamB,
-        BiFunction { a, b -> a to b }
+        { a: A, b: B -> a to b }
     )
 
 fun <A, B, C> observableCombineLatest(
@@ -30,7 +30,7 @@ fun <A, B, C> observableCombineLatest(
         streamA,
         streamB,
         streamC,
-        Function3 { a, b, c -> Triple(a, b, c) }
+        { a: A, b: B, c: C -> Triple(a, b, c) }
     )
 
 fun <A, B> observableZip(streamA: Observable<A>, streamB: Observable<B>): Observable<Pair<A, B>> =
@@ -38,5 +38,5 @@ fun <A, B> observableZip(streamA: Observable<A>, streamB: Observable<B>): Observ
         .zip(
             streamA,
             streamB,
-            BiFunction { a, b -> a to b }
+            { a: A, b: B -> a to b }
         )

@@ -10,6 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import org.jetbrains.annotations.NotNull
 import org.koin.core.KoinComponent
 import org.koin.core.get
 import org.koin.core.qualifier.named
@@ -26,7 +27,7 @@ abstract class MviBaseInteractor<Intention, Action, State>(
     KoinComponent {
 
     private val intentionsSubject = PublishSubject.create<Intention>().toSerialized()
-    private val stateSubject = BehaviorSubject.createDefault<State>(defaultState).toSerialized()
+    private val stateSubject = BehaviorSubject.createDefault(defaultState).toSerialized()
     private val disposable: CompositeDisposable = CompositeDisposable()
     private val uiScheduler: Scheduler = get(named(MVI_RX_UI_SCHEDULER))
     private val onDestroyFunctionList = mutableListOf<(() -> Unit)>()

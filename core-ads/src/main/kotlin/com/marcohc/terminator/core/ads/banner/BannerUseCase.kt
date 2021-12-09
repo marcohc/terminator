@@ -2,15 +2,9 @@ package com.marcohc.terminator.core.ads.banner
 
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import com.google.android.gms.ads.*
 import com.marcohc.terminator.core.ads.AdsConstants
 import com.marcohc.terminator.core.ads.AdsModule
 import com.marcohc.terminator.core.mvi.ext.getOrCreateFromParentScope
@@ -71,7 +65,7 @@ internal class BannerUseCaseImpl(
     private val analytics: BannerAnalytics,
     private val adUnitId: String
 ) : BannerUseCase,
-    LifecycleObserver {
+    DefaultLifecycleObserver {
 
     private val subject = BehaviorSubject.createDefault<BannerEvent>(BannerEvent.NotLoadedYet)
     private lateinit var adView: AdView
@@ -80,8 +74,7 @@ internal class BannerUseCaseImpl(
         activity.lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
+    override fun onCreate(owner: LifecycleOwner) {
 
         MobileAds.initialize(activity) {}
 
@@ -125,18 +118,15 @@ internal class BannerUseCaseImpl(
         loadAd()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    override fun onResume(owner: LifecycleOwner) {
         adView.resume()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() {
+    override fun onPause(owner: LifecycleOwner) {
         adView.pause()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
         adView.destroy()
     }
 

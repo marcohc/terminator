@@ -2,17 +2,12 @@ package com.marcohc.terminator.core.ads.native
 
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.gojuno.koptional.None
 import com.gojuno.koptional.Optional
 import com.gojuno.koptional.Some
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdLoader
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.marcohc.terminator.core.ads.AdsConstants.NATIVE_ADS_UNIT_ID
@@ -78,7 +73,7 @@ internal class NativeUseCaseImpl(
     private val adChoicesPlacement: Int,
     private val numberOfAds: Int
 ) : NativeUseCase,
-    LifecycleObserver {
+    DefaultLifecycleObserver {
 
     private val compositeDisposable = CompositeDisposable()
     private val subject = BehaviorSubject.createDefault<NativeEvent>(NativeEvent.NotLoadedYet)
@@ -89,8 +84,7 @@ internal class NativeUseCaseImpl(
         activity.lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
+    override fun onCreate(owner: LifecycleOwner) {
 
         MobileAds.initialize(activity) {}
 
@@ -151,8 +145,7 @@ internal class NativeUseCaseImpl(
         loadAd()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
         nativeAdsList.forEach { it.nativeAd.destroy() }
         nativeAdsList.clear()
         compositeDisposable.clear()

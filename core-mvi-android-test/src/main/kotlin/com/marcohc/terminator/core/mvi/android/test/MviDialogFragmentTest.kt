@@ -6,6 +6,7 @@ import androidx.test.rule.ActivityTestRule
 import com.marcohc.terminator.core.mvi.ui.MviDialogFragment
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
+import org.jetbrains.annotations.NotNull
 import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
@@ -24,7 +25,7 @@ open class MviDialogFragmentTest<Intention, State, Robot>(
     private lateinit var stateSubject: BehaviorSubject<State>
 
     protected fun setState(state: State) {
-        stateSubject.onNext(state)
+        stateSubject.onNext(requireNotNull(state))
     }
 
     protected fun executeWithContext(block: Context.() -> Unit) {

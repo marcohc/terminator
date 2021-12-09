@@ -12,7 +12,7 @@ fun <A, B> singleZip(streamA: Single<A>, streamB: Single<B>): Single<Pair<A, B>>
     .zip(
         streamA,
         streamB,
-        BiFunction { a, b -> a to b }
+        { a: A, b: B -> a to b }
     )
 
 fun <A, B, C> singleZip(
@@ -24,5 +24,5 @@ fun <A, B, C> singleZip(
         streamA,
         streamB,
         streamC,
-        Function3 { a, b, c -> Triple(a, b, c) }
+        { a: A, b: B, c: C -> Triple(a, b, c) }
     )

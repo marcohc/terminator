@@ -3,14 +3,9 @@
 package com.marcohc.terminator.core.mvi.ui.navigation
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import io.reactivex.Single
-import io.reactivex.SingleEmitter
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.lang.ref.WeakReference
 
@@ -60,7 +55,7 @@ interface ActivityNavigationExecutor {
 }
 
 class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
-    LifecycleObserver {
+    DefaultLifecycleObserver {
 
     private var commandsList: MutableList<((AppCompatActivity) -> Unit)> = mutableListOf()
     private var isPaused: Boolean = true
@@ -69,8 +64,7 @@ class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
     /**
      * Check if there was any navigation command to be executed when activity resumes
      */
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    override fun onResume(owner: LifecycleOwner) {
         isPaused = false
         commandsList.forEach { command ->
             activityWeakReference.get()?.let { activity ->
@@ -80,16 +74,14 @@ class ActivityNavigationExecutorImpl : ActivityNavigationExecutor,
         commandsList.clear()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() {
+    override fun onPause(owner: LifecycleOwner) {
         isPaused = true
     }
 
     /**
      * Remove itself from the lifecycle observers
      */
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
         activityWeakReference.get()?.lifecycle?.removeObserver(this)
     }
 

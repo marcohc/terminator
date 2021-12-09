@@ -2,7 +2,6 @@ package com.marcohc.terminator.core.mvi.android.test
 
 import android.content.Context
 import android.content.Intent
-import androidx.annotation.VisibleForTesting
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.rule.ActivityTestRule
 import com.marcohc.terminator.core.mvi.ui.MviActivity

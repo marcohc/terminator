@@ -2,16 +2,9 @@ package com.marcohc.terminator.core.billing.data.api
 
 import android.app.Activity
 import android.content.Context
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
-import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.api.SkuDetailsParams
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import com.android.billingclient.api.*
 import com.marcohc.terminator.core.billing.data.entities.ProductEntity
 import com.marcohc.terminator.core.billing.data.entities.PurchaseEntity
 import com.marcohc.terminator.core.billing.domain.PurchaseEventBus
@@ -33,13 +26,13 @@ internal class GoogleBillingApi(
     private val deleteAndSavePurchasesUseCase: DeleteAndSavePurchasesUseCase,
     private val purchaseEventBus: PurchaseEventBus
 ) : BillingApi,
-    BillingClientStateListener {
+    BillingClientStateListener,
+    DefaultLifecycleObserver {
 
     private val compositeDisposable = CompositeDisposable()
     private lateinit var billingClient: BillingClient
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
+    override fun onCreate(owner: LifecycleOwner) {
 
         billingClient = BillingClient.newBuilder(context)
             .enablePendingPurchases()
@@ -69,8 +62,7 @@ internal class GoogleBillingApi(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
         if (billingClient.isReady) {
             Timber.v("BillingClient can only be used once -- closing")
             billingClient.endConnection()
@@ -152,14 +144,21 @@ internal class GoogleBillingApi(
         } else {
             val lastPurchase = purchasesList.maxByOrNull { it.purchaseTime }
             if (lastPurchase != null) {
+                // TODO: This must be tested because they added a list of skus instead of only one
                 // Store purchase
                 compositeDisposable.executeCompletableOnIo {
-                    deleteAndSavePurchasesUseCase.execute(
-                        PurchaseEntity(
-                            lastPurchase.sku,
-                            lastPurchase.originalJson + "|" + lastPurchase.signature
+                    val sku = lastPurchase.skus.firstOrNull()
+                    if (sku != null) {
+                        deleteAndSavePurchasesUseCase.execute(
+                            PurchaseEntity(
+                                sku,
+                                lastPurchase.originalJson + "|" + lastPurchase.signature
+                            )
                         )
-                    )
+                    } else {
+                        // No-op
+                        Completable.complete()
+                    }
                 }
 
                 // Notify user

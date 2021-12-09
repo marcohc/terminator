@@ -43,7 +43,7 @@ internal class GoogleSignInInteractor(
         val exception = when (requestCode) {
             REQUEST_CODE_SIGN_IN -> {
                 try {
-                    if (intent != null) GoogleSignIn.getSignedInAccountFromIntent(intent)?.exception as ApiException? else null
+                    if (intent != null) GoogleSignIn.getSignedInAccountFromIntent(intent).exception as ApiException? else null
                 } catch (exception: Exception) {
                     Timber.e(
                         exception,

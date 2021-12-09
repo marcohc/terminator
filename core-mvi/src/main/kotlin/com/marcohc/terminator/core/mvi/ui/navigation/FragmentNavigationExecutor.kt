@@ -4,9 +4,8 @@ package com.marcohc.terminator.core.mvi.ui.navigation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
@@ -104,7 +103,7 @@ interface FragmentNavigationExecutor {
 
 class FragmentNavigationExecutorImpl :
     FragmentNavigationExecutor,
-    LifecycleObserver {
+    DefaultLifecycleObserver {
 
     private var commandsList: MutableList<((Fragment) -> Unit)> = mutableListOf()
     private var isPaused: Boolean = true
@@ -113,8 +112,7 @@ class FragmentNavigationExecutorImpl :
     /**
      * Check if there was any navigation command to be executed when activity resumes
      */
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
+    override fun onResume(owner: LifecycleOwner) {
         isPaused = false
         commandsList.forEach { command ->
             fragmentReference.get()?.let { fragment ->
@@ -124,16 +122,14 @@ class FragmentNavigationExecutorImpl :
         commandsList.clear()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() {
+    override fun onPause(owner: LifecycleOwner) {
         isPaused = true
     }
 
     /**
      * Remove itself from the lifecycle observers
      */
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
         fragmentReference.get()?.lifecycle?.removeObserver(this)
     }
 

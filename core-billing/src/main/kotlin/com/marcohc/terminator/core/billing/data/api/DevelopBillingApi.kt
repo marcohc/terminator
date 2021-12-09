@@ -1,8 +1,7 @@
 package com.marcohc.terminator.core.billing.data.api
 
 import android.app.Activity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import com.android.billingclient.api.BillingClient
 import com.marcohc.terminator.core.billing.data.entities.ProductEntity
 import com.marcohc.terminator.core.billing.data.entities.PurchaseEntity
@@ -21,12 +20,12 @@ internal class DevelopBillingApi(
     private val deleteAllPurchasesUseCase: DeleteAllPurchasesUseCase,
     private val deleteAndSavePurchasesUseCase: DeleteAndSavePurchasesUseCase,
     private val purchaseEventBus: PurchaseEventBus
-) : BillingApi {
+) : BillingApi,
+    DefaultLifecycleObserver {
 
     private val compositeDisposable = CompositeDisposable()
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
+    override fun onCreate(owner: LifecycleOwner) {
         compositeDisposable.executeCompletableOnIo {
             saveProductsUseCase.execute(
                 skuList.map { sku ->
@@ -42,8 +41,7 @@ internal class DevelopBillingApi(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
         compositeDisposable.clear()
     }
 

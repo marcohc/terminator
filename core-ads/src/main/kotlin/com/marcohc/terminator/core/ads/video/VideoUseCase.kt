@@ -3,9 +3,7 @@ package com.marcohc.terminator.core.ads.video
 import android.app.Activity
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
@@ -72,7 +70,7 @@ internal class VideoUseCaseImpl(
     private val adUnitId: String,
     private val analytics: VideoAnalytics
 ) : VideoUseCase,
-    LifecycleObserver {
+    DefaultLifecycleObserver {
 
     private val subject = BehaviorSubject.createDefault<VideoEvent>(VideoEvent.NotLoadedYet)
     private var rewardedAd: RewardedAd? = null
@@ -81,8 +79,7 @@ internal class VideoUseCaseImpl(
         activity.lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
+    override fun onCreate(owner: LifecycleOwner) {
 
         MobileAds.initialize(activity)
 

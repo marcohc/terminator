@@ -2,14 +2,9 @@ package com.marcohc.terminator.core.ads.interstitial
 
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.marcohc.terminator.core.ads.AdsConstants
@@ -39,7 +34,12 @@ interface InterstitialUseCase {
         fun Scope.getOrCreateScopedInterstitialUseCase(
             analyticsScopeId: String,
             activity: AppCompatActivity
-        ) = getOrCreateFromParentScope(AdsModule.scopeId) { factoryInterstitialUseCase(analyticsScopeId, activity) }
+        ) = getOrCreateFromParentScope(AdsModule.scopeId) {
+            factoryInterstitialUseCase(
+                analyticsScopeId,
+                activity
+            )
+        }
 
         fun Scope.factoryInterstitialUseCase(
             analyticsScopeId: String,
@@ -68,17 +68,17 @@ internal class InterstitialUseCaseImpl(
     private val analytics: InterstitialAnalytics,
     private val adUnitId: String
 ) : InterstitialUseCase,
-    LifecycleObserver {
+    DefaultLifecycleObserver {
 
-    private val subject = BehaviorSubject.createDefault<InterstitialEvent>(InterstitialEvent.NotLoadedYet)
+    private val subject =
+        BehaviorSubject.createDefault<InterstitialEvent>(InterstitialEvent.NotLoadedYet)
     private var interstitialAd: InterstitialAd? = null
 
     init {
         activity.lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
+    override fun onCreate(owner: LifecycleOwner) {
 
         MobileAds.initialize(activity)
 
@@ -95,23 +95,24 @@ internal class InterstitialUseCaseImpl(
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     this@InterstitialUseCaseImpl.interstitialAd = interstitialAd
 
-                    this@InterstitialUseCaseImpl.interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-                        override fun onAdDismissedFullScreenContent() {
-                            Timber.v("InterstitialEvent.onAdDismissedFullScreenContent")
-                            subject.onNext(InterstitialEvent.Closed)
-                        }
+                    this@InterstitialUseCaseImpl.interstitialAd?.fullScreenContentCallback =
+                        object : FullScreenContentCallback() {
+                            override fun onAdDismissedFullScreenContent() {
+                                Timber.v("InterstitialEvent.onAdDismissedFullScreenContent")
+                                subject.onNext(InterstitialEvent.Closed)
+                            }
 
-                        override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                            Timber.v("InterstitialEvent.onAdFailedToShowFullScreenContent: $adError")
-                            subject.onNext(InterstitialEvent.FailedToLoad)
-                        }
+                            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                                Timber.v("InterstitialEvent.onAdFailedToShowFullScreenContent: $adError")
+                                subject.onNext(InterstitialEvent.FailedToLoad)
+                            }
 
-                        override fun onAdShowedFullScreenContent() {
-                            Timber.v("InterstitialEvent.onAdShowedFullScreenContent")
-                            subject.onNext(InterstitialEvent.Opened)
-                            this@InterstitialUseCaseImpl.interstitialAd = null
+                            override fun onAdShowedFullScreenContent() {
+                                Timber.v("InterstitialEvent.onAdShowedFullScreenContent")
+                                subject.onNext(InterstitialEvent.Opened)
+                                this@InterstitialUseCaseImpl.interstitialAd = null
+                            }
                         }
-                    }
 
                     Timber.v("InterstitialEvent.onAdLoaded")
                     subject.onNext(InterstitialEvent.Loaded)
@@ -122,9 +123,11 @@ internal class InterstitialUseCaseImpl(
 
     override fun observe(): Observable<InterstitialEvent> = subject.hide()
 
-    override fun observeAndTrack(): Observable<InterstitialEvent> = observe().flatMap { analytics.trackEvent(it).toObservableDefault(it) }
+    override fun observeAndTrack(): Observable<InterstitialEvent> =
+        observe().flatMap { analytics.trackEvent(it).toObservableDefault(it) }
 
-    override fun getLastEvent() = requireNotNull(subject.value) { "This subject must contain always a value" }
+    override fun getLastEvent() =
+        requireNotNull(subject.value) { "This subject must contain always a value" }
 
     @MainThread
     override fun show() = Completable.fromAction {
