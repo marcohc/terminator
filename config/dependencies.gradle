@@ -1,17 +1,17 @@
 ext.versions = [
         android   : [
                 minSdk    : 23,
-                compileSdk: 30,
-                targetSdk : 30,
+                compileSdk: 31,
+                targetSdk : 31,
                 buildTools: "30.0.2"
         ],
         detekt    : "1.19.0",
         espresso  : "3.4.0",
         koin      : "2.1.6",
-        kotlin    : "1.6.0",
+        kotlin    : "1.6.10",
         retrofit  : "2.6.2",
-        room      : "2.3.0",
-        terminator: "3.0.4",
+        room      : "2.4.0",
+        terminator: "3.0.5",
 ]
 
 ext.gradlePlugins = [
@@ -54,7 +54,7 @@ ext.libraries = [
         kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin",
         kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
         material                : "com.google.android.material:material:1.4.0",
-        mockitoInline           : "org.mockito:mockito-inline:4.1.0",
+        mockitoInline           : "org.mockito:mockito-inline:4.2.0",
         mockitoKotlin           : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0",
         okhttp3LogginInterceptor: "com.squareup.okhttp3:logging-interceptor:4.2.1",
         recyclerView            : "androidx.recyclerview:recyclerview:1.2.1",
