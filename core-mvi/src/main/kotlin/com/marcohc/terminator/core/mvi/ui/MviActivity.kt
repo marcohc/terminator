@@ -36,7 +36,7 @@ abstract class MviActivity<Intention, State> :
 
     private val statesCompositeDisposable = CompositeDisposable()
 
-    // Expose the inflated view so you can it for view binding
+    // Expose the inflated view so you can use it for view binding
     @SuppressWarnings("WeakerAccess")
     protected lateinit var inflatedView: View
 
