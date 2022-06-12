@@ -11,6 +11,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 @Dao
+@Deprecated("Not in use anymore")
 internal interface ProductDao {
 
     @Query("SELECT * FROM p WHERE a = :id")

@@ -80,7 +80,7 @@ internal class BannerUseCaseImpl(
 
         adView = AdView(activity)
         adView.adUnitId = adUnitId
-        adView.adSize = AdSize.LARGE_BANNER
+        adView.setAdSize(AdSize.LARGE_BANNER)
 
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {

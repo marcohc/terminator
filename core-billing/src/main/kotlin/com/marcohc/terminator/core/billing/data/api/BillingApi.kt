@@ -1,11 +1,19 @@
 package com.marcohc.terminator.core.billing.data.api
 
 import android.app.Activity
-import androidx.lifecycle.DefaultLifecycleObserver
-import com.marcohc.terminator.core.billing.data.entities.ProductEntity
-import io.reactivex.Completable
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import io.reactivex.Single
 
-interface BillingApi : DefaultLifecycleObserver {
-    fun launchBillingFlow(activity: Activity, product: ProductEntity): Completable
-    fun clearAll(): Completable
+internal interface BillingApi {
+    fun connect()
+
+    fun disconnect()
+
+    fun showProductCheckout(
+        activity: Activity,
+        productDetails: ProductDetails
+    ): Single<GoogleBillingResponse<List<Purchase>>>
+
+    fun getSubscriptions(): Single<GoogleBillingResponse<List<ProductDetails>>>
 }

@@ -5,9 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.marcohc.terminator.core.billing.data.dao.PurchaseDao
-import com.marcohc.terminator.core.billing.data.dao.ProductDao
-import com.marcohc.terminator.core.billing.data.entities.PurchaseEntity
 import com.marcohc.terminator.core.billing.data.entities.ProductEntity
+import com.marcohc.terminator.core.billing.data.entities.PurchaseEntity
 
 @Database(
     entities = [
@@ -18,8 +17,6 @@ import com.marcohc.terminator.core.billing.data.entities.ProductEntity
     exportSchema = false
 )
 internal abstract class BillingDatabase : RoomDatabase() {
-
-    abstract fun productDao(): ProductDao
 
     abstract fun purchaseDao(): PurchaseDao
 

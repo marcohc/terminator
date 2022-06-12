@@ -7,13 +7,13 @@ import com.marcohc.terminator.core.mvi.ui.navigation.FragmentNavigationExecutor
 
 internal class GoogleSignInRouter(
     private val executor: FragmentNavigationExecutor,
-    private val options: GoogleSignInOptions
+    private val googleSignInOptions: GoogleSignInOptions
 ) {
 
     fun showSignInDialog() = executor.executeCompletable { fragment ->
         fragment.activity?.let { activity ->
             fragment.startActivityForResult(
-                GoogleSignIn.getClient(activity, options).signInIntent,
+                GoogleSignIn.getClient(activity, googleSignInOptions).signInIntent,
                 REQUEST_CODE_SIGN_IN
             )
         }

@@ -2,7 +2,7 @@ apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-kapt"
 
-apply from: "../config/publishLocal.gradle"
+apply from: "../config/publishToMavenLocal.gradle"
 apply from: "../config/version-update.gradle"
 
 android {

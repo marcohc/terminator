@@ -1,54 +1,40 @@
 package com.marcohc.terminator.core.billing.data.api
 
 import android.app.Activity
-import androidx.lifecycle.*
-import com.android.billingclient.api.BillingClient
-import com.marcohc.terminator.core.billing.data.entities.ProductEntity
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
 import com.marcohc.terminator.core.billing.data.entities.PurchaseEntity
-import com.marcohc.terminator.core.billing.domain.PurchaseEventBus
-import com.marcohc.terminator.core.billing.domain.internal.DeleteAllPurchasesUseCase
-import com.marcohc.terminator.core.billing.domain.internal.DeleteAndSavePurchasesUseCase
-import com.marcohc.terminator.core.billing.domain.internal.SaveProductsUseCase
-import com.marcohc.terminator.core.utils.executeCompletableOnIo
-import io.reactivex.Completable
-import io.reactivex.disposables.CompositeDisposable
+import com.marcohc.terminator.core.billing.domain.DeleteAllPurchasesUseCase
+import com.marcohc.terminator.core.billing.domain.DeleteAndSavePurchasesUseCase
+import io.reactivex.Single
 
-// TODO: Move this development code to debug buildType so it's not dragged into production
 internal class DevelopBillingApi(
-    private val skuList: List<String>,
-    private val saveProductsUseCase: SaveProductsUseCase,
     private val deleteAllPurchasesUseCase: DeleteAllPurchasesUseCase,
     private val deleteAndSavePurchasesUseCase: DeleteAndSavePurchasesUseCase,
-    private val purchaseEventBus: PurchaseEventBus
-) : BillingApi,
-    DefaultLifecycleObserver {
+) : BillingApi {
 
-    private val compositeDisposable = CompositeDisposable()
+    override fun connect() {
+    }
 
-    override fun onCreate(owner: LifecycleOwner) {
-        compositeDisposable.executeCompletableOnIo {
-            saveProductsUseCase.execute(
-                skuList.map { sku ->
-                    ProductEntity(
-                        sku = sku,
-                        type = BillingClient.SkuType.SUBS,
-                        price = 1.99,
-                        priceFormatted = "1,99€",
-                        originalJson = ""
-                    )
-                }
+    override fun disconnect() {
+        deleteAllPurchasesUseCase.execute()
+    }
+
+    override fun showProductCheckout(
+        activity: Activity,
+        productDetails: ProductDetails
+    ): Single<GoogleBillingResponse<List<Purchase>>> {
+        return deleteAndSavePurchasesUseCase
+            .execute(
+                PurchaseEntity(
+                    productId = productDetails.productId,
+                    jsonPlusSignature = ""
+                )
             )
-        }
+            .andThen(Single.just(GoogleBillingResponse.Success(emptyList())))
     }
 
-    override fun onDestroy(owner: LifecycleOwner) {
-        compositeDisposable.clear()
+    override fun getSubscriptions(): Single<GoogleBillingResponse<List<ProductDetails>>> {
+        return Single.just(GoogleBillingResponse.Success(emptyList()))
     }
-
-    override fun launchBillingFlow(activity: Activity, product: ProductEntity): Completable {
-        return deleteAndSavePurchasesUseCase.execute(PurchaseEntity(product.sku, ""))
-            .andThen(purchaseEventBus.triggerEvent())
-    }
-
-    override fun clearAll() = deleteAllPurchasesUseCase.execute()
 }

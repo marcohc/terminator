@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 class PurchaseEntity(
     @ColumnInfo(name = "y")
     @PrimaryKey
-    val sku: String,
+    val productId: String,
     @ColumnInfo(name = "z")
     val jsonPlusSignature: String
 )

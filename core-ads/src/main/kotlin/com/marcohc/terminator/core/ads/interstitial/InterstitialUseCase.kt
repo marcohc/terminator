@@ -60,7 +60,6 @@ interface InterstitialUseCase {
             override fun show() = Completable.complete()
         }
     }
-
 }
 
 internal class InterstitialUseCaseImpl(
@@ -97,14 +96,22 @@ internal class InterstitialUseCaseImpl(
 
                     this@InterstitialUseCaseImpl.interstitialAd?.fullScreenContentCallback =
                         object : FullScreenContentCallback() {
+                            override fun onAdClicked() {
+                                // No-op
+                            }
+
                             override fun onAdDismissedFullScreenContent() {
                                 Timber.v("InterstitialEvent.onAdDismissedFullScreenContent")
                                 subject.onNext(InterstitialEvent.Closed)
                             }
 
-                            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                                 Timber.v("InterstitialEvent.onAdFailedToShowFullScreenContent: $adError")
                                 subject.onNext(InterstitialEvent.FailedToLoad)
+                            }
+
+                            override fun onAdImpression() {
+                                // No-op
                             }
 
                             override fun onAdShowedFullScreenContent() {

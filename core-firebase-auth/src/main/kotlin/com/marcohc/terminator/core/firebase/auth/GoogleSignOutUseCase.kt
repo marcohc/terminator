@@ -7,13 +7,13 @@ import io.reactivex.Completable
 
 class GoogleSignOutUseCase(
     private val context: Context,
-    private val signInOptions: GoogleSignInOptions
+    private val googleSignInOptions: GoogleSignInOptions
 ) {
 
     fun execute(): Completable {
         return Completable
             .create { source ->
-                GoogleSignIn.getClient(context, signInOptions)
+                GoogleSignIn.getClient(context, googleSignInOptions)
                     .signOut()
                     .addOnCompleteListener {
                         if (!source.isDisposed) {

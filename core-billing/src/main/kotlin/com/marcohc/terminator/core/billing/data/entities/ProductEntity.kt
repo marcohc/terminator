@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "p")
+@Deprecated("Not in use anymore")
 class ProductEntity(
     @ColumnInfo(name = "a")
     @PrimaryKey

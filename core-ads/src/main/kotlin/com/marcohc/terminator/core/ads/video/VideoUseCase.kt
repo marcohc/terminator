@@ -103,7 +103,7 @@ internal class VideoUseCaseImpl(
                                 subject.onNext(VideoEvent.Closed)
                             }
 
-                            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                                 Timber.v("VideoEvent.onAdFailedToShowFullScreenContent: $adError")
                                 subject.onNext(VideoEvent.FailedToLoad)
                             }

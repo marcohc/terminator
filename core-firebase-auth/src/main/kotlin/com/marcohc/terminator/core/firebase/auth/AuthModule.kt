@@ -26,14 +26,14 @@ object AuthModule : FeatureModule {
         factory {
             GoogleSignOutUseCase(
                 context = androidApplication(),
-                signInOptions = get(named(GOOGLE_SIGN_IN_OPTIONS))
+                googleSignInOptions = get(named(GOOGLE_SIGN_IN_OPTIONS))
             )
         }
 
         declareFactoryFragmentRouter(scopeId) { executor ->
             GoogleSignInRouter(
                 executor = executor,
-                options = get(named(GOOGLE_SIGN_IN_OPTIONS))
+                googleSignInOptions = get(named(GOOGLE_SIGN_IN_OPTIONS))
             )
         }
 
