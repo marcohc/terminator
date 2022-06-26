@@ -33,7 +33,7 @@ object BillingModule :
             } else {
                 GoogleBillingApi(
                     context = androidApplication(),
-                    productIdsList = configuration.skuList,
+                    productIdsList = configuration.productIdsList,
                     deleteAllPurchasesUseCase = DeleteAllPurchasesUseCase(repository = purchaseRepository),
                     deleteAndSavePurchasesUseCase = DeleteAndSavePurchasesUseCase(repository = purchaseRepository),
                 )
