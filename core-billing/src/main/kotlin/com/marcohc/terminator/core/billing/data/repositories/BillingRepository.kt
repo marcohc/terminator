@@ -2,7 +2,6 @@ package com.marcohc.terminator.core.billing.data.repositories
 
 import android.app.Activity
 import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.ProductDetails
 import com.marcohc.terminator.core.billing.data.api.BillingApi
 import com.marcohc.terminator.core.billing.data.api.GoogleBillingResponse
 import com.marcohc.terminator.core.billing.data.models.Subscription
@@ -17,7 +16,10 @@ interface BillingRepository {
 
     fun getSubscriptions(): Single<List<Subscription>>
 
-    fun showProductCheckout(activity: Activity, productDetail: ProductDetails): Completable
+    fun showProductCheckout(
+        activity: Activity,
+        productId: String
+    ): Completable
 }
 
 internal class BillingRepositoryImpl(
@@ -41,21 +43,7 @@ internal class BillingRepositoryImpl(
                 .map { response ->
                     when (response) {
                         is GoogleBillingResponse.Success -> {
-                            localProductDetails = response.result.map { productDetails ->
-                                val productPrice = productDetails.subscriptionOfferDetails?.first()
-                                    ?.pricingPhases
-                                    ?.pricingPhaseList
-                                    ?.first()
-                                Subscription(
-                                    productId = productDetails.productId,
-                                    type = productDetails.productType,
-                                    price = productPrice?.priceAmountMicros
-                                        ?.toDouble()
-                                        ?.div(1000000) ?: 0.0,
-                                    priceFormatted = productPrice?.formattedPrice ?: "",
-                                    productDetails = productDetails
-                                )
-                            }
+                            localProductDetails = response.result
                         }
                         is GoogleBillingResponse.Failure -> {
                             throw IllegalStateException("Error trying to fetch subscriptions: ${response.result}")
@@ -71,9 +59,9 @@ internal class BillingRepositoryImpl(
 
     override fun showProductCheckout(
         activity: Activity,
-        productDetail: ProductDetails
+        productId: String
     ): Completable {
-        return api.showProductCheckout(activity, productDetail)
+        return api.showProductCheckout(activity, productId)
             .flatMapCompletable { response ->
                 when (response) {
                     is GoogleBillingResponse.Success -> {

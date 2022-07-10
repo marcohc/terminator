@@ -15,7 +15,6 @@ import com.marcohc.terminator.core.utils.toObservableDefault
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 
 class BillingUseCase(
     private val billingRepository: BillingRepository,
@@ -36,16 +35,7 @@ class BillingUseCase(
     fun getSubscriptions(): Single<List<Subscription>> = billingRepository.getSubscriptions()
 
     fun showProductCheckout(activity: Activity, productId: String): Completable {
-        return billingRepository.getSubscriptions()
-            .observeOn(AndroidSchedulers.mainThread())
-            .flatMapCompletable { subscriptions ->
-                val subscription = subscriptions.find { it.productId == productId }
-                if (subscription != null) {
-                    billingRepository.showProductCheckout(activity, subscription.productDetails)
-                } else {
-                    Completable.error(IllegalArgumentException("Unrecognized sku: $productId"))
-                }
-            }
+        return billingRepository.showProductCheckout(activity, productId)
     }
 
     fun observePurchase(): Observable<Optional<PurchaseEntity>> = purchaseRepository.observe()

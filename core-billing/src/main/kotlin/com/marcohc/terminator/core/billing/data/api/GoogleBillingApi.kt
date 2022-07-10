@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.*
 import com.marcohc.terminator.core.billing.data.entities.PurchaseEntity
+import com.marcohc.terminator.core.billing.data.models.Subscription
 import com.marcohc.terminator.core.billing.domain.DeleteAllPurchasesUseCase
 import com.marcohc.terminator.core.billing.domain.DeleteAndSavePurchasesUseCase
 import com.marcohc.terminator.core.utils.executeCompletableOnIo
@@ -23,6 +24,7 @@ internal class GoogleBillingApi(
     private val compositeDisposable = CompositeDisposable()
     private lateinit var billingClient: BillingClient
     private val purchaseSubject = PublishSubject.create<GoogleBillingResponse<List<Purchase>>>()
+    private val subscriptionsProductDetails = mutableMapOf<String, ProductDetails>()
 
     override fun connect() {
         billingClient = BillingClient.newBuilder(context)
@@ -59,9 +61,6 @@ internal class GoogleBillingApi(
 
             override fun onBillingServiceDisconnected() {
                 Timber.v("onBillingServiceDisconnected")
-                if (!billingClient.isReady) {
-                    billingClient.startConnection(this)
-                }
             }
         })
     }
@@ -74,8 +73,8 @@ internal class GoogleBillingApi(
         compositeDisposable.clear()
     }
 
-    override fun getSubscriptions(): Single<GoogleBillingResponse<List<ProductDetails>>> {
-        return Single.create { emitter ->
+    override fun getSubscriptions() = Single
+        .create { emitter ->
             if (billingClient.isReady) {
                 billingClient.queryProductDetailsAsync(
                     QueryProductDetailsParams.newBuilder()
@@ -91,7 +90,28 @@ internal class GoogleBillingApi(
                 ) { billingResult: BillingResult, productDetailsList: List<ProductDetails> ->
                     val responseCode = billingResult.responseCode
                     if (responseCode == BillingClient.BillingResponseCode.OK) {
-                        emitter.onSuccess(GoogleBillingResponse.Success(productDetailsList))
+                        emitter.onSuccess(
+                            GoogleBillingResponse.Success(productDetailsList
+                                .map { productDetails ->
+                                    val productPrice =
+                                        productDetails.subscriptionOfferDetails?.first()
+                                            ?.pricingPhases
+                                            ?.pricingPhaseList
+                                            ?.first()
+
+                                    subscriptionsProductDetails[productDetails.productId] =
+                                        productDetails
+
+                                    Subscription(
+                                        productId = productDetails.productId,
+                                        type = productDetails.productType,
+                                        price = productPrice?.priceAmountMicros
+                                            ?.toDouble()
+                                            ?.div(1000000) ?: 0.0,
+                                        priceFormatted = productPrice?.formattedPrice ?: ""
+                                    )
+                                })
+                        )
                     } else {
                         emitter.onSuccess(GoogleBillingResponse.Failure(responseCode))
                     }
@@ -101,11 +121,22 @@ internal class GoogleBillingApi(
                 emitter.onSuccess(GoogleBillingResponse.Failure(BillingClient.BillingResponseCode.SERVICE_DISCONNECTED))
             }
         }
-    }
+        .onErrorReturn { e ->
+            Timber.e(e, "getSubscriptions: Uncaught exception")
+            GoogleBillingResponse.Failure(BillingClient.BillingResponseCode.ERROR)
+        }
 
-    override fun showProductCheckout(activity: Activity, productDetails: ProductDetails) =
-        Completable
-            .fromAction {
+    override fun showProductCheckout(
+        activity: Activity,
+        productId: String
+    ) = Single
+        .fromCallable {
+            subscriptionsProductDetails.getOrElse(productId) {
+                throw IllegalStateException("Product details don't exist")
+            }
+        }
+        .flatMapCompletable { productDetails ->
+            Completable.fromAction {
                 if (billingClient.isReady) {
                     billingClient.launchBillingFlow(
                         activity,
@@ -124,13 +155,16 @@ internal class GoogleBillingApi(
                     Timber.v("Launching billing flow...")
                 } else {
                     Timber.e("BillingClient is not ready to start billing flow")
+                    throw IllegalStateException("Billing client not ready")
                 }
             }
-            .andThen(
-                purchaseSubject
-                    .take(1)
-                    .singleOrError()
-            )
+        }
+        .andThen(
+            purchaseSubject
+                .take(1)
+                .singleOrError()
+        )
+        .onErrorReturn { GoogleBillingResponse.Failure(BillingClient.BillingResponseCode.ERROR) }
 
     private fun processPurchases(purchasesList: List<Purchase>?) {
         if (purchasesList.isNullOrEmpty()) {

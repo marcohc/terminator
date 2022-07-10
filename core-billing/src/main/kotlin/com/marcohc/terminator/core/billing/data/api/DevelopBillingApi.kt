@@ -1,9 +1,9 @@
 package com.marcohc.terminator.core.billing.data.api
 
 import android.app.Activity
-import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.marcohc.terminator.core.billing.data.entities.PurchaseEntity
+import com.marcohc.terminator.core.billing.data.models.Subscription
 import com.marcohc.terminator.core.billing.domain.DeleteAllPurchasesUseCase
 import com.marcohc.terminator.core.billing.domain.DeleteAndSavePurchasesUseCase
 import io.reactivex.Single
@@ -17,24 +17,24 @@ internal class DevelopBillingApi(
     }
 
     override fun disconnect() {
-        deleteAllPurchasesUseCase.execute()
+        deleteAllPurchasesUseCase.execute().blockingAwait()
     }
 
     override fun showProductCheckout(
         activity: Activity,
-        productDetails: ProductDetails
+        productId: String
     ): Single<GoogleBillingResponse<List<Purchase>>> {
         return deleteAndSavePurchasesUseCase
             .execute(
                 PurchaseEntity(
-                    productId = productDetails.productId,
+                    productId = productId,
                     jsonPlusSignature = ""
                 )
             )
             .andThen(Single.just(GoogleBillingResponse.Success(emptyList())))
     }
 
-    override fun getSubscriptions(): Single<GoogleBillingResponse<List<ProductDetails>>> {
+    override fun getSubscriptions(): Single<GoogleBillingResponse<List<Subscription>>> {
         return Single.just(GoogleBillingResponse.Success(emptyList()))
     }
 }
