@@ -5,17 +5,11 @@ import com.marcohc.terminator.core.ads.video.VideoEvent.*
 import com.marcohc.terminator.core.analytics.Analytics
 import io.reactivex.Completable
 
-interface VideoAnalytics {
-    fun trackEvent(event: VideoEvent): Completable
-    fun trackClick(): Completable
-}
+internal class VideoAnalytics(
+    private val analytics: Analytics
+) {
 
-internal class VideoAnalyticsImpl(
-    private val analytics: Analytics,
-    private val scopeId: String
-) : VideoAnalytics {
-
-    override fun trackEvent(event: VideoEvent) = Completable.fromAction {
+    fun trackEvent(event: VideoEvent) = Completable.fromAction {
         when (event) {
             is Loaded -> trackEvents("Available")
             is FailedToLoad -> trackEvents("NotAvailable")
@@ -28,11 +22,11 @@ internal class VideoAnalyticsImpl(
         }
     }
 
-    override fun trackClick() = Completable.fromAction { trackEvents("Click") }
+    fun trackClick() = Completable.fromAction { trackEvents("Click") }
 
     private fun trackEvents(event: String) {
-        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}Action", "$scopeId$event") })
-        analytics.trackEvent("$scopeId$BASE_EVENT${event}")
+        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}Action", event) })
+        analytics.trackEvent("$BASE_EVENT${event}")
     }
 
     private companion object {
