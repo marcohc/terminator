@@ -1,37 +1,34 @@
 package com.marcohc.terminator.core.ads.interstitial
 
 import android.os.Bundle
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Closed
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.FailedToLoad
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Loaded
-import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.Opened
+import com.marcohc.terminator.core.ads.interstitial.InterstitialEvent.*
 import com.marcohc.terminator.core.analytics.Analytics
 import io.reactivex.Completable
 
-interface InterstitialAnalytics {
-    fun trackEvent(event: InterstitialEvent): Completable
-}
+internal class InterstitialAnalytics(
+    private val analytics: Analytics
+) {
 
-internal class InterstitialAnalyticsImpl(
-    private val analytics: Analytics,
-    private val scopeId: String
-) : InterstitialAnalytics {
-
-    override fun trackEvent(event: InterstitialEvent) = Completable.fromAction {
+    fun trackEvent(event: InterstitialEvent) = Completable.fromAction {
         when (event) {
             is Loaded -> trackEvents("Available")
             is FailedToLoad -> trackEvents("NotAvailable")
             is Opened -> trackEvents("Opened")
+            is Impression -> trackEvents("Impression")
+            is Clicked -> trackEvents("Clicked")
             is Closed -> trackEvents("Closed")
-            else -> {
+            is Paid -> trackEvents("Paid")
+            Loading -> {
                 // No-op
             }
         }
     }
 
     private fun trackEvents(event: String) {
-        analytics.trackEvent(BASE_EVENT, Bundle().apply { putString("${BASE_EVENT}Action", "$scopeId$event") })
-        analytics.trackEvent("$scopeId$BASE_EVENT${event}")
+        analytics.trackEvent(
+            BASE_EVENT,
+            Bundle().apply { putString("${BASE_EVENT}Action", event) })
+        analytics.trackEvent("$BASE_EVENT${event}")
     }
 
     private companion object {
