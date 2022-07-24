@@ -2,8 +2,7 @@ package com.marcohc.terminator.core.ads.banner
 
 import com.google.android.gms.ads.AdView
 
-sealed class BannerEvent {
-    object NotLoadedYet : BannerEvent()
+internal sealed class BannerEvent {
     data class Loaded(val adView: AdView) : BannerEvent()
     object FailedToLoad : BannerEvent()
     object Opened : BannerEvent()
