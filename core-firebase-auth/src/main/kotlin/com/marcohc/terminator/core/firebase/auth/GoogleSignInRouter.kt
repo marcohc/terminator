@@ -1,5 +1,7 @@
 package com.marcohc.terminator.core.firebase.auth
 
+import android.app.Activity
+import android.content.Intent
 import androidx.fragment.app.DialogFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -10,14 +12,16 @@ internal class GoogleSignInRouter(
     private val googleSignInOptions: GoogleSignInOptions
 ) {
 
-    fun showSignInDialog() = executor.executeCompletable { fragment ->
-        fragment.activity?.let { activity ->
-            fragment.startActivityForResult(
-                GoogleSignIn.getClient(activity, googleSignInOptions).signInIntent,
-                REQUEST_CODE_SIGN_IN
-            )
-        }
+    fun showSignInDialog(intent: Intent?) = executor.executeCompletable { fragment ->
+        fragment.startActivityForResult(
+            intent ?: GoogleSignIn.getClient(
+                fragment.requireActivity() as Activity,
+                googleSignInOptions
+            ).signInIntent,
+            REQUEST_CODE_SIGN_IN
+        )
     }
+
 
     fun dismiss() = executor.executeCompletable { fragment ->
         (fragment as DialogFragment).dismiss()

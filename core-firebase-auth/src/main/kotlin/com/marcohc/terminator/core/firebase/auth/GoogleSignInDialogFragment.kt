@@ -19,13 +19,15 @@ class GoogleSignInDialogFragment : MviDialogFragment<GoogleSignInIntention, Goog
         mviConfigType = MviConfigType.SCOPE_AND_NAVIGATION
     )
 
+    private val intent: Intent? by lazy { arguments?.getParcelable(INTENT_EXTRA) }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         sendIntention(ActivityResult(requestCode, intent))
     }
 
     override fun afterComponentCreated(savedInstanceState: Bundle?) {
-        sendIntention(Initial)
+        sendIntention(Initial(intent))
     }
 
     override fun render(state: GoogleSignInState) {
@@ -45,6 +47,12 @@ class GoogleSignInDialogFragment : MviDialogFragment<GoogleSignInIntention, Goog
     }
 
     companion object {
-        fun newInstance() = GoogleSignInDialogFragment()
+
+        private const val INTENT_EXTRA = "INTENT_EXTRA"
+
+        fun newInstance(intent: Intent? = null) = GoogleSignInDialogFragment()
+            .apply {
+                intent?.run { arguments = Bundle().apply { putParcelable(INTENT_EXTRA, intent) } }
+            }
     }
 }

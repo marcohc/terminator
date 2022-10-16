@@ -3,16 +3,16 @@ package com.marcohc.terminator.core.firebase.auth
 import android.content.Intent
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.marcohc.terminator.core.mvi.domain.MviBaseInteractor
 import com.marcohc.terminator.core.firebase.auth.GoogleSignInIntention.ActivityResult
 import com.marcohc.terminator.core.firebase.auth.GoogleSignInIntention.Initial
 import com.marcohc.terminator.core.firebase.auth.GoogleSignInRouter.Companion.REQUEST_CODE_SIGN_IN
+import com.marcohc.terminator.core.mvi.domain.MviBaseInteractor
 import io.reactivex.Completable
 import io.reactivex.Observable
 import timber.log.Timber
 
 sealed class GoogleSignInIntention {
-    object Initial : GoogleSignInIntention()
+    data class Initial(val intent: Intent?) : GoogleSignInIntention()
     data class ActivityResult(
         val requestCode: Int,
         val intent: Intent?
@@ -28,7 +28,7 @@ internal class GoogleSignInInteractor(
     override fun intentionToAction(): (GoogleSignInIntention) -> Observable<out GoogleSignInAction> =
         { intention ->
             when (intention) {
-                is Initial -> initial().toObservable()
+                is Initial -> initial(intention.intent).toObservable()
                 is ActivityResult -> activityResult(
                     intention.requestCode,
                     intention.intent
@@ -36,8 +36,8 @@ internal class GoogleSignInInteractor(
             }
         }
 
-    private fun initial() = analytics.logScreen()
-        .andThen(router.showSignInDialog())
+    private fun initial(intent: Intent?) = analytics.logScreen()
+        .andThen(router.showSignInDialog(intent))
 
     private fun activityResult(requestCode: Int, intent: Intent?): Completable {
         val exception = when (requestCode) {
@@ -56,8 +56,7 @@ internal class GoogleSignInInteractor(
         }
         // Sign in success
         return if (exception == null) {
-            Completable
-                .fromAction { analytics.logSignInSuccess() }
+            analytics.logSignInSuccess()
                 .andThen(publisher.dispatchResult(GoogleSignInResult.Success))
                 .andThen(router.dismiss())
         }
