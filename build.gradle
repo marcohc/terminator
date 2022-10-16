@@ -4,9 +4,8 @@ allprojects {
 
     repositories {
         google()
-        maven { url "https://jitpack.io" }
+        gradlePluginPortal()
         mavenCentral()
-        jcenter()
     }
 
 }
@@ -17,9 +16,8 @@ buildscript {
 
     repositories {
         google()
-        maven { url "https://jitpack.io" }
+        gradlePluginPortal()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
