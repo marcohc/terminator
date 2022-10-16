@@ -32,6 +32,7 @@ interface ReactivePreferences {
     fun remove(key: String): Completable
     fun clear(): Completable
 
+    @Deprecated("Do not use, contains a tricky bug when obfuscation")
     fun observeString(key: String, defValue: String?): Observable<Optional<String>>
     fun observeInt(key: String, defValue: Int): Observable<Int>
     fun observeLong(key: String, defValue: Long): Observable<Long>
