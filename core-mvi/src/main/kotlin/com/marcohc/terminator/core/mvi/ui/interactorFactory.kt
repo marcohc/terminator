@@ -4,13 +4,13 @@ import android.content.ComponentCallbacks
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.marcohc.terminator.core.mvi.BuildConfig
 import com.marcohc.terminator.core.mvi.MviConstants.SCOPE_LOG_TAG
 import com.marcohc.terminator.core.mvi.domain.MviInteractor
 import com.marcohc.terminator.core.mvi.ui.navigation.ActivityNavigationExecutor
 import com.marcohc.terminator.core.mvi.ui.navigation.FragmentNavigationExecutor
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import org.koin.android.BuildConfig
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.core.error.InstanceCreationException

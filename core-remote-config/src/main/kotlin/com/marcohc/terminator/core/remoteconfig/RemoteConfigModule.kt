@@ -1,5 +1,6 @@
 package com.marcohc.terminator.core.remoteconfig
 
+import com.google.firebase.remoteconfig.BuildConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.marcohc.terminator.core.koin.CoreModule

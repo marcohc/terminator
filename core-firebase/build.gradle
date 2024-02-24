@@ -1,5 +1,13 @@
 apply from: "../config/android-library.gradle"
 
+android {
+    namespace 'com.marcohc.terminator.core.XXXX'
+}
+
+android {
+    namespace 'com.marcohc.terminator.core.firebase'
+}
+
 dependencies {
     implementation libraries.firebase.firestore
     implementation libraries.threeTenAbp.core

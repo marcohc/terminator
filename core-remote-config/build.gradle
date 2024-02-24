@@ -1,5 +1,10 @@
 apply from: '../config/android-library.gradle'
 
+android {
+    namespace 'com.marcohc.terminator.core.remoteconfig'
+}
+
+
 dependencies {
     implementation libraries.firebase.remoteConfig
     implementation libraries.rxJava

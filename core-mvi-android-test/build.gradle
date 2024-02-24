@@ -1,5 +1,9 @@
 apply from: "../config/android-library.gradle"
 
+android {
+    namespace 'com.marcohc.terminator.core.android.test'
+}
+
 dependencies {
 
     api libraries.rxIdlingResource

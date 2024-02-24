@@ -140,7 +140,7 @@ private class PreferencesStringObservableListener(
 ) : SimpleDisposable(),
     PreferencesChangeListener {
 
-    override fun onPrefsValueChanged(preferences: Preferences, key: String) {
+    override fun onPrefsValueChanged(preferences: Preferences, key: String?) {
         if (!isDisposed && prefKey == key) {
             observer.onNext(preferences.getString(prefKey, defValue).toOptional())
         }
@@ -176,7 +176,7 @@ private class PreferencesObservableListener<Type>(
 ) : SimpleDisposable(),
     PreferencesChangeListener {
 
-    override fun onPrefsValueChanged(preferences: Preferences, key: String) {
+    override fun onPrefsValueChanged(preferences: Preferences, key: String?) {
         if (!isDisposed && this.key == key) {
             observer.onNext(preferences.retriever(this.key, defValue))
         }
