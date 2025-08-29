@@ -6,7 +6,7 @@ android {
 
 dependencies {
     api libraries.firebase.ads
-    api libraries.koptional
+    api project(":core-koptional")
     implementation libraries.appCompat
     implementation libraries.rxJava
     implementation libraries.rxJavaAndroid

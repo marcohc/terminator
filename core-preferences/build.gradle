@@ -7,7 +7,7 @@ android {
 dependencies {
 
     implementation libraries.rxJava
-    implementation(libraries.koptional) {
+    implementation(project(":core-koptional")) {
         exclude group: 'org.jetbrains'
         exclude group: 'org.jetbrains.kotlin'
     }

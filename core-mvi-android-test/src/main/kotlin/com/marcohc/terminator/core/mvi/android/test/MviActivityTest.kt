@@ -11,7 +11,7 @@ import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
 
-open class MviActivityTest<Intention, State, Robot>(
+open class MviActivityTest<Intention: Any, State: Any, Robot>(
     activity: Class<out MviActivity<Intention, State>>,
     private val scopeId: String,
     val robot: Robot,

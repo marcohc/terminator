@@ -1,0 +1,11 @@
+apply from: "../config/android-library.gradle"
+
+android {
+    namespace 'com.marcohc.terminator.core.koptional'
+}
+
+dependencies {
+//    implementation libraries.appCompat
+//    implementation libraries.material
+//    implementation libraries.rxJava
+}

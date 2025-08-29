@@ -1,14 +1,14 @@
 ext.versions = [
         android   : [
                 minSdk    : 23,
-                compileSdk: 34,
-                targetSdk : 34,
-                buildTools: "34.0.0",
+                compileSdk: 35,
+                targetSdk : 35,
+                buildTools: "35.0.0",
         ],
         detekt    : "1.19.0",
         espresso  : "3.4.0",
         koin      : "2.1.6",
-        kotlin    : "1.7.10",
+        kotlin    : "1.9.24",
         retrofit  : "2.6.2",
         room      : "2.4.2",
         terminator: "3.4.0",
@@ -17,7 +17,7 @@ ext.versions = [
 ext.gradlePlugins = [
         detekt            : "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
         googlePlayServices: "com.google.gms:google-services:4.4.1",
-        gradle            : "com.android.tools.build:gradle:8.2.2",
+        gradle            : "com.android.tools.build:gradle:8.12.2",
         gradleVersions    : "com.github.ben-manes:gradle-versions-plugin:0.45.0",
         kotlin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
 ]
@@ -49,8 +49,7 @@ ext.libraries = [
         gson                    : "com.google.code.gson:gson:2.8.5",
         jetbrainsAnnotations    : "org.jetbrains:annotations:23.0.0",
         junit                   : "junit:junit:4.13.2",
-        koinAndroid             : "org.koin:koin-android:$versions.koin",
-        koptional               : "com.gojuno.koptional:koptional:1.7.0",
+        koinAndroid             : "io.insert-koin:koin-android:$versions.koin",
         kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin",
         kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
         material                : "com.google.android.material:material:1.6.1",

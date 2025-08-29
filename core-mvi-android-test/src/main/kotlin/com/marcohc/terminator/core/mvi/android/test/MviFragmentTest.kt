@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
 
-open class MviFragmentTest<Intention, State, Robot>(
+open class MviFragmentTest<Intention: Any, State: Any, Robot>(
     private val fragment: MviFragment<Intention, State>,
     private val scopeId: String,
     val robot: Robot

@@ -11,7 +11,7 @@ import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
 
-open class MviDialogFragmentTest<Intention, State, Robot>(
+open class MviDialogFragmentTest<Intention: Any, State: Any, Robot>(
     private val fragment: MviDialogFragment<Intention, State>,
     private val scopeId: String,
     val robot: Robot

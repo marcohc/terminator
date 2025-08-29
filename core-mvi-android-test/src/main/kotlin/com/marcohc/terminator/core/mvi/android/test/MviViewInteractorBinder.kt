@@ -17,7 +17,7 @@ import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-fun <Intention, State> prepareInputAndOutputMocks(
+fun <Intention: Any, State: Any> prepareInputAndOutputMocks(
     scopeId: String,
     activityNavigation: Boolean,
     modules: List<Module> = emptyList()
@@ -33,7 +33,7 @@ fun <Intention, State> prepareInputAndOutputMocks(
 /**
  * Loads a Koin module and returns a publish subject for mocking the states
  */
-private fun <Intention, State> mockMviInteractor(
+private fun <Intention: Any, State: Any> mockMviInteractor(
     scopeId: String,
     activityNavigation: Boolean,
     modules: List<Module> = emptyList()
@@ -61,7 +61,7 @@ private fun <Intention, State> mockMviInteractor(
     return Pair(intentionsSubject.test(), stateSubject)
 }
 
-private fun <Intention, State> createMockInteractor(
+private fun <Intention: Any, State: Any> createMockInteractor(
     intentionsSubject: PublishSubject<Intention>,
     stateSubject: BehaviorSubject<State>
 ): MviInteractor<Intention, State> {

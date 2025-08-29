@@ -7,7 +7,7 @@ android {
 dependencies {
     api libraries.firebase.auth
     api libraries.googlePlayServicesAuth
-    implementation libraries.koptional
+    implementation project(":core-koptional")
     implementation libraries.rxJava
     implementation libraries.timber
     implementation project(":core-firebase")

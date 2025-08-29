@@ -6,7 +6,7 @@ android {
 
 dependencies {
     api libraries.firebase.firestore
-    api libraries.koptional
+    api project(":core-koptional")
     api project(":core-firebase")
     implementation libraries.kotlinReflect
     implementation libraries.rxJava

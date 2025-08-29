@@ -11,7 +11,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 @VisibleForTesting
-abstract class MviInteractorTest<Intention, Action, State> {
+abstract class MviInteractorTest<Intention: Any, Action, State: Any> {
 
     @Mock
     lateinit var view: MviView<Intention, State>

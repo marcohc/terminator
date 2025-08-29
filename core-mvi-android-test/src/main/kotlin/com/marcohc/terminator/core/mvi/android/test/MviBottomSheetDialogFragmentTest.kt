@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import java.util.concurrent.TimeUnit
 
-open class MviBottomSheetDialogFragmentTest<Intention, State, Robot>(
+open class MviBottomSheetDialogFragmentTest<Intention: Any, State: Any, Robot>(
     private val fragment: MviBottomSheetDialogFragment<Intention, State>,
     private val scopeId: String,
     val robot: Robot

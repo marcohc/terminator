@@ -6,7 +6,7 @@ android {
 
 dependencies {
     api libraries.androidBilling
-    api libraries.koptional
+    api project(":core-koptional")
     implementation libraries.jetbrainsAnnotations
     implementation libraries.lifecycle
     implementation libraries.roomRuntime

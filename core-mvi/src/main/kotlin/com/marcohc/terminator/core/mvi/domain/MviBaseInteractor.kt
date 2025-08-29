@@ -19,7 +19,7 @@ import timber.log.Timber
 /**
  * Base class which orchestrates the subscriptions and logic to manage a [MviInteractor]
  */
-abstract class MviBaseInteractor<Intention, Action, State>(
+abstract class MviBaseInteractor<Intention: Any, Action, State: Any>(
     defaultState: State,
     private val debugMode: Boolean? = false
 ) : MviInteractor<Intention, State>,
